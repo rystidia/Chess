@@ -34,7 +34,7 @@ public abstract class Figure {
     }
 
     public boolean isCaptured() {
-        return (this.isCaptured == true);
+        return this.isCaptured;
     }
 
     public boolean move() {
