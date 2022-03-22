@@ -4,15 +4,17 @@ public abstract class Figure {
     private final int color;
     private final Field position;
     private final String image;
+    private boolean isCaptured;
 
     public Figure(int color, Field position, String image) {
         this.color = color;
         this.position = position;
         this.image = image;
+        this.isCaptured = false;
     }
 
     public void die() {
-        throw new UnsupportedOperationException();
+        this.isCaptured = true;
     }
 
     public Field[] getDiagonalDirections() {
@@ -20,7 +22,7 @@ public abstract class Figure {
     }
 
     public Field getPosition() {
-        throw new UnsupportedOperationException();
+        return this.position;
     }
 
     public Field[] getValidMoves() {
@@ -32,7 +34,7 @@ public abstract class Figure {
     }
 
     public boolean isCaptured() {
-        throw new UnsupportedOperationException();
+        return (this.isCaptured == true);
     }
 
     public boolean move() {
