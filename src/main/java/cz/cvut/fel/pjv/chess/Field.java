@@ -1,5 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
+import cz.cvut.fel.pjv.chess.figures.Figure;
+
 public class Field {
     private final int color;
     private final char vFile;

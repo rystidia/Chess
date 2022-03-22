@@ -1,5 +1,16 @@
-package cz.cvut.fel.pjv.chess;
+package cz.cvut.fel.pjv.chess.figures;
 
+import cz.cvut.fel.pjv.chess.Field;
+
+import java.util.List;
+
+/**
+ *
+ *
+ * @author  pucilpet@fel.cvut.cz
+ * @author  rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public abstract class Figure {
     private final int color;
     private final Field position;
@@ -17,7 +28,7 @@ public abstract class Figure {
         this.isCaptured = true;
     }
 
-    public Field[] getDiagonalDirections() {
+    public List<Field> getDiagonalDirections() {
         throw new UnsupportedOperationException();
     }
 
@@ -25,11 +36,15 @@ public abstract class Figure {
         return this.position;
     }
 
-    public Field[] getValidMoves() {
+    public List<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
 
-    public Field[] getVertAndHorDirections() {
+    /**
+     *
+     * @return List of
+     */
+    public List<Field> getVertAndHorDirections() {
         throw new UnsupportedOperationException();
     }
 
