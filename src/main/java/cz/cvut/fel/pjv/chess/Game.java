@@ -8,4 +8,8 @@ public class Game {
     public boolean Draw(Board board) {
         throw new UnsupportedOperationException();
     }
+
+    public static void main(String[] args) {
+
+    }
 }

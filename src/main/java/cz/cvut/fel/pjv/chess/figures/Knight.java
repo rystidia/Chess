@@ -9,10 +9,12 @@ public class Knight extends Figure{
         super(color, position, image);
     }
 
+    @Override
     public List<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean move() {
         throw new UnsupportedOperationException();
     }

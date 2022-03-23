@@ -9,6 +9,7 @@ public class King extends Figure{
         super(color, position, image);
     }
 
+    @Override
     public List<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
@@ -21,6 +22,7 @@ public class King extends Figure{
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean move() {
         throw new UnsupportedOperationException();
     }
