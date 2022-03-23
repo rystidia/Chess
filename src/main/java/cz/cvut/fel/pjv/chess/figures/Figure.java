@@ -1,6 +1,6 @@
 package cz.cvut.fel.pjv.chess.figures;
 
-import cz.cvut.fel.pjv.chess.FieldOld;
+import cz.cvut.fel.pjv.chess.Field;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
  */
 public abstract class Figure {
     private final int color;
-    private final FieldOld position;
+    private final Field position;
     private final String image;
     private boolean isCaptured;
 
-    public Figure(int color, FieldOld position, String image) {
+    public Figure(int color, Field position, String image) {
         this.color = color;
         this.position = position;
         this.image = image;
@@ -28,15 +28,15 @@ public abstract class Figure {
         this.isCaptured = true;
     }
 
-    public List<FieldOld> getDiagonalDirections() {
+    public List<Field> getDiagonalDirections() {
         throw new UnsupportedOperationException();
     }
 
-    public FieldOld getPosition() {
+    public Field getPosition() {
         return this.position;
     }
 
-    public List<FieldOld> getValidMoves() {
+    public List<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
 
@@ -44,7 +44,7 @@ public abstract class Figure {
      *
      * @return List of
      */
-    public List<FieldOld> getVertAndHorDirections() {
+    public List<Field> getVertAndHorDirections() {
         throw new UnsupportedOperationException();
     }
 
