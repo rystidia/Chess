@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
+import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
 import cz.cvut.fel.pjv.chess.players.Player;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @version 1.0
  */
 public abstract class Figure {
-    private final int color;
+    private final Color color;
     private final Field position;
     private final String image;
     private boolean isCaptured;
@@ -27,7 +28,7 @@ public abstract class Figure {
      * @param position The position on the board
      * @param image    The name of the .png file
      */
-    public Figure(int color, Field position, String image) {
+    public Figure(Color color, Field position, String image) {
         this.color = color;
         this.position = position;
         this.image = image;
@@ -104,7 +105,7 @@ public abstract class Figure {
     /**
      * @return The {@link Player color} of the piece
      */
-    public int getColor() {
+    public Color getColor() {
         return color;
     }
 

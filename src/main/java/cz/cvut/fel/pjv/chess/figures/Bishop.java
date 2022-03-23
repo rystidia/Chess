@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
+import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * @see #Figure for the descrition of all methods
  */
 public class Bishop extends Figure {
-    public Bishop(int color, Field position, String image) {
+    public Bishop(Color color, Field position, String image) {
         super(color, position, image);
     }
 
