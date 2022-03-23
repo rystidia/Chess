@@ -25,9 +25,7 @@ public abstract class Player {
     /**
      * Executes the given move
      */
-    public void makeMove() {
-        throw new UnsupportedOperationException();
-    }
+    abstract void makeMove();
 
     /**
      * @return True if player lost the game, false otherwise

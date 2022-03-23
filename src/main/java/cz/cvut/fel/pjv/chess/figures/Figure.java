@@ -68,9 +68,7 @@ public abstract class Figure {
      * @param board The board on which game is being played
      * @return List of all Fields where the piece can move
      */
-    public List<Field> getValidMoves(Board board) {
-        throw new UnsupportedOperationException();
-    }
+    abstract List<Field> getValidMoves(Board board);
 
     /**
      * Returns all Fields in vertical and horizontal directions where figure can possibly move
@@ -98,9 +96,7 @@ public abstract class Figure {
      * @param target A target Field
      * @return True if move was done, false otherwise
      */
-    public boolean move(Field target) {
-        throw new UnsupportedOperationException();
-    }
+    abstract boolean move(Field target);
 
     /**
      * @return The {@link Player color} of the piece
