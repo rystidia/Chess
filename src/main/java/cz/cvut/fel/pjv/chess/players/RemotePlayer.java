@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.chess;
+package cz.cvut.fel.pjv.chess.players;
 
 public class RemotePlayer extends Player{
     public RemotePlayer(int color) {

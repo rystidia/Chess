@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.chess;
+package cz.cvut.fel.pjv.chess.players;
 
 public abstract class Player {
     private final int color;

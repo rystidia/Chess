@@ -1,5 +1,5 @@
 package cz.cvut.fel.pjv.chess;
 
-public class Clock {
+public class Clock extends Thread {
 }
 
