@@ -38,11 +38,6 @@ public class Pawn extends Figure {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public boolean move(Field target) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Promotes the pawn to the chosen piece
      */

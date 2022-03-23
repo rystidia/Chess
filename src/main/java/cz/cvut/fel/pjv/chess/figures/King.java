@@ -37,10 +37,5 @@ public class King extends Figure {
     public boolean isInCheck() {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public boolean move(Field target) {
-        throw new UnsupportedOperationException();
-    }
 }
 

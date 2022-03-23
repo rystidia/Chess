@@ -23,10 +23,5 @@ public class Queen extends Figure {
     public List<Field> getValidMoves(Board board) {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public boolean move(Field target) {
-        throw new UnsupportedOperationException();
-    }
 }
 

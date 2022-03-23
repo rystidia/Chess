@@ -96,7 +96,9 @@ public abstract class Figure {
      * @param target A target Field
      * @return True if move was done, false otherwise
      */
-    abstract boolean move(Field target);
+    public boolean move(Field target) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * @return The {@link Player color} of the piece
