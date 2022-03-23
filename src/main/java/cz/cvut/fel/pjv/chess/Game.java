@@ -1,11 +1,13 @@
 package cz.cvut.fel.pjv.chess;
 
 public class Game {
-    public void RunGame() {
+
+
+    public void runGame() {
         throw new UnsupportedOperationException();
     }
 
-    public boolean Draw(Board board) {
+    public boolean draw(Board board) {
         throw new UnsupportedOperationException();
     }
 

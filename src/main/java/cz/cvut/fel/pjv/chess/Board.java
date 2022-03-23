@@ -5,7 +5,7 @@ public class Board {
         throw new UnsupportedOperationException();
     }
 
-    public Field[][] placeFigures() {
+    public FieldOld[][] placeFigures() {
         throw new UnsupportedOperationException();
     }
 }
