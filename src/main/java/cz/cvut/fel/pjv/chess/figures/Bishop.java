@@ -12,7 +12,7 @@ import java.util.List;
  * @author pucilpet@fel.cvut.cz
  * @author rystidia@fel.cvut.cz
  * @version 1.0
- * @see #Figure for the descrition of all methods
+ * @see #Figure for the description of all methods
  */
 public class Bishop extends Figure {
     public Bishop(Color color, Field position, String image) {

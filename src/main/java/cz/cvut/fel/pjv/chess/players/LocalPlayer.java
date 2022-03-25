@@ -8,7 +8,7 @@ import cz.cvut.fel.pjv.chess.Color;
  * @author pucilpet@fel.cvut.cz
  * @author rystidia@fel.cvut.cz
  * @version 1.0
- * @see #Player for the descrition of all methods
+ * @see #Player for the description of all methods
  */
 public class LocalPlayer extends Player {
     /**

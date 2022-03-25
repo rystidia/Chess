@@ -12,7 +12,7 @@ import java.util.List;
  * @author pucilpet@fel.cvut.cz
  * @author rystidia@fel.cvut.cz
  * @version 1.0
- * @see #Figure for the descrition of all methods
+ * @see #Figure for the description of all methods
  */
 public class King extends Figure {
     public King(Color color, Field position, String image) {
@@ -25,14 +25,14 @@ public class King extends Figure {
     }
 
     /**
-     * @return True if castling is possible, false otherwise
+     * @return true if castling is possible, false otherwise
      */
     public boolean isCastlingPossible() {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @return True if the king is in check, false otherwise
+     * @return true if the king is in check, false otherwise
      */
     public boolean isInCheck() {
         throw new UnsupportedOperationException();

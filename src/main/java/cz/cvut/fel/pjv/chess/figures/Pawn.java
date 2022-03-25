@@ -12,7 +12,7 @@ import java.util.List;
  * @author pucilpet@fel.cvut.cz
  * @author rystidia@fel.cvut.cz
  * @version 1.0
- * @see #Figure for the descrition of all methods
+ * @see #Figure for the description of all methods
  */
 public class Pawn extends Figure {
     public Pawn(Color color, Field position, String image) {
@@ -25,14 +25,14 @@ public class Pawn extends Figure {
     }
 
     /**
-     * @return True if en passant is possible, false otherwise
+     * @return true if en passant is possible, false otherwise
      */
     public boolean isEnPassantPossible() {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @return True if it is the first move, false otherwise
+     * @return true if it is the first move, false otherwise
      */
     public boolean isFirstMove() {
         throw new UnsupportedOperationException();

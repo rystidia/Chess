@@ -28,14 +28,14 @@ public abstract class Player {
     abstract void makeMove();
 
     /**
-     * @return True if player lost the game, false otherwise
+     * @return true if player lost the game, false otherwise
      */
     public boolean lost() {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @return True if player hasValidMoves, false otherwise
+     * @return true if player hasValidMoves, false otherwise
      */
     public boolean hasValidMoves() {
         throw new UnsupportedOperationException();

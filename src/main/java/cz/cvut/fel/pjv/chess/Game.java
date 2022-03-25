@@ -51,7 +51,7 @@ public class Game {
     }
 
     /**
-     * @return True if there is a draw, false otherwise
+     * @return true if there is a draw, false otherwise
      */
     public boolean draw(Board board) {
         throw new UnsupportedOperationException();
