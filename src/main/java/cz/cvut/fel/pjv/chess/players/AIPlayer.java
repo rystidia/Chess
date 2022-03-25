@@ -10,7 +10,7 @@ import cz.cvut.fel.pjv.chess.Color;
  * @version 1.0
  * @see #Player for the descrition of all methods
  */
-public class AIPlayer extends Player{
+public class AIPlayer extends Player {
     /**
      * Initializes the player and sets the given color to him
      * <p>
@@ -26,4 +26,3 @@ public class AIPlayer extends Player{
         throw new UnsupportedOperationException();
     }
 }
-

@@ -24,4 +24,3 @@ public class Bishop extends Figure {
         throw new UnsupportedOperationException();
     }
 }
-

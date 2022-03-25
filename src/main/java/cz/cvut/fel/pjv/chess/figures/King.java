@@ -38,4 +38,3 @@ public class King extends Figure {
         throw new UnsupportedOperationException();
     }
 }
-

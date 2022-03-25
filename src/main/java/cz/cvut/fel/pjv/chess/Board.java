@@ -10,6 +10,7 @@ package cz.cvut.fel.pjv.chess;
  */
 public class Board {
     Field[][] fields;
+
     /**
      * Initializes the board
      */
@@ -24,4 +25,3 @@ public class Board {
         throw new UnsupportedOperationException();
     }
 }
-

@@ -26,4 +26,3 @@ public class RemotePlayer extends Player {
         throw new UnsupportedOperationException();
     }
 }
-

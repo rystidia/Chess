@@ -24,4 +24,3 @@ public class Queen extends Figure {
         throw new UnsupportedOperationException();
     }
 }
-

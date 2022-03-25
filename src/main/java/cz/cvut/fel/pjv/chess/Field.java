@@ -6,8 +6,8 @@ import java.util.Objects;
  * A single square on a board.
  * Each square has its own unique coordinates.
  *
- * @author  pucilpet@fel.cvut.cz
- * @author  rystidia@fel.cvut.cz
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
  * @version 1.0
  */
 public class Field {
@@ -17,11 +17,12 @@ public class Field {
     /**
      * Initializes the Field
      * <p>
-     * @param row a rank in the board
+     *
+     * @param row    a rank in the board
      * @param column a file in the board encoded by integer
      * @throws IllegalArgumentException if the given coordinates are not inside the board
      */
-    Field(int row, int column) throws IllegalArgumentException{
+    Field(int row, int column) throws IllegalArgumentException {
         if (row >= 0 && row <= 7) {
             this.row = row;
         } else {
