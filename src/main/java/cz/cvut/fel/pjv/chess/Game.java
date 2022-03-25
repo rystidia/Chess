@@ -11,29 +11,29 @@ import cz.cvut.fel.pjv.chess.players.Player;
  * @version 1.0
  */
 public class Game {
-    private final Player player1;
-    private final Player player2;
+    private final Player white;
+    private final Player black;
+    Parser parser = new Parser();
     private Board board;
-    private Clock clock;
+    private Clock clock = new Clock();
+    ;
 
     /**
      * Initializes new game
      */
-    public Game(Player player1, Player player2) {
-        this.player1 = player1;
-        this.player2 = player2;
-        this.clock = new Clock();
+    public Game(Player white, Player black) {
+        this.white = white;
+        this.black = black;
         this.board = new Board();
     }
 
     /**
      * Initializes a saved game so that players can continue it
      */
-    public Game(Player player1, Player player2, String PGN) {
-        this.player1 = player1;
-        this.player2 = player2;
-        this.clock = new Clock();
-        this.board = new Parser().parsePGN(PGN);
+    public Game(Player white, Player black, String PGN) {
+        this.white = white;
+        this.black = black;
+        this.board = parser.parsePGN(PGN);
     }
 
     public static void main(String[] args) {
@@ -47,7 +47,17 @@ public class Game {
      * Controls time of each move
      */
     public void runGame() {
-        throw new UnsupportedOperationException();
+        while (!white.lost() && !black.lost() && !draw(board)) {
+            white.makeMove(board);
+            black.makeMove(board);
+        }
+        if (white.lost()) {
+            throw new UnsupportedOperationException();
+        } else if (black.lost()) {
+            throw new UnsupportedOperationException();
+        } else if (draw(board)) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**

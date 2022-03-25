@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.chess.players;
 
+import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 
 /**
@@ -22,7 +23,7 @@ public class LocalPlayer extends Player {
     }
 
     @Override
-    public void makeMove() {
+    public void makeMove(Board board) {
         throw new UnsupportedOperationException();
     }
 }

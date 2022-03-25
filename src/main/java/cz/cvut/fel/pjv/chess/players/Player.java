@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.chess.players;
 
+import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 
 /**
@@ -25,7 +26,7 @@ public abstract class Player {
     /**
      * Executes the given move
      */
-    abstract void makeMove();
+    public abstract void makeMove(Board board);
 
     /**
      * @return true if player lost the game, false otherwise
