@@ -19,6 +19,7 @@ public abstract class Figure {
     private final Field position;
     private final String image;
     private boolean isCaptured;
+    private boolean isFirstMove = true;
 
     /**
      * Initializes the Figure
@@ -112,5 +113,12 @@ public abstract class Figure {
      */
     public String getImage() {
         return image;
+    }
+
+    /**
+     * @return true if it is the first move, false otherwise
+     */
+    public boolean isFirstMove() {
+        return isFirstMove;
     }
 }

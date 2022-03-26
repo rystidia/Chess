@@ -25,16 +25,19 @@ public class Pawn extends Figure {
     }
 
     /**
-     * @return true if en passant is possible, false otherwise
+     * Notes that if pawn jumped over a Field, it can be captured by en passant
+     *
+     * @see #Figure for the full description of this method
      */
-    public boolean isEnPassantPossible() {
+    @Override
+    public boolean move(Field target) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @return true if it is the first move, false otherwise
+     * @return true if en passant is possible, false otherwise
      */
-    public boolean isFirstMove() {
+    public boolean isEnPassantPossible() {
         throw new UnsupportedOperationException();
     }
 

@@ -27,7 +27,7 @@ public class King extends Figure {
     /**
      * @return true if castling is possible, false otherwise
      */
-    public boolean isCastlingPossible() {
+    public boolean isCastlingPossibleWith(Rook rook) {
         throw new UnsupportedOperationException();
     }
 
