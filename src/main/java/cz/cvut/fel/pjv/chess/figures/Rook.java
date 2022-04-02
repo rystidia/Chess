@@ -15,8 +15,8 @@ import java.util.List;
  * @see #Figure for the description of all methods
  */
 public class Rook extends Figure {
-    public Rook(Color color, Field position, String image) {
-        super(color, position, image);
+    public Rook(Color color, Field position) {
+        super(color, position);
     }
 
     @Override

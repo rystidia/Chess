@@ -17,7 +17,6 @@ import java.util.List;
 public abstract class Figure {
     private final Color color;
     private final Field position;
-    private final String image;
     private boolean isCaptured;
     private boolean isFirstMove = true;
 
@@ -27,12 +26,10 @@ public abstract class Figure {
      *
      * @param color    the color of the piece
      * @param position the position on the board
-     * @param image    the name of the .png file
      */
-    public Figure(Color color, Field position, String image) {
+    public Figure(Color color, Field position) {
         this.color = color;
         this.position = position;
-        this.image = image;
         this.isCaptured = false;
     }
 
@@ -106,13 +103,6 @@ public abstract class Figure {
      */
     public Color getColor() {
         return color;
-    }
-
-    /**
-     * @return the name of the .png file
-     */
-    public String getImage() {
-        return image;
     }
 
     /**

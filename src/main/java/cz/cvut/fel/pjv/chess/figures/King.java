@@ -15,8 +15,8 @@ import java.util.List;
  * @see #Figure for the description of all methods
  */
 public class King extends Figure {
-    public King(Color color, Field position, String image) {
-        super(color, position, image);
+    public King(Color color, Field position) {
+        super(color, position);
     }
 
     @Override
