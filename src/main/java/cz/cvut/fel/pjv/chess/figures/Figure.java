@@ -16,7 +16,8 @@ import java.util.List;
  */
 public abstract class Figure {
     private final Color color;
-    private final Field position;
+    private final Board board;
+    private Field position;
     private boolean isCaptured;
     private boolean isFirstMove = true;
 
@@ -25,11 +26,11 @@ public abstract class Figure {
      * <p>
      *
      * @param color    the color of the piece
-     * @param position the position on the board
+     * @param board the board
      */
-    public Figure(Color color, Field position) {
+    public Figure(Color color, Board board) {
         this.color = color;
-        this.position = position;
+        this.board = board;
         this.isCaptured = false;
     }
 
@@ -41,42 +42,39 @@ public abstract class Figure {
     }
 
     /**
-     * Returns all Fields in diagonal directions where the piece can possibly move
-     * Each particular piece can select the moves from that list
-     * <p>
-     *
-     * @param board the board on which game is being played
-     * @return list of available Fields in diagonal directions
-     */
-    public List<Field> getDiagonalDirections(Board board) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * @return the Field on which the piece stands
      */
     public Field getPosition() {
-        return this.position;
+        return position;
     }
 
     /**
      * Returns all Fields where the piece can move
      * <p>
      *
-     * @param board the board on which game is being played
      * @return list of all Fields where the piece can move
      */
-    abstract List<Field> getValidMoves(Board board);
+    public abstract List<Field> getValidMoves();
+
+    /**
+     * Returns all Fields in diagonal directions where the piece can possibly move
+     * Each particular piece can select the moves from that list
+     * <p>
+     *
+     * @return list of available Fields in diagonal directions
+     */
+    protected List<Field> getDiagonalDirections() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Returns all Fields in vertical and horizontal directions where figure can possibly move
      * Each particular piece can select the moves from that list
      * <p>
      *
-     * @param board the board on which game is being played
      * @return list of available Fields in vertical and horizontal directions
      */
-    public List<Field> getVertAndHorDirections(Board board) {
+    protected List<Field> getVertAndHorDirections() {
         throw new UnsupportedOperationException();
     }
 

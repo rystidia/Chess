@@ -15,12 +15,12 @@ import java.util.List;
  * @see #Figure for the description of all methods
  */
 public class Pawn extends Figure {
-    public Pawn(Color color, Field position) {
-        super(color, position);
+    public Pawn(Color color, Board board) {
+        super(color, board);
     }
 
     @Override
-    public List<Field> getValidMoves(Board board) {
+    public List<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
 
