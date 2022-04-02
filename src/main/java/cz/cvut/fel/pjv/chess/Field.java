@@ -23,16 +23,20 @@ public class Field {
      * @throws IllegalArgumentException if the given coordinates are not inside the board
      */
     public Field(int row, int column) throws IllegalArgumentException {
-        if (row >= 0 && row < Board.ROWS) {
+        if (row >= 0 && row <= Board.MAX_ROW) {
             this.row = row;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("expected 'row' to be in range " + 0 + ".." + Board.MAX_ROW + ", got " + row);
         }
-        if (column >= 0 && column < Board.COLS) {
+        if (column >= 0 && column <= Board.MAX_COL) {
             this.column = column;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("expected 'column' to be in range " + 0 + ".." + Board.MAX_COL + ", got " + column);
         }
+    }
+
+    public Field plus(int rDiff, int cDiff) {
+        return new Field(this.row + rDiff, this.column + cDiff);
     }
 
     @Override
@@ -50,9 +54,6 @@ public class Field {
 
     @Override
     public String toString() {
-        return "Field{" +
-            "row=" + row +
-            ", column=" + column +
-            '}';
+        return "(" + row + ", " + column + ")";
     }
 }

@@ -4,7 +4,7 @@ import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * A pawn piece
@@ -20,17 +20,15 @@ public class Pawn extends Figure {
     }
 
     @Override
-    public List<Field> getValidMoves() {
+    public Set<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Notes that if pawn jumped over a Field, it can be captured by en passant
-     *
-     * @see #Figure for the full description of this method
      */
     @Override
-    public boolean move(Field target) {
+    public void setPosition(Field position) {
         throw new UnsupportedOperationException();
     }
 

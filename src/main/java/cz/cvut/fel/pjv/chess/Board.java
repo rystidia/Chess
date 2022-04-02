@@ -2,7 +2,7 @@ package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * A board for a chess game
@@ -13,8 +13,8 @@ import java.util.List;
  * @version 1.0
  */
 public class Board {
-    public static final int ROWS = 8;
-    public static final int COLS = 8;
+    public static final int MAX_ROW = 7;
+    public static final int MAX_COL = 7;
 
     private final Figure[][] board;
     private Figure bKing;
@@ -24,7 +24,26 @@ public class Board {
      * Initializes the board
      */
     public Board() {
-        this.board = new Figure[ROWS][COLS];
+        this.board = new Figure[MAX_ROW + 1][MAX_COL + 1];
+    }
+
+    public Figure getFigure(Field pos) {
+        return board[pos.row][pos.column];
+    }
+
+    protected void setFigure(Field pos, Figure figure) {
+        board[pos.row][pos.column] = figure;
+    }
+
+    public void moveFigure(Figure figure, Field toPos) {
+        if (figure.getPosition() != null && getFigure(figure.getPosition()) != figure) {
+            throw new IllegalArgumentException("provided figure was not found where it should be");
+        }
+        if (getFigure(toPos) != null) {
+            throw new UnsupportedOperationException("toPos already occupied, capturing is not implemented yet");
+        }
+        setFigure(toPos, figure);
+        figure.setPosition(toPos);
     }
 
     /**
@@ -37,7 +56,7 @@ public class Board {
     /**
      * Returns all valid moves for given figure, checks if king is not in check after them
      */
-    public List<Field> getValidMoves(Figure figure) {
+    public Set<Field> getValidMoves(Figure figure) {
         throw new UnsupportedOperationException();
     }
 

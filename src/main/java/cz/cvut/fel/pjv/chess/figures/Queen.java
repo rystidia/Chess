@@ -4,7 +4,7 @@ import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * A queen piece
@@ -20,7 +20,7 @@ public class Queen extends Figure {
     }
 
     @Override
-    public List<Field> getValidMoves() {
+    public Set<Field> getValidMoves() {
         throw new UnsupportedOperationException();
     }
 }

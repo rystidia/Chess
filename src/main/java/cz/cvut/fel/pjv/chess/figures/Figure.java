@@ -3,9 +3,10 @@ package cz.cvut.fel.pjv.chess.figures;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
-import cz.cvut.fel.pjv.chess.players.Player;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * An abstract model of a chess piece on the board
@@ -48,13 +49,17 @@ public abstract class Figure {
         return position;
     }
 
+    public void setPosition(Field position) {
+        this.position = position;
+    }
+
     /**
      * Returns all Fields where the piece can move
      * <p>
      *
      * @return list of all Fields where the piece can move
      */
-    public abstract List<Field> getValidMoves();
+    public abstract Set<Field> getValidMoves();
 
     /**
      * Returns all Fields in diagonal directions where the piece can possibly move
@@ -63,8 +68,14 @@ public abstract class Figure {
      *
      * @return list of available Fields in diagonal directions
      */
-    protected List<Field> getDiagonalDirections() {
-        throw new UnsupportedOperationException();
+    protected Set<Field> getDiagonalDirections() {
+        Set<Field> fields = new HashSet<>();
+        for (int rDiff : Arrays.asList(-1, 1)) {
+            for (int cDiff : Arrays.asList(-1, 1)) {
+                fields.addAll(getFieldsInDirection(rDiff, cDiff));
+            }
+        }
+        return fields;
     }
 
     /**
@@ -74,8 +85,49 @@ public abstract class Figure {
      *
      * @return list of available Fields in vertical and horizontal directions
      */
-    protected List<Field> getVertAndHorDirections() {
-        throw new UnsupportedOperationException();
+    protected Set<Field> getVertAndHorDirections() {
+        Set<Field> fields = new HashSet<>();
+        for (int sign : Arrays.asList(-1, 1)) {
+            for (boolean changeRow : Arrays.asList(false, true)) {
+                int rDiff = 0, cDiff = 0;
+                if (changeRow) {
+                    rDiff = sign;
+                } else {
+                    cDiff = sign;
+                }
+                fields.addAll(getFieldsInDirection(rDiff, cDiff));
+            }
+        }
+        return fields;
+    }
+
+    private Set<Field> getFieldsInDirection(int rDiff, int cDiff) {
+        Set<Field> fields = new HashSet<>();
+        int rAvail = Board.MAX_ROW;
+        if (rDiff < 0) {
+            rAvail = position.row;
+        } else if (rDiff > 0) {
+            rAvail -= position.row;
+        }
+        int cAvail = Board.MAX_COL;
+        if (cDiff < 0) {
+            cAvail = position.column;
+        } else if (cDiff > 0) {
+            cAvail -= position.column;
+        }
+        int avail = Math.min(rAvail, cAvail);
+        for (int i = 1; i <= avail; i++) {
+            Field pos = position.plus(i * rDiff, i * cDiff);
+            Figure blockingFig = board.getFigure(pos);
+            if (blockingFig != null) {
+                if (blockingFig.getColor() != color) {
+                    fields.add(pos);
+                }
+                break;
+            }
+            fields.add(pos);
+        }
+        return fields;
     }
 
     /**
@@ -83,17 +135,6 @@ public abstract class Figure {
      */
     public boolean isCaptured() {
         return this.isCaptured;
-    }
-
-    /**
-     * Moves the piece to the given Field
-     * <p>
-     *
-     * @param target a target Field
-     * @return true if move was done, false otherwise
-     */
-    public boolean move(Field target) {
-        throw new UnsupportedOperationException();
     }
 
     /**
