@@ -22,13 +22,13 @@ public class Field {
      * @param column a file in the board encoded by integer
      * @throws IllegalArgumentException if the given coordinates are not inside the board
      */
-    Field(int row, int column) throws IllegalArgumentException {
-        if (row >= 0 && row <= 7) {
+    public Field(int row, int column) throws IllegalArgumentException {
+        if (row >= 0 && row < Board.ROWS) {
             this.row = row;
         } else {
             throw new IllegalArgumentException();
         }
-        if (column >= 0 && column <= 7) {
+        if (column >= 0 && column < Board.COLS) {
             this.column = column;
         } else {
             throw new IllegalArgumentException();
