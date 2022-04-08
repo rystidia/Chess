@@ -4,6 +4,8 @@ import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,7 +23,23 @@ public class King extends Figure {
 
     @Override
     public Set<Field> getValidMoves() {
-        throw new UnsupportedOperationException();
+        Set<Field> validMoves = new HashSet<>();
+        for (int i : Arrays.asList(-1, 0, 1)) {
+            for (int j : Arrays.asList(-1, 0, 1)) {
+                if (i == 0 && j == 0) {
+                    continue;
+                }
+                try {
+                    Field pos = getPosition().plus(i, j);
+                    Figure blockingFig = getBoard().getFigure(pos);
+                    if (blockingFig == null || blockingFig.getColor() != getColor()) {
+                        validMoves.add(pos);
+                    }
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+        }
+        return validMoves;
     }
 
     /**

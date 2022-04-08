@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
+import cz.cvut.fel.pjv.chess.figures.King;
 import cz.cvut.fel.pjv.chess.figures.Knight;
 import org.testng.annotations.Test;
 
@@ -9,13 +10,13 @@ import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
 
-public class KnightTest {
+public class KingTest {
     @Test
     public void testGetValidMoves_OutOfRange() {
         // FIXME: mock Board
         Board board = new Board();
-        Knight figure = new Knight(Color.WHITE, board);
-        board.moveFigure(figure, new Field(6, 2));
+        King figure = new King(Color.WHITE, board);
+        board.moveFigure(figure, new Field(7, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -23,18 +24,17 @@ public class KnightTest {
         1 - - - - - - - -
         2 - - - - - - - -
    row  3 - - - - - - - -
-        4 - o - o - - - -
-        5 o - - - o - - -
-        6 - - X - - - - -
-        7 o - - - o - - -
+        4 - - - - - - - -
+        5 - - - - - - - -
+        6 - - - o o o - -
+        7 - - - o X o - -
          */
         Set<Field> expected = new HashSet<>() {{
-            add(new Field(7, 0));
-            add(new Field(5, 0));
-            add(new Field(4, 1));
-            add(new Field(4, 3));
-            add(new Field(5, 4));
-            add(new Field(7, 4));
+            add(new Field(7, 3));
+            add(new Field(6, 3));
+            add(new Field(6, 4));
+            add(new Field(6, 5));
+            add(new Field(7, 5));
         }};
         assertEquals(figure.getValidMoves(), expected);
     }
@@ -49,7 +49,7 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy1, new Field(0, 2));
+        board.moveFigure(blockingMy1, new Field(2, 4));
 
         Figure blockingOpp1 = new Figure(Color.BLACK, board) {
             @Override
@@ -57,7 +57,7 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(0, 4));
+        board.moveFigure(blockingOpp1, new Field(1, 4));
 
         Figure blockingMy2 = new Figure(Color.WHITE, board) {
             @Override
@@ -65,7 +65,7 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy2, new Field(3, 5));
+        board.moveFigure(blockingMy2, new Field(3, 4));
 
         Figure blockingOpp2 = new Figure(Color.BLACK, board) {
             @Override
@@ -73,30 +73,32 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(3, 1));
+        board.moveFigure(blockingOpp2, new Field(3, 2));
 
-        Knight figure = new Knight(Color.WHITE, board);
+        King figure = new King(Color.WHITE, board);
         board.moveFigure(figure, new Field(2, 3));
 
         /*
                 col
           0 1 2 3 4 5 6 7
-        0 - - m - p - - -
-        1 - o - - - o - -
-        2 - - - X - - - -
-   row  3 - p - - - m - -
-        4 - - o - o - - -
+        0 - - - - - - - -
+        1 - - o o p - - -
+        2 - - o X m - - -
+   row  3 - - p o m - - -
+        4 - - - - - - - -
         5 - - - - - - - -
         6 - - - - - - - -
         7 - - - - - - - -
          */
         Set<Field> expected = new HashSet<>() {{
-            add(new Field(0, 4)); // can be captured
-            add(new Field(1, 1));
-            add(new Field(3, 1)); // can be captured
-            add(new Field(4, 2));
-            add(new Field(1, 5));
-            add(new Field(4, 4));
+            add(new Field(1, 4)); // can be captured
+            // (1, -1)
+            add(new Field(1, 3));
+            add(new Field(3, 2)); // can be captured
+            // (1, 1)
+            add(new Field(2, 2));
+            add(new Field(1, 2));
+            add(new Field(3, 3));
         }};
         assertEquals(figure.getValidMoves(), expected);
     }
