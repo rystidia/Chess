@@ -21,6 +21,6 @@ public class Bishop extends Figure {
 
     @Override
     public Set<Field> getValidMoves() {
-        throw new UnsupportedOperationException();
+        return super.getDiagonalDirections();
     }
 }

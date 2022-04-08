@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,6 +22,9 @@ public class Queen extends Figure {
 
     @Override
     public Set<Field> getValidMoves() {
-        throw new UnsupportedOperationException();
+        Set<Field> validMoves = new HashSet<>();
+        validMoves.addAll(super.getDiagonalDirections());
+        validMoves.addAll(super.getVertAndHorDirections());
+        return validMoves;
     }
 }

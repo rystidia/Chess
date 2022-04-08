@@ -21,6 +21,6 @@ public class Rook extends Figure {
 
     @Override
     public Set<Field> getValidMoves() {
-        throw new UnsupportedOperationException();
+        return super.getVertAndHorDirections();
     }
 }
