@@ -25,21 +25,12 @@ public class King extends Figure {
     @Override
     public Set<Field> getValidMoves() {
         Set<Field> validMoves = new HashSet<>();
-        for (int i : Arrays.asList(-1, 0, 1)) {
-            for (int j : Arrays.asList(-1, 0, 1)) {
-                if (i == 0 && j == 0) {
+        for (int row : Arrays.asList(-1, 0, 1)) {
+            for (int column : Arrays.asList(-1, 0, 1)) {
+                if (row == 0 && column == 0) {
                     continue;
                 }
-                Field pos;
-                try {
-                    pos = getPosition().plus(i, j);
-                } catch (FieldOutOfRangeException ignored) {
-                    continue;
-                }
-                Figure blockingFig = board.getFigure(pos);
-                if (blockingFig == null || blockingFig.getColor() != getColor()) {
-                    validMoves.add(pos);
-                }
+                addValidMove(validMoves, row, column);
             }
         }
         return validMoves;

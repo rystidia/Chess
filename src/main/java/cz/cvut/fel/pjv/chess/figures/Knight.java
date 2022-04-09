@@ -31,16 +31,7 @@ public class Knight extends Figure {
                     int tmp = oneDiff;
                     oneDiff = twoDiff;
                     twoDiff = tmp;
-                    Field pos;
-                    try {
-                        pos = getPosition().plus(oneDiff, twoDiff);
-                    } catch (FieldOutOfRangeException ignored) {
-                        continue;
-                    }
-                    Figure blockingFig = board.getFigure(pos);
-                    if (blockingFig == null || blockingFig.getColor() != getColor()) {
-                        validMoves.add(pos);
-                    }
+                    addValidMove(validMoves, oneDiff, twoDiff);
                 }
             }
         }

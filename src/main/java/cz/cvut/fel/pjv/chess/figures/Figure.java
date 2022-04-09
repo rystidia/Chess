@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.chess.figures;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
+import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -153,5 +154,18 @@ public abstract class Figure {
      */
     public boolean isFirstMove() {
         return isFirstMove;
+    }
+
+    public void addValidMove(Set<Field> validMoves, int row, int column){
+        Field pos;
+        try {
+            pos = getPosition().plus(row, column);
+        } catch (FieldOutOfRangeException ignored) {
+            return;
+        }
+        Figure blockingFig = board.getFigure(pos);
+        if (blockingFig == null || blockingFig.getColor() != getColor()) {
+            validMoves.add(pos);
+        }
     }
 }

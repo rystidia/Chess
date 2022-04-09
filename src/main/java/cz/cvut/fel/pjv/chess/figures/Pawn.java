@@ -28,17 +28,7 @@ public class Pawn extends Figure {
     public Set<Field> getValidMoves() {
         int dir = (getColor() == Color.WHITE) ? -1 : 1; // direction
         Set<Field> validMoves = new HashSet<>();
-        Field pos;
-        try {
-            pos = getPosition().plus(dir, 0);
-        } catch (FieldOutOfRangeException ignored) {
-            pos = null;
-        }
-        if (pos != null) {
-            if (board.getFigure(pos) == null) {
-                validMoves.add(pos);
-            }
-        }
+        addValidMove(validMoves, dir, 0);
         for (int j : Arrays.asList(-1, 1)) { // occupied position
             Field oPos;
             try {
@@ -52,17 +42,7 @@ public class Pawn extends Figure {
             }
         }
         if (isFirstMove()) {
-            Field posAcross;
-            try {
-                posAcross = getPosition().plus(2 * dir, 0);
-            }catch (FieldOutOfRangeException ignored) {
-                posAcross = null;
-            }
-            if (posAcross != null) {
-                if (board.getFigure(posAcross) == null) {
-                    validMoves.add(posAcross);
-                }
-            }
+            addValidMove(validMoves, 2*dir, 0);
         }
         return validMoves;
     }
