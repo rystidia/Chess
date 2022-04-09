@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public abstract class Figure {
     private final Color color;
-    private final Board board;
+    protected final Board board;
     private Field position;
     private boolean isCaptured;
     private boolean isFirstMove = true;

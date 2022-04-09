@@ -37,7 +37,7 @@ public class Knight extends Figure {
                     } catch (FieldOutOfRangeException ignored) {
                         continue;
                     }
-                    Figure blockingFig = getBoard().getFigure(pos);
+                    Figure blockingFig = board.getFigure(pos);
                     if (blockingFig == null || blockingFig.getColor() != getColor()) {
                         validMoves.add(pos);
                     }

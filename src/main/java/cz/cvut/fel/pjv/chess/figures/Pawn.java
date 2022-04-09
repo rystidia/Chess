@@ -35,7 +35,7 @@ public class Pawn extends Figure {
             pos = null;
         }
         if (pos != null) {
-            if (getBoard().getFigure(pos) == null) {
+            if (board.getFigure(pos) == null) {
                 validMoves.add(pos);
             }
         }
@@ -46,7 +46,7 @@ public class Pawn extends Figure {
             } catch (FieldOutOfRangeException ignored) {
                 continue;
             }
-            Figure blockingFig = getBoard().getFigure(oPos);
+            Figure blockingFig = board.getFigure(oPos);
             if (blockingFig != null && blockingFig.getColor() != getColor()) {
                 validMoves.add(oPos);
             }
@@ -59,7 +59,7 @@ public class Pawn extends Figure {
                 posAcross = null;
             }
             if (posAcross != null) {
-                if (getBoard().getFigure(posAcross) == null) {
+                if (board.getFigure(posAcross) == null) {
                     validMoves.add(posAcross);
                 }
             }
