@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.chess.figures;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
+import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,13 +31,15 @@ public class Knight extends Figure {
                     int tmp = oneDiff;
                     oneDiff = twoDiff;
                     twoDiff = tmp;
+                    Field pos;
                     try {
-                        Field pos = getPosition().plus(oneDiff, twoDiff);
-                        Figure blockingFig = getBoard().getFigure(pos);
-                        if (blockingFig == null || blockingFig.getColor() != getColor()) {
-                            validMoves.add(pos);
-                        }
-                    } catch (IllegalArgumentException ignored) {
+                        pos = getPosition().plus(oneDiff, twoDiff);
+                    } catch (FieldOutOfRangeException ignored) {
+                        continue;
+                    }
+                    Figure blockingFig = getBoard().getFigure(pos);
+                    if (blockingFig == null || blockingFig.getColor() != getColor()) {
+                        validMoves.add(pos);
                     }
                 }
             }

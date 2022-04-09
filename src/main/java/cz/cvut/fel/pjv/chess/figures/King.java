@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.chess.figures;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
+import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,13 +30,15 @@ public class King extends Figure {
                 if (i == 0 && j == 0) {
                     continue;
                 }
+                Field pos;
                 try {
-                    Field pos = getPosition().plus(i, j);
-                    Figure blockingFig = getBoard().getFigure(pos);
-                    if (blockingFig == null || blockingFig.getColor() != getColor()) {
-                        validMoves.add(pos);
-                    }
-                } catch (IllegalArgumentException ignored) {
+                    pos = getPosition().plus(i, j);
+                } catch (FieldOutOfRangeException ignored) {
+                    continue;
+                }
+                Figure blockingFig = getBoard().getFigure(pos);
+                if (blockingFig == null || blockingFig.getColor() != getColor()) {
+                    validMoves.add(pos);
                 }
             }
         }
