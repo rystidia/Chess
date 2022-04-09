@@ -27,12 +27,8 @@ public class Knight extends Figure {
         Set<Field> validMoves = new HashSet<>();
         for (int oneDiff : Arrays.asList(-1, 1)) {
             for (int twoDiff : Arrays.asList(-2, 2)) {
-                for (int i = 0; i < 2; i++) {
-                    int tmp = oneDiff;
-                    oneDiff = twoDiff;
-                    twoDiff = tmp;
-                    addValidMove(validMoves, oneDiff, twoDiff);
-                }
+                addValidMove(validMoves, oneDiff, twoDiff);
+                addValidMove(validMoves, twoDiff, oneDiff);
             }
         }
         return validMoves;
