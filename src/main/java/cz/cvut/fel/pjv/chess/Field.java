@@ -36,7 +36,13 @@ public class Field {
     }
 
     public Field plus(int rDiff, int cDiff){
-        return new Field(this.row + rDiff, this.column + cDiff);
+        Field pos;
+        try {
+            pos = new Field(this.row + rDiff, this.column + cDiff);
+        } catch (FieldOutOfRangeException ignored) {
+            pos = null;
+        }
+        return pos;
     }
 
     @Override

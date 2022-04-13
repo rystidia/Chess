@@ -29,22 +29,26 @@ public class Pawn extends Figure {
         int dir = (getColor() == Color.WHITE) ? -1 : 1; // direction
         Set<Field> validMoves = new HashSet<>();
         addValidMoveIfNull(validMoves, dir, 0);
-
         for (int j : Arrays.asList(-1, 1)) { // occupied position
-            Field oPos;
-            try {
-                oPos = getPosition().plus(dir, j);
-            } catch (FieldOutOfRangeException ignored) {
-                continue;
-            }
-            Figure blockingFig = board.getFigure(oPos);
-            if (blockingFig != null && blockingFig.getColor() != getColor()) {
-                validMoves.add(oPos);
-            }
+            addValidMoveIfBlockedByOpp(validMoves, dir, j);
+
+            //enPassant
+//            Field pos = getPosition().plus(0, j);
+//            if (pos != null) {
+//                Figure bf = board.getFigure(pos); // blocking figure
+//                if (bf != null) {
+//                    if (bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).isEnPassantPossible) {
+//                        addValidMoveIfNull(validMoves, dir, j);
+//                    }
+//                }
+//            }
+            //end of enPassant
+
         }
         if (isFirstMove()) {
-            addValidMoveIfNull(validMoves, 2*dir, 0);
+            addValidMoveIfNull(validMoves, 2 * dir, 0);
         }
+
         return validMoves;
     }
 
@@ -53,9 +57,12 @@ public class Pawn extends Figure {
      */
     @Override
     public void setPosition(Field position) {
-//        if (Math.abs(super.getPosition().row - position.row)>1){
+//        if (Math.abs(getPosition().row - position.row)>1){
 //            isEnPassantPossible = true;
 //        }
+        if (isEnPassantPossible) {
+            isEnPassantPossible = false;
+        }
         super.setPosition(position);
     }
 
@@ -73,15 +80,24 @@ public class Pawn extends Figure {
         throw new UnsupportedOperationException();
     }
 
-    private void addValidMoveIfNull(Set<Field> validMoves, int row, int column){
-        Field pos;
-        try {
-            pos = getPosition().plus(row, column);
-        } catch (FieldOutOfRangeException ignored) {
+    private void addValidMoveIfNull(Set<Field> validMoves, int row, int column) {
+        Field pos = getPosition().plus(row, column);
+        if (pos == null) {
             return;
         }
         Figure blockingFig = board.getFigure(pos);
         if (blockingFig == null) {
+            validMoves.add(pos);
+        }
+    }
+
+    private void addValidMoveIfBlockedByOpp(Set<Field> validMoves, int row, int column) {
+        Field pos = getPosition().plus(row, column);
+        if (pos == null) {
+            return;
+        }
+        Figure blockingFig = board.getFigure(pos);
+        if (blockingFig != null && blockingFig.getColor() != getColor()) {
             validMoves.add(pos);
         }
     }

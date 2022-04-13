@@ -157,10 +157,8 @@ public abstract class Figure {
     }
 
     public void addValidMove(Set<Field> validMoves, int row, int column){
-        Field pos;
-        try {
-            pos = getPosition().plus(row, column);
-        } catch (FieldOutOfRangeException ignored) {
+        Field pos = getPosition().plus(row, column);
+        if (pos == null){
             return;
         }
         Figure blockingFig = board.getFigure(pos);
