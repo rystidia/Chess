@@ -28,7 +28,8 @@ public class Pawn extends Figure {
     public Set<Field> getValidMoves() {
         int dir = (getColor() == Color.WHITE) ? -1 : 1; // direction
         Set<Field> validMoves = new HashSet<>();
-        addValidMove(validMoves, dir, 0);
+        addValidMoveIfNull(validMoves, dir, 0);
+
         for (int j : Arrays.asList(-1, 1)) { // occupied position
             Field oPos;
             try {
@@ -42,7 +43,7 @@ public class Pawn extends Figure {
             }
         }
         if (isFirstMove()) {
-            addValidMove(validMoves, 2*dir, 0);
+            addValidMoveIfNull(validMoves, 2*dir, 0);
         }
         return validMoves;
     }
@@ -70,5 +71,18 @@ public class Pawn extends Figure {
      */
     public void promotion(Figure figure) {
         throw new UnsupportedOperationException();
+    }
+
+    private void addValidMoveIfNull(Set<Field> validMoves, int row, int column){
+        Field pos;
+        try {
+            pos = getPosition().plus(row, column);
+        } catch (FieldOutOfRangeException ignored) {
+            return;
+        }
+        Figure blockingFig = board.getFigure(pos);
+        if (blockingFig == null) {
+            validMoves.add(pos);
+        }
     }
 }

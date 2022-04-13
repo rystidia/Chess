@@ -186,4 +186,51 @@ public class PawnTest {
         }};
         assertEquals(figure.getValidMoves(), expected);
     }
+
+    @Test
+    public void testGetValidMoves_BlockingFigures2Black() {
+        // FIXME: mock Board
+        Board board = new Board();
+
+        Figure blockingOpp1 = new Figure(Color.WHITE, board) {
+            @Override
+            public Set<Field> getValidMoves() {
+                return null;
+            }
+        };
+        board.moveFigure(blockingOpp1, new Field(4, 1));
+
+        Figure blockingOpp2 = new Figure(Color.WHITE, board) {
+            @Override
+            public Set<Field> getValidMoves() {
+                return null;
+            }
+        };
+        board.moveFigure(blockingOpp2, new Field(4, 0));
+
+        Pawn figure = new Pawn(Color.BLACK, board) {
+            @Override
+            public boolean isFirstMove() {
+                return false;
+            }
+        };
+        board.moveFigure(figure, new Field(3, 0));
+
+        /*
+                col
+          0 1 2 3 4 5 6 7
+        0 - - - - - - - -
+        1 - - - - - - - -
+        2 - - - - - - - -
+   row  3 X - - - - - - -
+        4 p p - - - - - -
+        5 - - - - - - - -
+        6 - - - - - - - -
+        7 - - - - - - - -
+         */
+        Set<Field> expected = new HashSet<>() {{
+            add(new Field(4, 1)); // can be captured
+        }};
+        assertEquals(figure.getValidMoves(), expected);
+    }
 }
