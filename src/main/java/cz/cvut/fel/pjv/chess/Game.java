@@ -15,8 +15,7 @@ public class Game {
     private final Player black;
     Parser parser = new Parser();
     private Board board;
-    private Clock clock = new Clock();
-    ;
+//    private Clock clock = new Clock();
 
     /**
      * Initializes new game
@@ -47,17 +46,7 @@ public class Game {
      * Controls time of each move
      */
     public void runGame() {
-        while (!white.lost() && !black.lost() && !draw(board)) {
-            white.makeMove(board);
-            black.makeMove(board);
-        }
-        if (white.lost()) {
-            throw new UnsupportedOperationException();
-        } else if (black.lost()) {
-            throw new UnsupportedOperationException();
-        } else if (draw(board)) {
-            throw new UnsupportedOperationException();
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**

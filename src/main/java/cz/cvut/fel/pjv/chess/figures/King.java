@@ -40,7 +40,18 @@ public class King extends Figure {
      * @return true if castling is possible, false otherwise
      */
     public boolean isCastlingPossibleWith(Rook rook) {
-        throw new UnsupportedOperationException();
+        if (!isFirstMove() || !rook.isFirstMove()){
+            return false;
+        }
+        int dir = 1;
+        if(getPosition().row - rook.getPosition().row > 0){
+            dir = -1;
+        }
+        Field kingDest = getPosition().plus(0, dir * 2);
+        Field rookDest = getPosition().plus(0, dir);
+        Figure blockingFig1 = board.getFigure(kingDest);
+        Figure blockingFig2 = board.getFigure(rookDest);
+        return blockingFig1 == null && blockingFig2 == null;
     }
 
     /**

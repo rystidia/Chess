@@ -12,6 +12,8 @@ import cz.cvut.fel.pjv.chess.Color;
  */
 public abstract class Player {
     private final Color color;
+    private int timeLeft;
+    private boolean isCurrentPlayer;
 
     /**
      * Initializes the player and sets the given color to him
@@ -33,6 +35,26 @@ public abstract class Player {
      */
     public boolean lost() {
         throw new UnsupportedOperationException();
+    }
+
+    public void lose() {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getTimeLeft() {
+        return timeLeft;
+    }
+
+    public void setTimeLeft(int timeLeft) {
+        this.timeLeft = timeLeft;
+    }
+
+    public boolean isCurrentPlayer() {
+        return isCurrentPlayer;
+    }
+
+    public void setCurrentPlayer(boolean isCurrentPlayer) {
+        this.isCurrentPlayer = isCurrentPlayer;
     }
 
     /**

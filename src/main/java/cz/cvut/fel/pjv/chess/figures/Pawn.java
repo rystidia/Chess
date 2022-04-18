@@ -3,7 +3,6 @@ package cz.cvut.fel.pjv.chess.figures;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
-import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +17,7 @@ import java.util.Set;
  * @see #Figure for the description of all methods
  */
 public class Pawn extends Figure {
-    public boolean isEnPassantPossible = false;
+    private boolean doubleAdvance = false;
 
     public Pawn(Color color, Board board) {
         super(color, board);
@@ -37,7 +36,7 @@ public class Pawn extends Figure {
 //            if (pos != null) {
 //                Figure bf = board.getFigure(pos); // blocking figure
 //                if (bf != null) {
-//                    if (bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).isEnPassantPossible) {
+//                    if (bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).doubleAdvance()) {
 //                        addValidMoveIfNull(validMoves, dir, j);
 //                    }
 //                }
@@ -58,10 +57,10 @@ public class Pawn extends Figure {
     @Override
     public void setPosition(Field position) {
 //        if (Math.abs(getPosition().row - position.row)>1){
-//            isEnPassantPossible = true;
+//            doubleAdvance = true;
 //        }
-        if (isEnPassantPossible) {
-            isEnPassantPossible = false;
+        if (doubleAdvance) {
+            doubleAdvance = false;
         }
         super.setPosition(position);
     }
@@ -69,8 +68,8 @@ public class Pawn extends Figure {
     /**
      * @return true if en passant is possible, false otherwise
      */
-    public boolean isEnPassantPossible() {
-        return isEnPassantPossible;
+    public boolean doubleAdvance() {
+        return doubleAdvance;
     }
 
     /**

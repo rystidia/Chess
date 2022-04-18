@@ -35,7 +35,7 @@ public class Field {
         }
     }
 
-    public Field plus(int rDiff, int cDiff){
+    public Field plus(int rDiff, int cDiff) {
         Field pos;
         try {
             pos = new Field(this.row + rDiff, this.column + cDiff);
