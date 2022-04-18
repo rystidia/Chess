@@ -27,7 +27,7 @@ public abstract class Figure {
      * Initializes the Figure
      * <p>
      *
-     * @param color    the color of the piece
+     * @param color the color of the piece
      * @param board the board
      */
     public Figure(Color color, Board board) {
