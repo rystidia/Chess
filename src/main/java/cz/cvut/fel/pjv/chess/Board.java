@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
+import cz.cvut.fel.pjv.chess.figures.Rook;
 
 import java.util.Set;
 

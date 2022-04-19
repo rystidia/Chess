@@ -145,10 +145,6 @@ public abstract class Figure {
         return color;
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
     /**
      * @return true if it is the first move, false otherwise
      */

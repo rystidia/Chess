@@ -32,22 +32,21 @@ public class Pawn extends Figure {
             addValidMoveIfBlockedByOpp(validMoves, dir, j);
 
             //enPassant
-//            Field pos = getPosition().plus(0, j);
-//            if (pos != null) {
-//                Figure bf = board.getFigure(pos); // blocking figure
-//                if (bf != null) {
-//                    if (bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).doubleAdvance()) {
-//                        addValidMoveIfNull(validMoves, dir, j);
-//                    }
-//                }
-//            }
+            Field pos = getPosition().plus(0, j);
+            if (pos != null) {
+                Figure bf = board.getFigure(pos); // blocking figure
+                if (bf != null) {
+                    if (bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).doubleAdvance()) {
+                        addValidMoveIfNull(validMoves, dir, j);
+                    }
+                }
+            }
             //end of enPassant
 
         }
         if (isFirstMove()) {
             addValidMoveIfNull(validMoves, 2 * dir, 0);
         }
-
         return validMoves;
     }
 
@@ -56,12 +55,7 @@ public class Pawn extends Figure {
      */
     @Override
     public void setPosition(Field position) {
-//        if (Math.abs(getPosition().row - position.row)>1){
-//            doubleAdvance = true;
-//        }
-        if (doubleAdvance) {
-            doubleAdvance = false;
-        }
+        doubleAdvance = getPosition() != null && Math.abs(getPosition().row - position.row) > 1;
         super.setPosition(position);
     }
 

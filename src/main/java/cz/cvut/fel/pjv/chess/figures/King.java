@@ -3,7 +3,6 @@ package cz.cvut.fel.pjv.chess.figures;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Color;
 import cz.cvut.fel.pjv.chess.Field;
-import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,31 +32,50 @@ public class King extends Figure {
                 addValidMove(validMoves, row, column);
             }
         }
+        addCastling(validMoves);
         return validMoves;
     }
 
-    /**
-     * @return true if castling is possible, false otherwise
-     */
-    public boolean isCastlingPossibleWith(Rook rook) {
-        if (!isFirstMove() || !rook.isFirstMove()){
-            return false;
+    public void addCastling(Set<Field> validMoves) {
+        int row = getColor() == Color.WHITE ? Board.MAX_ROW : 0;
+        for (int column : Arrays.asList(0, Board.MAX_COL)) {
+            Field pos = new Field(row, column);
+            Figure fig = board.getFigure(pos);
+            if (fig instanceof Rook && fig.getColor() == getColor()) {
+                if (!isFirstMove() || !fig.isFirstMove()){
+                    break;
+                }
+                int dir = getPosition().column - fig.getPosition().column > 0 ? -1 : 1;
+                Field kingDest = getPosition().plus(0, dir * 2);
+
+                Figure blockingFigure = null;
+                for (int i = 1; blockingFigure == null; i++) {
+                    Field between = getPosition().plus(0, dir * i);
+                    blockingFigure = board.getFigure(between);
+                }
+                if (blockingFigure == fig) {
+                    validMoves.add(kingDest);
+                }
+            }
         }
-        int dir = 1;
-        if(getPosition().row - rook.getPosition().row > 0){
-            dir = -1;
-        }
-        Field kingDest = getPosition().plus(0, dir * 2);
-        Field rookDest = getPosition().plus(0, dir);
-        Figure blockingFig1 = board.getFigure(kingDest);
-        Figure blockingFig2 = board.getFigure(rookDest);
-        return blockingFig1 == null && blockingFig2 == null;
     }
 
     /**
      * @return true if the king is in check, false otherwise
      */
     public boolean isInCheck() {
-        throw new UnsupportedOperationException();
+        for (int r = 0; r <= Board.MAX_ROW; r++) {
+            for (int c = 0; c <= Board.MAX_COL; c++) {
+                Field field = new Field(r, c);
+                Figure fig = board.getFigure(field);
+                if (fig == null || fig.getColor() == getColor()) {
+                    continue;
+                }
+                if (fig.getValidMoves().contains(getPosition())) {
+                    return true;
+                };
+            }
+        }
+        return false;
     }
 }
