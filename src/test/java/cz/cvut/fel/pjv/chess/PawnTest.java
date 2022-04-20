@@ -233,4 +233,93 @@ public class PawnTest {
         }};
         assertEquals(figure.getValidMoves(), expected);
     }
+
+    @Test
+    public void testGetValidMoves_EnPassantBlack() {
+        // FIXME: mock Board
+        Board board = new Board();
+
+        Pawn oppPawn = new Pawn(Color.WHITE, board) {
+            @Override
+            public boolean doubleAdvance() {
+                return true;
+            }
+        };
+        board.moveFigure(oppPawn, new Field(4, 1));
+
+        Pawn figure = new Pawn(Color.BLACK, board) {
+            @Override
+            public boolean isFirstMove() {
+                return false;
+            }
+        };
+        board.moveFigure(figure, new Field(4, 0));
+
+        /*
+                col
+          0 1 2 3 4 5 6 7
+        0 - - - - - - - -
+        1 - - - - - - - -
+        2 - - - - - - - -
+   row  3 - - - - - - - -
+        4 X P - - - - - -
+        5 o o - - - - - -
+        6 - - - - - - - -
+        7 - - - - - - - -
+         */
+        Set<Field> expected = new HashSet<>() {{
+            add(new Field(5, 0));
+            add(new Field(5, 1)); // can be captured
+        }};
+        assertEquals(figure.getValidMoves(), expected);
+    }
+
+    @Test
+    public void testGetValidMoves_EnPassantWhite() {
+        // FIXME: mock Board
+        Board board = new Board();
+
+        Pawn oppPawn1 = new Pawn(Color.BLACK, board) {
+            @Override
+            public boolean doubleAdvance() {
+                return true;
+            }
+        };
+        board.moveFigure(oppPawn1, new Field(3, 3));
+
+        Pawn oppPawn2 = new Pawn(Color.BLACK, board) {
+            @Override
+            public boolean doubleAdvance() {
+                return true;
+            }
+        };
+        board.moveFigure(oppPawn2, new Field(3, 5));
+
+        Pawn figure = new Pawn(Color.WHITE, board) {
+            @Override
+            public boolean isFirstMove() {
+                return false;
+            }
+        };
+        board.moveFigure(figure, new Field(3, 4));
+
+        /*
+                col
+          0 1 2 3 4 5 6 7
+        0 - - - - - - - -
+        1 - - - - - - - -
+        2 - - - o o o - -
+   row  3 - - - P X P - -
+        4 - - - - - - - -
+        5 - - - - - - - -
+        6 - - - - - - - -
+        7 - - - - - - - -
+         */
+        Set<Field> expected = new HashSet<>() {{
+            add(new Field(2, 4));
+            add(new Field(2, 3)); // can be captured
+            add(new Field(2, 5)); // can be captured
+        }};
+        assertEquals(figure.getValidMoves(), expected);
+    }
 }
