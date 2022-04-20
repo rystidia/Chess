@@ -1,15 +1,12 @@
 package cz.cvut.fel.pjv.chess;
 
-import cz.cvut.fel.pjv.chess.figures.Figure;
-import cz.cvut.fel.pjv.chess.figures.King;
-import cz.cvut.fel.pjv.chess.figures.Knight;
-import cz.cvut.fel.pjv.chess.figures.Rook;
+import cz.cvut.fel.pjv.chess.figures.*;
 import org.testng.annotations.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 public class KingTest {
     @Test
@@ -182,4 +179,92 @@ public class KingTest {
         }};
         assertEquals(figure.getValidMoves(), expected);
     }
+
+    @Test
+    public void testIsInCheck_WhiteKing1() {
+        // FIXME: mock Board
+        Board board = new Board();
+        Rook oppRook = new Rook(Color.BLACK, board);
+        board.moveFigure(oppRook, new Field(1, 4));
+
+        Bishop oppBishop = new Bishop(Color.BLACK, board);
+        board.moveFigure(oppBishop, new Field(2, 1));
+
+        Pawn myPawn1 = new Pawn(Color.WHITE, board);
+        board.moveFigure(myPawn1, new Field(4, 3));
+
+        Pawn myPawn2 = new Pawn(Color.WHITE, board);
+        board.moveFigure(myPawn2, new Field(4, 4));
+
+        King figure = new King(Color.WHITE, board);
+        board.moveFigure(figure, new Field(5, 4));
+        /*
+                col
+          0 1 2 3 4 5 6 7
+        0 - - - - - - - -
+        1 - - - - r - - -
+        2 - b - - - - - -
+   row  3 - - - - - - - -
+        4 - - - P P - - -
+        5 - - - - X - - -
+        6 - - - - - - - -
+        7 - - - - - - - -
+         */
+        assertFalse(figure.isInCheck());
+    }
+
+    @Test
+    public void testIsInCheck_WhiteKing2() {
+        // FIXME: mock Board
+        Board board = new Board();
+        Rook oppRook = new Rook(Color.BLACK, board);
+        board.moveFigure(oppRook, new Field(1, 4));
+
+        Bishop oppBishop = new Bishop(Color.BLACK, board);
+        board.moveFigure(oppBishop, new Field(2, 1));
+
+        Pawn myPawn = new Pawn(Color.WHITE, board);
+        board.moveFigure(myPawn, new Field(4, 3));
+
+        King figure = new King(Color.WHITE, board);
+        board.moveFigure(figure, new Field(5, 4));
+        /*
+                col
+          0 1 2 3 4 5 6 7
+        0 - - - - - - - -
+        1 - - - - r - - -
+        2 - b - - - - - -
+   row  3 - - - - - - - -
+        4 - - - P - - - -
+        5 - - - - X - - -
+        6 - - - - - - - -
+        7 - - - - - - - -
+         */
+        assertTrue(figure.isInCheck());
+    }
+
+    @Test
+    public void testIsInCheck_BlackKing() {
+        // FIXME: mock Board
+        Board board = new Board();
+        Knight oppKnight = new Knight(Color.WHITE, board);
+        board.moveFigure(oppKnight, new Field(2, 2));
+
+        King figure = new King(Color.BLACK, board);
+        board.moveFigure(figure, new Field(1, 4));
+        /*
+                col
+          0 1 2 3 4 5 6 7
+        0 - - - - - - - -
+        1 - - - - X - - -
+        2 - - K - - - - -
+   row  3 - - - - - - - -
+        4 - - - - - - - -
+        5 - - - - - - - -
+        6 - - - - - - - -
+        7 - - - - - - - -
+         */
+        assertTrue(figure.isInCheck());
+    }
+
 }
