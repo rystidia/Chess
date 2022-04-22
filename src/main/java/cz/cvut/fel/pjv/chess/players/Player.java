@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.chess.players;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 
 /**
  * An abstract model of a player
@@ -11,7 +11,7 @@ import cz.cvut.fel.pjv.chess.Color;
  * @version 1.0
  */
 public abstract class Player {
-    private final Color color;
+    private final MyColor color;
     private int timeLeft;
     private boolean isCurrentPlayer;
 
@@ -21,7 +21,7 @@ public abstract class Player {
      *
      * @param color a color
      */
-    public Player(Color color) {
+    public Player(MyColor color) {
         this.color = color;
     }
 

@@ -1,7 +1,6 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
-import cz.cvut.fel.pjv.chess.figures.King;
 import cz.cvut.fel.pjv.chess.figures.Pawn;
 import org.testng.annotations.Test;
 
@@ -16,7 +15,7 @@ public class PawnTest {
     public void testGetValidMoves_WhiteFirstMove() {
         // FIXME: mock Board
         Board board = new Board();
-        Pawn figure = new Pawn(Color.WHITE, board);
+        Pawn figure = new Pawn(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(6, 4));
         /*
                 col
@@ -41,7 +40,7 @@ public class PawnTest {
     public void testGetValidMoves_White() {
         // FIXME: mock Board
         Board board = new Board();
-        Pawn figure = new Pawn(Color.WHITE, board) {
+        Pawn figure = new Pawn(MyColor.WHITE, board) {
             @Override
             public boolean isFirstMove() {
                 return false;
@@ -70,7 +69,7 @@ public class PawnTest {
     public void testGetValidMoves_BlackFirstMove() {
         // FIXME: mock Board
         Board board = new Board();
-        Pawn figure = new Pawn(Color.BLACK, board);
+        Pawn figure = new Pawn(MyColor.BLACK, board);
         board.moveFigure(figure, new Field(1, 4));
         /*
                 col
@@ -96,7 +95,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
 
-        Figure blockingOpp1 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -104,7 +103,7 @@ public class PawnTest {
         };
         board.moveFigure(blockingOpp1, new Field(3, 2));
 
-        Figure blockingOpp2 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -112,7 +111,7 @@ public class PawnTest {
         };
         board.moveFigure(blockingOpp2, new Field(3, 4));
 
-        Pawn figure = new Pawn(Color.WHITE, board) {
+        Pawn figure = new Pawn(MyColor.WHITE, board) {
             @Override
             public boolean isFirstMove() {
                 return false;
@@ -145,7 +144,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
 
-        Figure blockingOpp1 = new Figure(Color.WHITE, board) {
+        Figure blockingOpp1 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -153,7 +152,7 @@ public class PawnTest {
         };
         board.moveFigure(blockingOpp1, new Field(4, 1));
 
-        Figure blockingMy1 = new Figure(Color.BLACK, board) {
+        Figure blockingMy1 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -161,7 +160,7 @@ public class PawnTest {
         };
         board.moveFigure(blockingMy1, new Field(4, 0));
 
-        Pawn figure = new Pawn(Color.BLACK, board) {
+        Pawn figure = new Pawn(MyColor.BLACK, board) {
             @Override
             public boolean isFirstMove() {
                 return false;
@@ -192,7 +191,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
 
-        Figure blockingOpp1 = new Figure(Color.WHITE, board) {
+        Figure blockingOpp1 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -200,7 +199,7 @@ public class PawnTest {
         };
         board.moveFigure(blockingOpp1, new Field(4, 1));
 
-        Figure blockingOpp2 = new Figure(Color.WHITE, board) {
+        Figure blockingOpp2 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -208,7 +207,7 @@ public class PawnTest {
         };
         board.moveFigure(blockingOpp2, new Field(4, 0));
 
-        Pawn figure = new Pawn(Color.BLACK, board) {
+        Pawn figure = new Pawn(MyColor.BLACK, board) {
             @Override
             public boolean isFirstMove() {
                 return false;
@@ -239,7 +238,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
 
-        Pawn oppPawn = new Pawn(Color.WHITE, board) {
+        Pawn oppPawn = new Pawn(MyColor.WHITE, board) {
             @Override
             public boolean doubleAdvance() {
                 return true;
@@ -247,7 +246,7 @@ public class PawnTest {
         };
         board.moveFigure(oppPawn, new Field(4, 1));
 
-        Pawn figure = new Pawn(Color.BLACK, board) {
+        Pawn figure = new Pawn(MyColor.BLACK, board) {
             @Override
             public boolean isFirstMove() {
                 return false;
@@ -279,7 +278,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
 
-        Pawn oppPawn1 = new Pawn(Color.BLACK, board) {
+        Pawn oppPawn1 = new Pawn(MyColor.BLACK, board) {
             @Override
             public boolean doubleAdvance() {
                 return true;
@@ -287,7 +286,7 @@ public class PawnTest {
         };
         board.moveFigure(oppPawn1, new Field(3, 3));
 
-        Pawn oppPawn2 = new Pawn(Color.BLACK, board) {
+        Pawn oppPawn2 = new Pawn(MyColor.BLACK, board) {
             @Override
             public boolean doubleAdvance() {
                 return true;
@@ -295,7 +294,7 @@ public class PawnTest {
         };
         board.moveFigure(oppPawn2, new Field(3, 5));
 
-        Pawn figure = new Pawn(Color.WHITE, board) {
+        Pawn figure = new Pawn(MyColor.WHITE, board) {
             @Override
             public boolean isFirstMove() {
                 return false;

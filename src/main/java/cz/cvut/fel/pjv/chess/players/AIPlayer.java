@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.chess.players;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 
 /**
  * An AI player
@@ -18,7 +18,7 @@ public class AIPlayer extends Player {
      *
      * @param color a color
      */
-    public AIPlayer(Color color) {
+    public AIPlayer(MyColor color) {
         super(color);
     }
 

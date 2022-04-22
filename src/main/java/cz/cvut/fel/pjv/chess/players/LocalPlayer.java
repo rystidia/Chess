@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.chess.players;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 
 /**
  * A local player
@@ -18,7 +18,7 @@ public class LocalPlayer extends Player {
      *
      * @param color a color
      */
-    public LocalPlayer(Color color) {
+    public LocalPlayer(MyColor color) {
         super(color);
     }
 

@@ -1,9 +1,8 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.Field;
-import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,7 +16,7 @@ import java.util.Set;
  * @version 1.0
  */
 public abstract class Figure {
-    private final Color color;
+    private final MyColor color;
     protected final Board board;
     private Field position;
     private boolean isCaptured;
@@ -30,7 +29,7 @@ public abstract class Figure {
      * @param color the color of the piece
      * @param board the board
      */
-    public Figure(Color color, Board board) {
+    public Figure(MyColor color, Board board) {
         this.color = color;
         this.board = board;
         this.isCaptured = false;
@@ -139,9 +138,9 @@ public abstract class Figure {
     }
 
     /**
-     * @return the {@link Color color} of the piece
+     * @return the {@link MyColor color} of the piece
      */
-    public Color getColor() {
+    public MyColor getColor() {
         return color;
     }
 

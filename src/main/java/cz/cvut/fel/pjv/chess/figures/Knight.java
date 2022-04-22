@@ -1,9 +1,8 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.Field;
-import cz.cvut.fel.pjv.chess.FieldOutOfRangeException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +17,7 @@ import java.util.Set;
  * @see #Figure for the description of all methods
  */
 public class Knight extends Figure {
-    public Knight(Color color, Board board) {
+    public Knight(MyColor color, Board board) {
         super(color, board);
     }
 

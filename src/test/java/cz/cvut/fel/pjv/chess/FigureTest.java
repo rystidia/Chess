@@ -11,7 +11,7 @@ public class FigureTest {
     public void testGetDiagonalDirections_EmptyBoard() {
         // FIXME: mock Board
         Board board = new Board();
-        Figure figure = new Figure(Color.WHITE, board) {
+        Figure figure = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return getDiagonalDirections();
@@ -53,7 +53,7 @@ public class FigureTest {
     public void testGetVertAndHorDirections_EmptyBoard() {
         // FIXME: mock Board
         Board board = new Board();
-        Figure figure = new Figure(Color.WHITE, board) {
+        Figure figure = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return getVertAndHorDirections();
@@ -100,7 +100,7 @@ public class FigureTest {
     public void testGetDiagonalDirections_BlockingFigures() {
         // FIXME: mock Board
         Board board = new Board();
-        Figure blockingMy1 = new Figure(Color.WHITE, board) {
+        Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -108,7 +108,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingMy1, new Field(1, 2));
 
-        Figure blockingOpp1 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -116,7 +116,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingOpp1, new Field(1, 4));
 
-        Figure blockingMy2 = new Figure(Color.WHITE, board) {
+        Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -124,7 +124,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingMy2, new Field(6, 7));
 
-        Figure blockingOpp2 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -132,7 +132,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingOpp2, new Field(4, 1));
 
-        Figure figure = new Figure(Color.WHITE, board) {
+        Figure figure = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return getDiagonalDirections();
@@ -170,7 +170,7 @@ public class FigureTest {
     public void testGetVertAndHorDirections_BlockingFigures() {
         // FIXME: mock Board
         Board board = new Board();
-        Figure blockingMy1 = new Figure(Color.WHITE, board) {
+        Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -178,7 +178,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingMy1, new Field(2, 2));
 
-        Figure blockingOpp1 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -186,7 +186,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingOpp1, new Field(1, 3));
 
-        Figure blockingMy2 = new Figure(Color.WHITE, board) {
+        Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -194,7 +194,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingMy2, new Field(2, 7));
 
-        Figure blockingOpp2 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -202,7 +202,7 @@ public class FigureTest {
         };
         board.moveFigure(blockingOpp2, new Field(4, 3));
 
-        Figure figure = new Figure(Color.WHITE, board) {
+        Figure figure = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return getVertAndHorDirections();

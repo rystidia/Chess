@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.Field;
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.Set;
  * @see #Figure for the description of all methods
  */
 public class King extends Figure {
-    public King(Color color, Board board) {
+    public King(MyColor color, Board board) {
         super(color, board);
     }
 
@@ -37,7 +37,7 @@ public class King extends Figure {
     }
 
     public void addCastling(Set<Field> validMoves) {
-        int row = getColor() == Color.WHITE ? Board.MAX_ROW : 0;
+        int row = getColor() == MyColor.WHITE ? Board.MAX_ROW : 0;
         for (int column : Arrays.asList(0, Board.MAX_COL)) {
             Field pos = new Field(row, column);
             Figure fig = board.getFigure(pos);

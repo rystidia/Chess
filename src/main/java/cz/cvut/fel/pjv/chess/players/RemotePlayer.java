@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.chess.players;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 
 /**
  * A remote player
@@ -18,7 +18,7 @@ public class RemotePlayer extends Player {
      *
      * @param color a color
      */
-    public RemotePlayer(Color color) {
+    public RemotePlayer(MyColor color) {
         super(color);
     }
 

@@ -13,7 +13,7 @@ public class KingTest {
     public void testGetValidMoves_OutOfRange() {
         // FIXME: mock Board
         Board board = new Board();
-        King figure = new King(Color.WHITE, board);
+        King figure = new King(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(7, 4));
         /*
                 col
@@ -41,7 +41,7 @@ public class KingTest {
     public void testGetValidMoves_BlockingFigures() {
         // FIXME: mock Board
         Board board = new Board();
-        Figure blockingMy1 = new Figure(Color.WHITE, board) {
+        Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -49,7 +49,7 @@ public class KingTest {
         };
         board.moveFigure(blockingMy1, new Field(2, 4));
 
-        Figure blockingOpp1 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -57,7 +57,7 @@ public class KingTest {
         };
         board.moveFigure(blockingOpp1, new Field(1, 4));
 
-        Figure blockingMy2 = new Figure(Color.WHITE, board) {
+        Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -65,7 +65,7 @@ public class KingTest {
         };
         board.moveFigure(blockingMy2, new Field(3, 4));
 
-        Figure blockingOpp2 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -73,7 +73,7 @@ public class KingTest {
         };
         board.moveFigure(blockingOpp2, new Field(3, 2));
 
-        King figure = new King(Color.WHITE, board);
+        King figure = new King(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(2, 3));
 
         /*
@@ -105,13 +105,13 @@ public class KingTest {
     public void testGetValidMoves_Castling() {
         // FIXME: mock Board
         Board board = new Board();
-        Rook myRook1 = new Rook(Color.WHITE, board);
+        Rook myRook1 = new Rook(MyColor.WHITE, board);
         board.moveFigure(myRook1, new Field(7, 0));
 
-        Rook myRook2 = new Rook(Color.WHITE, board);
+        Rook myRook2 = new Rook(MyColor.WHITE, board);
         board.moveFigure(myRook2, new Field(7, 7));
 
-        King figure = new King(Color.WHITE, board);
+        King figure = new King(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(7, 4));
         /*
                 col
@@ -141,13 +141,13 @@ public class KingTest {
     public void testGetValidMoves_CastlingBlockingFigs() {
         // FIXME: mock Board
         Board board = new Board();
-        Rook myRook1 = new Rook(Color.BLACK, board);
+        Rook myRook1 = new Rook(MyColor.BLACK, board);
         board.moveFigure(myRook1, new Field(0, 0));
 
-        Rook myRook2 = new Rook(Color.BLACK, board);
+        Rook myRook2 = new Rook(MyColor.BLACK, board);
         board.moveFigure(myRook2, new Field(0, 7));
 
-        Figure myFigure = new Figure(Color.BLACK, board) {
+        Figure myFigure = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -155,7 +155,7 @@ public class KingTest {
         };
         board.moveFigure(myFigure, new Field(0, 1));
 
-        King figure = new King(Color.BLACK, board);
+        King figure = new King(MyColor.BLACK, board);
         board.moveFigure(figure, new Field(0, 4));
         /*
                 col
@@ -184,19 +184,19 @@ public class KingTest {
     public void testIsInCheck_WhiteKing1() {
         // FIXME: mock Board
         Board board = new Board();
-        Rook oppRook = new Rook(Color.BLACK, board);
+        Rook oppRook = new Rook(MyColor.BLACK, board);
         board.moveFigure(oppRook, new Field(1, 4));
 
-        Bishop oppBishop = new Bishop(Color.BLACK, board);
+        Bishop oppBishop = new Bishop(MyColor.BLACK, board);
         board.moveFigure(oppBishop, new Field(2, 1));
 
-        Pawn myPawn1 = new Pawn(Color.WHITE, board);
+        Pawn myPawn1 = new Pawn(MyColor.WHITE, board);
         board.moveFigure(myPawn1, new Field(4, 3));
 
-        Pawn myPawn2 = new Pawn(Color.WHITE, board);
+        Pawn myPawn2 = new Pawn(MyColor.WHITE, board);
         board.moveFigure(myPawn2, new Field(4, 4));
 
-        King figure = new King(Color.WHITE, board);
+        King figure = new King(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(5, 4));
         /*
                 col
@@ -217,16 +217,16 @@ public class KingTest {
     public void testIsInCheck_WhiteKing2() {
         // FIXME: mock Board
         Board board = new Board();
-        Rook oppRook = new Rook(Color.BLACK, board);
+        Rook oppRook = new Rook(MyColor.BLACK, board);
         board.moveFigure(oppRook, new Field(1, 4));
 
-        Bishop oppBishop = new Bishop(Color.BLACK, board);
+        Bishop oppBishop = new Bishop(MyColor.BLACK, board);
         board.moveFigure(oppBishop, new Field(2, 1));
 
-        Pawn myPawn = new Pawn(Color.WHITE, board);
+        Pawn myPawn = new Pawn(MyColor.WHITE, board);
         board.moveFigure(myPawn, new Field(4, 3));
 
-        King figure = new King(Color.WHITE, board);
+        King figure = new King(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(5, 4));
         /*
                 col
@@ -247,10 +247,10 @@ public class KingTest {
     public void testIsInCheck_BlackKing() {
         // FIXME: mock Board
         Board board = new Board();
-        Knight oppKnight = new Knight(Color.WHITE, board);
+        Knight oppKnight = new Knight(MyColor.WHITE, board);
         board.moveFigure(oppKnight, new Field(2, 2));
 
-        King figure = new King(Color.BLACK, board);
+        King figure = new King(MyColor.BLACK, board);
         board.moveFigure(figure, new Field(1, 4));
         /*
                 col

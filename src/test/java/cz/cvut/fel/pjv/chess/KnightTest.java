@@ -14,7 +14,7 @@ public class KnightTest {
     public void testGetValidMoves_OutOfRange() {
         // FIXME: mock Board
         Board board = new Board();
-        Knight figure = new Knight(Color.WHITE, board);
+        Knight figure = new Knight(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(6, 2));
         /*
                 col
@@ -43,7 +43,7 @@ public class KnightTest {
     public void testGetValidMoves_BlockingFigures() {
         // FIXME: mock Board
         Board board = new Board();
-        Figure blockingMy1 = new Figure(Color.WHITE, board) {
+        Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -51,7 +51,7 @@ public class KnightTest {
         };
         board.moveFigure(blockingMy1, new Field(0, 2));
 
-        Figure blockingOpp1 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -59,7 +59,7 @@ public class KnightTest {
         };
         board.moveFigure(blockingOpp1, new Field(0, 4));
 
-        Figure blockingMy2 = new Figure(Color.WHITE, board) {
+        Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -67,7 +67,7 @@ public class KnightTest {
         };
         board.moveFigure(blockingMy2, new Field(3, 5));
 
-        Figure blockingOpp2 = new Figure(Color.BLACK, board) {
+        Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -75,7 +75,7 @@ public class KnightTest {
         };
         board.moveFigure(blockingOpp2, new Field(3, 1));
 
-        Knight figure = new Knight(Color.WHITE, board);
+        Knight figure = new Knight(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(2, 3));
 
         /*

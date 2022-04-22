@@ -1,5 +1,5 @@
 package cz.cvut.fel.pjv.chess;
 
-public enum Color {
+public enum MyColor {
     WHITE, BLACK
 }

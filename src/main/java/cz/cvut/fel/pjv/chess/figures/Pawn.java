@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.Color;
+import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.Field;
 
 import java.util.Arrays;
@@ -19,13 +19,13 @@ import java.util.Set;
 public class Pawn extends Figure {
     private boolean doubleAdvance = false;
 
-    public Pawn(Color color, Board board) {
+    public Pawn(MyColor color, Board board) {
         super(color, board);
     }
 
     @Override
     public Set<Field> getValidMoves() {
-        int dir = (getColor() == Color.WHITE) ? -1 : 1; // direction
+        int dir = (getColor() == MyColor.WHITE) ? -1 : 1; // direction
         Set<Field> validMoves = new HashSet<>();
         addValidMoveIfNull(validMoves, dir, 0);
         for (int j : Arrays.asList(-1, 1)) { // occupied position
