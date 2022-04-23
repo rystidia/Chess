@@ -53,23 +53,14 @@ public class MainFrame extends Application {
         table.add(drawBoard(test), 1, 1, 8, 8);
         table.setAlignment(Pos.CENTER);
 
-        pane.setLeft(table);
+        pane.setCenter(table);
 
         // vert menu
-        BorderPane leftVertMenu = new BorderPane();
-        leftVertMenu.setPadding(new Insets(0, 20, 0, 20));
-        GridPane elements = new GridPane();
-        elements.setAlignment(Pos.CENTER);
-
-        elements.add(newClockBox(),0,0,1,1);
-        elements.add(newButton("Restart"), 0, 1, 1, 1);
-        elements.add(newButton("Menu"), 0, 2, 1, 1);
-        elements.add(newButton("Save"), 0, 3, 1, 1);
-        elements.add(newButton("Load"), 0, 4, 1, 1);
-        elements.add(newButton("Create"), 0, 5, 1, 1);
-        elements.add(newClockBox(),0,6,1,1);
-
-        leftVertMenu.setRight(elements);
+        VBox leftVertMenu = new VBox();
+        leftVertMenu.setSpacing(10);
+        VBox options = newOptions();
+        leftVertMenu.setPadding(new Insets(10));
+        leftVertMenu.getChildren().addAll(newClockBox(), options, newClockBox());
         pane.setRight(leftVertMenu);
 
         // Create a scene and place it in the stage
@@ -77,8 +68,6 @@ public class MainFrame extends Application {
         primaryStage.setTitle("Chess");
         primaryStage.setScene(scene); // Place in scene in the stage
         primaryStage.show();
-
-
     }
 
     private GridPane drawBoard(Board board) {
@@ -148,12 +137,30 @@ public class MainFrame extends Application {
         return button;
     }
 
-    private StackPane newClockBox(){
-        StackPane clockBox = new StackPane();
+    private BorderPane newClockBox(){
+        BorderPane clockBox = new BorderPane();
         Label playerName = new Label("PlayerName");
+        playerName.setFont(new Font("Segoe UI", 24));
         Label playerTime = new Label("25:00");
-        clockBox.getChildren().add(playerName);
-        clockBox.getChildren().add(playerTime);
+        playerTime.setFont(new Font("Segoe UI", 30));
+        clockBox.setTop(playerName);
+        clockBox.setBottom(playerTime);
+        clockBox.setBorder(new Border((new BorderStroke(Color.BLACK,
+            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))));
+        clockBox.setPadding(new Insets(10));
         return clockBox;
+    }
+
+    private VBox newOptions(){
+        VBox options = new VBox();
+        Button restart = newButton("Restart");
+        Button menu = newButton("Menu");
+        Button save = newButton("Save");
+        Button load = newButton("Load");
+        Button create = newButton("Create");
+        options.setSpacing(10);
+        options.setPadding(new Insets(25));
+        options.getChildren().addAll(restart, menu, save, load, create);
+        return options;
     }
 }
