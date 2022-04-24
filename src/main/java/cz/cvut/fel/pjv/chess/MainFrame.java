@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import java.util.Locale;
 
 public class MainFrame extends Application {
+
+    final String font = "Segoe UI";
     final double size = 70;
 
     public static void main(String[] args) {
@@ -29,19 +31,7 @@ public class MainFrame extends Application {
 
         // test board for the sake of testing
         Board test = new Board();
-        Rook oppRook = new Rook(MyColor.BLACK, test);
-        test.moveFigure(oppRook, new Field(1, 4));
-        Bishop oppBishop = new Bishop(MyColor.BLACK, test);
-        test.moveFigure(oppBishop, new Field(2, 1));
-        Pawn myPawn = new Pawn(MyColor.WHITE, test);
-        test.moveFigure(myPawn, new Field(4, 3));
-        King figure = new King(MyColor.WHITE, test);
-        test.moveFigure(figure, new Field(5, 4));
-        King figure1 = new King(MyColor.BLACK, test);
-        test.moveFigure(figure1, new Field(7, 4));
-
-        BorderPane pane = new BorderPane();
-        primaryStage.getIcons().add(new Image("/logo.png"));
+        test.initialPosition();
 
         GridPane table = new GridPane();
         for (int i = 0; i < 8; i++) {
@@ -53,18 +43,23 @@ public class MainFrame extends Application {
         table.add(drawBoard(test), 1, 1, 8, 8);
         table.setAlignment(Pos.CENTER);
 
-        pane.setCenter(table);
-
         // vert menu
         VBox leftVertMenu = new VBox();
-        leftVertMenu.setSpacing(10);
         VBox options = newOptions();
-        leftVertMenu.setPadding(new Insets(10));
+        leftVertMenu.setPadding(new Insets(15));
         leftVertMenu.getChildren().addAll(newClockBox(), options, newClockBox());
-        pane.setRight(leftVertMenu);
+
+        GridPane root = new GridPane();
+        root.setAlignment(Pos.CENTER);
+        root.add(table, 0,0,1,1);
+        root.add(leftVertMenu, 1,0,1,1);
 
         // Create a scene and place it in the stage
-        Scene scene = new Scene(pane);
+        Scene scene = new Scene(root);
+
+        primaryStage.getIcons().add(new Image("/logo.png"));
+        primaryStage.setMinWidth(820);
+        primaryStage.setMinHeight(640);
         primaryStage.setTitle("Chess");
         primaryStage.setScene(scene); // Place in scene in the stage
         primaryStage.show();
@@ -88,6 +83,8 @@ public class MainFrame extends Application {
                     field.getChildren().add(image);
                 }
                 grid.add(field, i, j);
+
+
             }
         }
         return grid;
@@ -96,9 +93,7 @@ public class MainFrame extends Application {
     private ImageView getImageFigure(Board board, int row, int col) {
         Field pos = new Field(row, col);
         Figure fig = board.getFigure(pos);
-        if (fig == null) {
-            return null;
-        }
+        if (fig == null) return null;
         ImageView figImage = new ImageView(new Image(getImagePath(fig)));
         figImage.setFitWidth(size);
         figImage.setFitHeight(size);
@@ -113,16 +108,14 @@ public class MainFrame extends Application {
     }
 
     private Label newRowLabel(int i) {
-        Label l = new Label(8 - i + "");
-        l.setFont(new Font("Segoe UI", 15));
+        Label l = newLabel(8 - i + "", 15);
         l.setMinSize(20, size);
         l.setAlignment(Pos.CENTER);
         return l;
     }
 
     private Label newColLabel(int i) {
-        Label l = new Label((char) (i + 65) + "");
-        l.setFont(new Font("Segoe UI", 15));
+        Label l = newLabel((char) (i + 65) + "", 15);
         l.setMinSize(size, 20);
         l.setAlignment(Pos.CENTER);
         return l;
@@ -130,21 +123,21 @@ public class MainFrame extends Application {
 
     private Button newButton(String label) {
         Button button = new Button(label);
-        button.setFont(new Font("Segoe UI", 24));
-        button.setPrefSize(120, 60);
+        button.setFont(new Font(font, 24));
+        button.setPrefSize(150, 60);
         button.setAlignment(Pos.BASELINE_LEFT);
-//        button.setStyle("-fx-background-color: #e8e8e8");
+        button.setStyle("-fx-background-color: #e8e8e8");
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #e1e1e1"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #e8e8e8"));
         return button;
     }
 
     private BorderPane newClockBox(){
         BorderPane clockBox = new BorderPane();
-        Label playerName = new Label("PlayerName");
-        playerName.setFont(new Font("Segoe UI", 24));
-        Label playerTime = new Label("25:00");
-        playerTime.setFont(new Font("Segoe UI", 30));
+        Label playerName = newLabel("PlayerName", 24);
+        Label playerTime = newLabel("25:00", 30);
         clockBox.setTop(playerName);
-        clockBox.setBottom(playerTime);
+        clockBox.setCenter(playerTime);
         clockBox.setBorder(new Border((new BorderStroke(Color.BLACK,
             BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))));
         clockBox.setPadding(new Insets(10));
@@ -159,8 +152,14 @@ public class MainFrame extends Application {
         Button load = newButton("Load");
         Button create = newButton("Create");
         options.setSpacing(10);
-        options.setPadding(new Insets(25));
+        options.setPadding(new Insets(25 , 0, 25, 0));
         options.getChildren().addAll(restart, menu, save, load, create);
         return options;
+    }
+
+    private Label newLabel(String s, int fontSize){
+        Label label = new Label(s);
+        label.setFont(new Font(font, fontSize));
+        return label;
     }
 }

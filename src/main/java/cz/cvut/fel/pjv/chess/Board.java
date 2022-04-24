@@ -1,7 +1,8 @@
 package cz.cvut.fel.pjv.chess;
 
-import cz.cvut.fel.pjv.chess.figures.Figure;
+import cz.cvut.fel.pjv.chess.figures.*;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -49,8 +50,22 @@ public class Board {
     /**
      * Places figures to the fields
      */
-    public void placeFigures() {
-        throw new UnsupportedOperationException();
+    public void initialPosition() {
+        for (MyColor color: Arrays.asList(MyColor.BLACK, MyColor.WHITE)) {
+            int col = color == MyColor.WHITE ? 7 : 0;
+            moveFigure(new Rook(color, this), new Field(0, col));
+            moveFigure(new Rook(color, this), new Field(7, col));
+            moveFigure(new Knight(color, this), new Field(1, col));
+            moveFigure(new Knight(color, this), new Field(6, col));
+            moveFigure(new Bishop(color, this), new Field(2, col));
+            moveFigure(new Bishop(color, this), new Field(5, col));
+            moveFigure(new Queen(color, this), new Field(3, col));
+            moveFigure(new King(color, this), new Field(4, col));
+        }
+        for (int i = 0; i <= MAX_COL; i++) {
+            moveFigure(new Pawn(MyColor.WHITE, this), new Field(i, 6));
+            moveFigure(new Pawn(MyColor.BLACK, this), new Field(i, 1));
+        }
     }
 
     /**
@@ -61,16 +76,9 @@ public class Board {
     }
 
     public Figure getKing(MyColor color) {
-        Figure king = null;
-        switch (color) {
-            case WHITE:
-                king = wKing;
-                break;
-            case BLACK:
-                king = bKing;
-                break;
-        }
-        return king;
+        return switch (color) {
+            case WHITE -> wKing;
+            case BLACK -> bKing;
+        };
     }
-
 }
