@@ -8,9 +8,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -24,6 +27,8 @@ public class MainFrame extends Application {
     private final static Background WHITE = new Background(new BackgroundFill(Color.rgb(240, 222, 198), CornerRadii.EMPTY, Insets.EMPTY));
     private final static Background BROWN_GREEN = new Background(new BackgroundFill(Color.rgb(75, 179, 92), CornerRadii.EMPTY, Insets.EMPTY));
     private final static Background WHITE_GREEN = new Background(new BackgroundFill(Color.rgb(99, 214, 120), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background BROWN_YELLOW = new Background(new BackgroundFill(Color.rgb(219, 151, 34), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background WHITE_YELLOW = new Background(new BackgroundFill(Color.rgb(237, 177, 61), CornerRadii.EMPTY, Insets.EMPTY));
 
     private final static String font = "Segoe UI";
     private final static double size = 70;
@@ -116,8 +121,6 @@ public class MainFrame extends Application {
                 Background brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? BROWN_GREEN : BROWN;
 
                 field.setBackground(((r + c) & 1) == 0 ? white : brown);
-
-
                 ImageView image = getImageFigure(board, r, c);
                 if (image != null) {
                     field.getChildren().add(image);
@@ -136,8 +139,13 @@ public class MainFrame extends Application {
                         Set<Field> movedFigureValidMoves = figureBeingMoved.getValidMoves();
                         if (movedFigureValidMoves.contains(fieldPos)) {
                             board.moveFigure(figureBeingMoved, fieldPos);
+                            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)){
+                                System.out.println("Promotion");
+                                promotionDialog((Pawn)figureBeingMoved, board);
+                            }
                             figureBeingMoved = null;
                         }
+
                         updatedBoard = drawBoard(board);
                     }
                     redrawBoard(updatedBoard);
@@ -211,6 +219,7 @@ public class MainFrame extends Application {
     private VBox newOptions() {
         VBox options = new VBox();
         Button restart = newButton("Restart");
+        restart.setOnAction(this::switchToGame);
         Button menu = newButton("Menu");
         menu.setOnAction(this::switchToMenu);
         Button save = newButton("Save");
@@ -243,5 +252,32 @@ public class MainFrame extends Application {
         scene = new Scene(menuScene);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void promotionDialog(Pawn pawn, Board board) {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Promotion");
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.APPLY);
+        Button applyButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+        applyButton.setVisible(false);
+
+        VBox vbox = new VBox();
+        vbox.getChildren().add(newPromotionButton(new Queen(pawn.getColor(), board), pawn, applyButton));
+        vbox.getChildren().add(newPromotionButton(new Knight(pawn.getColor(), board), pawn, applyButton));
+        vbox.getChildren().add(newPromotionButton(new Rook(pawn.getColor(), board), pawn, applyButton));
+        vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
+
+        dialog.getDialogPane().setContent(vbox);
+        dialog.showAndWait();
+        dialog.close();
+    }
+
+    public Button newPromotionButton(Figure figure, Pawn pawn, Button applyButton){
+        Button button = newButton(figure.getClass().getSimpleName());
+        button.setOnAction(e -> {
+            pawn.promotion(figure);
+            applyButton.fire();
+        });
+        return button;
     }
 }

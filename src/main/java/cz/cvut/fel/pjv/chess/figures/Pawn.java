@@ -69,7 +69,7 @@ public class Pawn extends Figure {
      * Promotes the pawn to the chosen piece
      */
     public void promotion(Figure figure) {
-        throw new UnsupportedOperationException();
+        board.moveFigure(figure, getPosition());
     }
 
     private void addValidMoveIfNull(Set<Field> validMoves, int row, int column) {
@@ -103,6 +103,6 @@ public class Pawn extends Figure {
     }
 
     public boolean moveLeadsToPromotion(Field dest) {
-        return (getColor() == MyColor.WHITE && dest.row == 7) || (getColor() == MyColor.BLACK && dest.row == 0);
+        return (getColor() == MyColor.WHITE && (dest.row == 0 || getPosition().row == 0)) || (getColor() == MyColor.BLACK && (dest.row == 7|| getPosition().row == 7));
     }
 }
