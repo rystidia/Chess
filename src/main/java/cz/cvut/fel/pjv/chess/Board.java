@@ -43,9 +43,9 @@ public class Board {
             }
             setFigure(figure.getPosition(), null);
         }
-        if (getFigure(toPos) != null) {
-            throw new UnsupportedOperationException("toPos already occupied, capturing is not implemented yet");
-        }
+//        if (getFigure(toPos) != null) {
+//            throw new UnsupportedOperationException("toPos already occupied, capturing is not implemented yet");
+//        }
         figure.move(toPos);
     }
 

@@ -22,8 +22,8 @@ public class MainFrame extends Application {
 
     private final static Background BROWN = new Background(new BackgroundFill(Color.rgb(181, 136, 107), CornerRadii.EMPTY, Insets.EMPTY));
     private final static Background WHITE = new Background(new BackgroundFill(Color.rgb(240, 222, 198), CornerRadii.EMPTY, Insets.EMPTY));
-    private final static Background BROWN_GREEN = new Background(new BackgroundFill(Color.rgb(181, 220, 107), CornerRadii.EMPTY, Insets.EMPTY));
-    private final static Background WHITE_GREEN = new Background(new BackgroundFill(Color.rgb(200, 220, 178), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background BROWN_GREEN = new Background(new BackgroundFill(Color.rgb(75, 179, 92), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background WHITE_GREEN = new Background(new BackgroundFill(Color.rgb(99, 214, 120), CornerRadii.EMPTY, Insets.EMPTY));
 
     private final static String font = "Segoe UI";
     private final static double size = 70;
@@ -62,7 +62,7 @@ public class MainFrame extends Application {
         root.add(newButton("Quit"), 0, 2, 1, 1);
         root.setVgap(20);
         root.setPadding(new Insets(20));
-        root.setMinSize(minWidth,minHeight);
+        root.setMinSize(minWidth, minHeight);
         return root;
     }
 
@@ -91,7 +91,7 @@ public class MainFrame extends Application {
         root.setAlignment(Pos.CENTER);
         root.add(table, 0, 0, 1, 1);
         root.add(leftVertMenu, 1, 0, 1, 1);
-        root.setMinSize(minWidth,minHeight);
+        root.setMinSize(minWidth, minHeight);
         return root;
     }
 
@@ -126,31 +126,32 @@ public class MainFrame extends Application {
 
                 field.setOnMouseClicked(evt -> {
                     Figure fig = board.getFigure(fieldPos);
-                    if (fig == null || figureBeingMoved != null) return;
-                    figureBeingMoved = fig;
-                    Set<Field> figValidMoves = fig.getValidMoves();
-                    GridPane updatedBoard = drawBoard(board, figValidMoves);
-                    GridPane parentTable = (GridPane) boardTable.getParent();
-                    ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
-                    parentTable.add(updatedBoard, 1, 1, 8, 8);
-                    boardTable = updatedBoard;
+                    GridPane updatedBoard;
+                    if (figureBeingMoved == null) {
+                        if (fig == null) return;
+                        figureBeingMoved = fig;
+                        Set<Field> figValidMoves = fig.getValidMoves();
+                        updatedBoard = drawBoard(board, figValidMoves);
+                    } else {
+                        Set<Field> movedFigureValidMoves = figureBeingMoved.getValidMoves();
+                        if (movedFigureValidMoves.contains(fieldPos)) {
+                            board.moveFigure(figureBeingMoved, fieldPos);
+                            figureBeingMoved = null;
+                        }
+                        updatedBoard = drawBoard(board);
+                    }
+                    redrawBoard(updatedBoard);
                 });
-//                field.setOnMouseClicked(e -> {
-//                    if (figureBeingMoved == null) return;
-//                    System.out.println("hello");
-//                    if (figureBeingMoved.getValidMoves().contains(fieldPos)){
-//                        board.moveFigure(figureBeingMoved, fieldPos);
-//                        GridPane updatedBoard = drawBoard(board);
-//                        GridPane parentTable = (GridPane) boardTable.getParent();
-//                        ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
-//                        parentTable.add(updatedBoard, 1, 1, 8, 8);
-//                        boardTable = updatedBoard;
-//                    }
-//                });
-
             }
         }
         return grid;
+    }
+
+    private void redrawBoard(GridPane newBoardTable) {
+        GridPane parentTable = (GridPane) boardTable.getParent();
+        ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
+        parentTable.add(newBoardTable, 1, 1, 8, 8);
+        boardTable = newBoardTable;
     }
 
     private ImageView getImageFigure(Board board, int row, int col) {
@@ -228,6 +229,7 @@ public class MainFrame extends Application {
     }
 
     public void switchToGame(ActionEvent event) {
+        figureBeingMoved = null;
         GridPane gameScene = createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(gameScene);
