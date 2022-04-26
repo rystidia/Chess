@@ -3,7 +3,6 @@ package cz.cvut.fel.pjv.chess;
 import cz.cvut.fel.pjv.chess.figures.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,15 +16,23 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.Locale;
+import java.util.*;
 
 public class MainFrame extends Application {
 
-    final String font = "Segoe UI";
-    final double size = 70;
-    final double minWidth = 800, minHeight = 600;
-    Stage stage;
-    Scene scene;
+    private final static Background BROWN = new Background(new BackgroundFill(Color.rgb(181, 136, 107), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background WHITE = new Background(new BackgroundFill(Color.rgb(240, 222, 198), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background BROWN_GREEN = new Background(new BackgroundFill(Color.rgb(181, 220, 107), CornerRadii.EMPTY, Insets.EMPTY));
+    private final static Background WHITE_GREEN = new Background(new BackgroundFill(Color.rgb(200, 220, 178), CornerRadii.EMPTY, Insets.EMPTY));
+
+    private final static String font = "Segoe UI";
+    private final static double size = 70;
+    private final static double minWidth = 800, minHeight = 600;
+    private Stage stage;
+    private Scene scene;
+
+    private GridPane boardTable;
+    private Figure figureBeingMoved;
 
     public static void main(String[] args) {
         launch();
@@ -70,7 +77,8 @@ public class MainFrame extends Application {
             table.add(newColLabel(i), i + 1, 0, 1, 1);
             table.add(newColLabel(i), i + 1, 9, 1, 1);
         }
-        table.add(drawBoard(test), 1, 1, 8, 8);
+        boardTable = drawBoard(test);
+        table.add(boardTable, 1, 1, 8, 8);
         table.setAlignment(Pos.CENTER);
 
         // vert menu
@@ -88,23 +96,58 @@ public class MainFrame extends Application {
     }
 
     private GridPane drawBoard(Board board) {
-        final Background brown = new Background(new BackgroundFill(Color.rgb(181, 136, 107), CornerRadii.EMPTY, Insets.EMPTY));
-        final Background white = new Background(new BackgroundFill(Color.rgb(240, 222, 198), CornerRadii.EMPTY, Insets.EMPTY));
+        return drawBoard(board, new HashSet<>());
+    }
 
+    private GridPane drawBoard(Board board, Set<Field> validMoves) {
         GridPane grid = new GridPane();
         ColumnConstraints columnConstraints = new ColumnConstraints(size);
         RowConstraints rowConstraints = new RowConstraints(size);
-        for (int i = 0; i <= Board.MAX_ROW; i++) {
+
+        Field figPos = figureBeingMoved != null ? figureBeingMoved.getPosition() : null;
+        for (int r = 0; r <= Board.MAX_ROW; r++) {
             grid.getColumnConstraints().add(columnConstraints);
             grid.getRowConstraints().add(rowConstraints);
-            for (int j = 0; j <= Board.MAX_COL; j++) {
+            for (int c = 0; c <= Board.MAX_COL; c++) {
+                final Field fieldPos = new Field(r, c);
                 StackPane field = new StackPane();
-                field.setBackground(((i + j) & 1) == 0 ? white : brown);
-                ImageView image = getImageFigure(board, i, j);
+
+                Background white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? WHITE_GREEN : WHITE;
+                Background brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? BROWN_GREEN : BROWN;
+
+                field.setBackground(((r + c) & 1) == 0 ? white : brown);
+
+
+                ImageView image = getImageFigure(board, r, c);
                 if (image != null) {
                     field.getChildren().add(image);
                 }
-                grid.add(field, i, j);
+                grid.add(field, c, r); // intentionally (c, r)
+
+                field.setOnMouseClicked(evt -> {
+                    Figure fig = board.getFigure(fieldPos);
+                    if (fig == null || figureBeingMoved != null) return;
+                    figureBeingMoved = fig;
+                    Set<Field> figValidMoves = fig.getValidMoves();
+                    GridPane updatedBoard = drawBoard(board, figValidMoves);
+                    GridPane parentTable = (GridPane) boardTable.getParent();
+                    ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
+                    parentTable.add(updatedBoard, 1, 1, 8, 8);
+                    boardTable = updatedBoard;
+                });
+//                field.setOnMouseClicked(e -> {
+//                    if (figureBeingMoved == null) return;
+//                    System.out.println("hello");
+//                    if (figureBeingMoved.getValidMoves().contains(fieldPos)){
+//                        board.moveFigure(figureBeingMoved, fieldPos);
+//                        GridPane updatedBoard = drawBoard(board);
+//                        GridPane parentTable = (GridPane) boardTable.getParent();
+//                        ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
+//                        parentTable.add(updatedBoard, 1, 1, 8, 8);
+//                        boardTable = updatedBoard;
+//                    }
+//                });
+
             }
         }
         return grid;

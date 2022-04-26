@@ -80,6 +80,8 @@ public class Pawn extends Figure {
         Figure blockingFig = board.getFigure(pos);
         if (blockingFig == null) {
             validMoves.add(pos);
+        } else {
+            System.out.println("Pawn: did not add move " + pos + " (occupied by " + blockingFig.getClass().toString() + ")");
         }
     }
 
