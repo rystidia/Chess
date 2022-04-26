@@ -29,19 +29,14 @@ public class Pawn extends Figure {
         Set<Field> validMoves = new HashSet<>();
         addValidMoveIfNull(validMoves, dir, 0);
         for (int j : Arrays.asList(-1, 1)) { // occupied position
-            addValidMoveIfBlockedByOpp(validMoves, dir, j);
-
-            //enPassant
-            Field pos = getPosition().plus(0, j);
-            if (pos != null) {
-                Figure bf = board.getFigure(pos); // blocking figure
-                if (bf != null) {
-                    if (bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).doubleAdvance()) {
-                        addValidMoveIfNull(validMoves, dir, j);
-                    }
-                }
+            Field capturingMove = getPosition().plus(dir, j);
+            if (capturingMove == null) {
+                continue;
             }
-            //end of enPassant
+            Field capturePos = getCapturedFieldByMove(capturingMove);
+            if (capturePos != null) {
+                validMoves.add(capturingMove);
+            }
 
         }
         if (isFirstMove()) {
@@ -54,9 +49,13 @@ public class Pawn extends Figure {
      * Notes that if pawn jumped over a Field, it can be captured by en passant
      */
     @Override
-    public void setPosition(Field position) {
-        doubleAdvance = getPosition() != null && Math.abs(getPosition().row - position.row) > 1;
-        super.setPosition(position);
+    public void move(Field toPos) {
+        doubleAdvance = getPosition() != null && Math.abs(getPosition().row - toPos.row) > 1;
+        Field capturePos = getCapturedFieldByMove(toPos);
+        if (capturePos != null) {
+            board.setFigure(capturePos, null);
+        }
+        super.move(toPos);
     }
 
     /**
@@ -84,14 +83,24 @@ public class Pawn extends Figure {
         }
     }
 
-    private void addValidMoveIfBlockedByOpp(Set<Field> validMoves, int row, int column) {
-        Field pos = getPosition().plus(row, column);
-        if (pos == null) {
-            return;
+    public Field getCapturedFieldByMove(Field dest) {
+        if (getPosition() == null) {
+            return null;
         }
-        Figure blockingFig = board.getFigure(pos);
-        if (blockingFig != null && blockingFig.getColor() != getColor()) {
-            validMoves.add(pos);
+        Figure occupyingFig = board.getFigure(dest);
+        if (occupyingFig != null) {
+            return occupyingFig.getColor() != getColor() ? dest : null;
         }
+        int dir = (getColor() == MyColor.WHITE) ? 1 : -1; // direction
+        Field enPassantCaptPos = dest.plus(dir, 0);
+        Figure bf = board.getFigure(enPassantCaptPos);
+        if (bf != null && bf.getColor() != getColor() && bf instanceof Pawn && ((Pawn) bf).doubleAdvance()) {
+            return enPassantCaptPos;
+        }
+        return null;
+    }
+
+    public boolean moveLeadsToPromotion(Field dest) {
+        return (getColor() == MyColor.WHITE && dest.row == 7) || (getColor() == MyColor.BLACK && dest.row == 0);
     }
 }

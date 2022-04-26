@@ -17,9 +17,8 @@ import java.util.Set;
  */
 public abstract class Figure {
     private final MyColor color;
-    protected final Board board;
+    protected static Board board;
     private Field position;
-    private boolean isCaptured;
     private boolean isFirstMove = true;
 
     /**
@@ -32,14 +31,15 @@ public abstract class Figure {
     public Figure(MyColor color, Board board) {
         this.color = color;
         this.board = board;
-        this.isCaptured = false;
     }
 
     /**
      * Captures the piece
      */
-    public void die() {
-        this.isCaptured = true;
+    public void move(Field toPos) {
+        isFirstMove = getPosition() == null;
+        board.setFigure(toPos, this);
+        this.position = toPos;
     }
 
     /**
@@ -47,10 +47,6 @@ public abstract class Figure {
      */
     public Field getPosition() {
         return position;
-    }
-
-    public void setPosition(Field position) {
-        this.position = position;
     }
 
     /**
@@ -128,13 +124,6 @@ public abstract class Figure {
             fields.add(pos);
         }
         return fields;
-    }
-
-    /**
-     * @return true if the piece is captured, false otherwise
-     */
-    public boolean isCaptured() {
-        return this.isCaptured;
     }
 
     /**

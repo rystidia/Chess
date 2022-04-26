@@ -60,6 +60,15 @@ public class King extends Figure {
         }
     }
 
+    @Override
+    public void move(Field toPos) {
+        Rook castlingRook = getAssocRookForCastlingMove(toPos);
+        if (castlingRook != null) {
+            board.moveFigure(castlingRook, new Field(toPos.row, (getPosition().column + toPos.column) / 2));
+        }
+        super.move(toPos);
+    }
+
     /**
      * @return true if the king is in check, false otherwise
      */
@@ -73,9 +82,18 @@ public class King extends Figure {
                 }
                 if (fig.getValidMoves().contains(getPosition())) {
                     return true;
-                };
+                }
             }
         }
         return false;
+    }
+
+    public Rook getAssocRookForCastlingMove(Field castlingMove) {
+        if (getPosition() != null && Math.abs(getPosition().column - castlingMove.column) > 1) {
+            int row = getColor() == MyColor.WHITE ? 7 : 0;
+            Field rookPos = castlingMove.column > 4 ? new Field(row, 7) : new Field(row, 0);
+            return (Rook)board.getFigure(rookPos);
+        }
+        return null;
     }
 }

@@ -32,19 +32,21 @@ public class Board {
         return board[pos.row][pos.column];
     }
 
-    protected void setFigure(Field pos, Figure figure) {
+    public void setFigure(Field pos, Figure figure) {
         board[pos.row][pos.column] = figure;
     }
 
     public void moveFigure(Figure figure, Field toPos) {
-        if (figure.getPosition() != null && getFigure(figure.getPosition()) != figure) {
-            throw new IllegalArgumentException("provided figure was not found where it should be");
+        if (figure.getPosition() != null) {
+            if (getFigure(figure.getPosition()) != figure) {
+                throw new IllegalArgumentException("provided figure was not found where it should be");
+            }
+            setFigure(figure.getPosition(), null);
         }
         if (getFigure(toPos) != null) {
             throw new UnsupportedOperationException("toPos already occupied, capturing is not implemented yet");
         }
-        setFigure(toPos, figure);
-        figure.setPosition(toPos);
+        figure.move(toPos);
     }
 
     /**
