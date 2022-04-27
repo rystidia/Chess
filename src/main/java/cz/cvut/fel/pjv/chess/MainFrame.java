@@ -1,6 +1,8 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.*;
+import cz.cvut.fel.pjv.chess.players.LocalPlayer;
+import cz.cvut.fel.pjv.chess.players.Player;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -38,6 +40,8 @@ public class MainFrame extends Application {
 
     private GridPane boardTable;
     private Figure figureBeingMoved;
+    private Player white;
+    private Player black;
 
     public static void main(String[] args) {
         launch();
@@ -73,6 +77,10 @@ public class MainFrame extends Application {
 
     public GridPane createGameScene() {
         Board test = new Board();
+        white = new LocalPlayer(MyColor.WHITE);
+        black = new LocalPlayer(MyColor.BLACK);
+        white.setCurrentPlayer(true);
+        black.setCurrentPlayer(false);
         test.initialPosition();
 
         GridPane table = new GridPane();
@@ -116,22 +124,26 @@ public class MainFrame extends Application {
             for (int c = 0; c <= Board.MAX_COL; c++) {
                 final Field fieldPos = new Field(r, c);
                 StackPane field = new StackPane();
+                Figure fig = board.getFigure(fieldPos);
 
                 Background white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? WHITE_GREEN : WHITE;
                 Background brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? BROWN_GREEN : BROWN;
+                if (fig != null && figureBeingMoved == null && isCurrentColor(fig.getColor())) {
+                    white = fig.hasValidMoves() ? WHITE_YELLOW : WHITE;
+                    brown = fig.hasValidMoves() ? BROWN_YELLOW : BROWN;
+                }
 
                 field.setBackground(((r + c) & 1) == 0 ? white : brown);
-                ImageView image = getImageFigure(board, r, c);
+                ImageView image = getImageFigure(board, fig);
                 if (image != null) {
                     field.getChildren().add(image);
                 }
                 grid.add(field, c, r); // intentionally (c, r)
 
                 field.setOnMouseClicked(evt -> {
-                    Figure fig = board.getFigure(fieldPos);
                     GridPane updatedBoard;
                     if (figureBeingMoved == null) {
-                        if (fig == null) return;
+                        if (fig == null || !isCurrentColor(fig.getColor()) || !fig.hasValidMoves()) return;
                         figureBeingMoved = fig;
                         Set<Field> figValidMoves = fig.getValidMoves();
                         updatedBoard = drawBoard(board, figValidMoves);
@@ -140,12 +152,11 @@ public class MainFrame extends Application {
                         if (movedFigureValidMoves.contains(fieldPos)) {
                             board.moveFigure(figureBeingMoved, fieldPos);
                             if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)){
-                                System.out.println("Promotion");
                                 promotionDialog((Pawn)figureBeingMoved, board);
                             }
+                            switchCurPlayer();
                             figureBeingMoved = null;
                         }
-
                         updatedBoard = drawBoard(board);
                     }
                     redrawBoard(updatedBoard);
@@ -162,9 +173,7 @@ public class MainFrame extends Application {
         boardTable = newBoardTable;
     }
 
-    private ImageView getImageFigure(Board board, int row, int col) {
-        Field pos = new Field(row, col);
-        Figure fig = board.getFigure(pos);
+    private ImageView getImageFigure(Board board, Figure fig) {
         if (fig == null) return null;
         ImageView figImage = new ImageView(new Image(getImagePath(fig)));
         figImage.setFitWidth(size);
@@ -267,6 +276,9 @@ public class MainFrame extends Application {
         vbox.getChildren().add(newPromotionButton(new Rook(pawn.getColor(), board), pawn, applyButton));
         vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
 
+        dialog.setOnCloseRequest(evt -> {
+            dialog.setResult(null);
+        });
         dialog.getDialogPane().setContent(vbox);
         dialog.showAndWait();
         dialog.close();
@@ -279,5 +291,19 @@ public class MainFrame extends Application {
             applyButton.fire();
         });
         return button;
+    }
+
+    private void switchCurPlayer(){
+        if (white.isCurrentPlayer()) {
+            white.setCurrentPlayer(false);
+            black.setCurrentPlayer(true);
+        } else {
+            black.setCurrentPlayer(false);
+            white.setCurrentPlayer(true);
+        }
+    }
+
+    private boolean isCurrentColor(MyColor color){
+        return white.isCurrentPlayer() ? color == MyColor.WHITE : color == MyColor.BLACK;
     }
 }

@@ -150,4 +150,8 @@ public abstract class Figure {
             validMoves.add(pos);
         }
     }
+
+    public boolean hasValidMoves(){
+        return !getValidMoves().isEmpty();
+    }
 }
