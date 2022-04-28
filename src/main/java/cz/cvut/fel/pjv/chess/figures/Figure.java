@@ -159,7 +159,7 @@ public abstract class Figure {
     }
 
     public boolean hasValidMoves(){
-        return !getValidMoves().isEmpty();
+        return !board.getValidMoves(this).isEmpty();
     }
 
     public void saveState(){

@@ -145,7 +145,7 @@ public class MainFrame extends Application {
                     if (figureBeingMoved == null) {
                         if (fig == null || !isCurrentColor(fig.getColor()) || !fig.hasValidMoves()) return;
                         figureBeingMoved = fig;
-                        Set<Field> figValidMoves = fig.getValidMoves();
+                        Set<Field> figValidMoves = board.getValidMoves(fig);
                         updatedBoard = drawBoard(board, figValidMoves);
                     } else {
                         Set<Field> movedFigureValidMoves = board.getValidMoves(figureBeingMoved);

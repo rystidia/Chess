@@ -42,30 +42,34 @@ public class King extends Figure {
             Field pos = new Field(row, column);
             Figure fig = board.getFigure(pos);
             if (fig instanceof Rook && fig.getColor() == getColor()) {
-                if (!isFirstMove() || !fig.isFirstMove()){
+                if (!isFirstMove() || !fig.isFirstMove()) {
                     break;
                 }
                 int dir = getPosition().column - fig.getPosition().column > 0 ? -1 : 1;
                 Field kingDest = getPosition().plus(0, dir * 2);
-                if (isCastlingPossibleWith((Rook)fig, dir)) {
+                if (isCastlingPossibleWith((Rook) fig, dir)) {
                     validMoves.add(kingDest);
                 }
             }
         }
     }
 
-    private boolean isCastlingPossibleWith(Rook rook, int dir){
+    private boolean isCastlingPossibleWith(Rook rook, int dir) {
+        boolean ret = true;
         Figure blockingFigure = null;
         for (int i = 1; blockingFigure == null; i++) {
             Field between = getPosition().plus(0, dir * i);
             blockingFigure = board.getFigure(between);
-            if (i!=3){
+            if (i != 3 && blockingFigure == null) {
                 board.simulateMove(this, between);
-                if (isInCheck()) return false;
+                if (isInCheck()) {
+                    ret = false;
+                    break;
+                }
                 board.unsimulateMove(this);
             }
         }
-        return blockingFigure == rook;
+        return ret && blockingFigure == rook;
     }
 
     @Override
@@ -100,7 +104,7 @@ public class King extends Figure {
         if (getPosition() != null && Math.abs(getPosition().column - castlingMove.column) > 1) {
             int row = getColor() == MyColor.WHITE ? 7 : 0;
             Field rookPos = castlingMove.column > 4 ? new Field(row, 7) : new Field(row, 0);
-            return (Rook)board.getFigure(rookPos);
+            return (Rook) board.getFigure(rookPos);
         }
         return null;
     }
