@@ -47,17 +47,25 @@ public class King extends Figure {
                 }
                 int dir = getPosition().column - fig.getPosition().column > 0 ? -1 : 1;
                 Field kingDest = getPosition().plus(0, dir * 2);
-
-                Figure blockingFigure = null;
-                for (int i = 1; blockingFigure == null; i++) {
-                    Field between = getPosition().plus(0, dir * i);
-                    blockingFigure = board.getFigure(between);
-                }
-                if (blockingFigure == fig) {
+                if (isCastlingPossibleWith((Rook)fig, dir)) {
                     validMoves.add(kingDest);
                 }
             }
         }
+    }
+
+    private boolean isCastlingPossibleWith(Rook rook, int dir){
+        Figure blockingFigure = null;
+        for (int i = 1; blockingFigure == null; i++) {
+            Field between = getPosition().plus(0, dir * i);
+            blockingFigure = board.getFigure(between);
+            if (i!=3){
+                board.simulateMove(this, between);
+                if (isInCheck()) return false;
+                board.unsimulateMove(this);
+            }
+        }
+        return blockingFigure == rook;
     }
 
     @Override

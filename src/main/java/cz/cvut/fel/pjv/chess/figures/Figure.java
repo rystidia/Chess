@@ -21,6 +21,9 @@ public abstract class Figure {
     private Field position;
     private boolean isFirstMove = true;
 
+    private Field savedPosition;
+    private boolean savedIsFirstMove;
+
     /**
      * Initializes the Figure
      * <p>
@@ -39,7 +42,11 @@ public abstract class Figure {
     public void move(Field toPos) {
         isFirstMove = getPosition() == null;
         board.setFigure(toPos, this);
-        this.position = toPos;
+        setPosition(toPos);
+    }
+
+    public void setPosition(Field position) {
+        this.position = position;
     }
 
     /**
@@ -153,5 +160,15 @@ public abstract class Figure {
 
     public boolean hasValidMoves(){
         return !getValidMoves().isEmpty();
+    }
+
+    public void saveState(){
+        savedPosition = position;
+        savedIsFirstMove = isFirstMove;
+    }
+
+    public void restoreState(){
+        position = savedPosition;
+        isFirstMove = savedIsFirstMove;
     }
 }

@@ -18,6 +18,7 @@ import java.util.Set;
  */
 public class Pawn extends Figure {
     private boolean doubleAdvance = false;
+    private  boolean savedDoubleAdvance;
 
     public Pawn(MyColor color, Board board) {
         super(color, board);
@@ -28,8 +29,8 @@ public class Pawn extends Figure {
         int dir = (getColor() == MyColor.WHITE) ? -1 : 1; // direction
         Set<Field> validMoves = new HashSet<>();
         addValidMoveIfNull(validMoves, dir, 0);
-        for (int j : Arrays.asList(-1, 1)) { // occupied position
-            Field capturingMove = getPosition().plus(dir, j);
+        for (int j : Arrays.asList(-1, 1)) {
+            Field capturingMove = getPosition().plus(dir, j); // occupied position
             if (capturingMove == null) {
                 continue;
             }
@@ -37,7 +38,6 @@ public class Pawn extends Figure {
             if (capturePos != null) {
                 validMoves.add(capturingMove);
             }
-
         }
         if (isFirstMove()) {
             addValidMoveIfNull(validMoves, 2 * dir, 0);
@@ -104,5 +104,17 @@ public class Pawn extends Figure {
 
     public boolean moveLeadsToPromotion(Field dest) {
         return (getColor() == MyColor.WHITE && (dest.row == 0 || getPosition().row == 0)) || (getColor() == MyColor.BLACK && (dest.row == 7|| getPosition().row == 7));
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState();
+        savedDoubleAdvance = doubleAdvance;
+    }
+
+    @Override
+    public void restoreState() {
+        super.restoreState();
+        doubleAdvance = savedDoubleAdvance;
     }
 }

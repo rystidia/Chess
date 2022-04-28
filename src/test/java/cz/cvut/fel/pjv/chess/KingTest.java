@@ -190,27 +190,28 @@ public class KingTest {
         Bishop oppBishop = new Bishop(MyColor.BLACK, board);
         board.moveFigure(oppBishop, new Field(2, 1));
 
-        Pawn myPawn1 = new Pawn(MyColor.WHITE, board);
-        board.moveFigure(myPawn1, new Field(4, 3));
+        Pawn myPawn = new Pawn(MyColor.WHITE, board);
+        board.moveFigure(myPawn, new Field(4, 4));
 
-        Pawn myPawn2 = new Pawn(MyColor.WHITE, board);
-        board.moveFigure(myPawn2, new Field(4, 4));
+        Bishop myBishop = new Bishop(MyColor.WHITE, board);
+        board.moveFigure(myBishop, new Field(3, 2));
 
-        King figure = new King(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(5, 4));
+        King king = new King(MyColor.WHITE, board);
+        board.moveFigure(king, new Field(5, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
         0 - - - - - - - -
         1 - - - - r - - -
         2 - b - - - - - -
-   row  3 - - - - - - - -
-        4 - - - P P - - -
+   row  3 - - B - - - - -
+        4 - - - - P - - -
         5 - - - - X - - -
         6 - - - - - - - -
         7 - - - - - - - -
          */
-        assertFalse(figure.isInCheck());
+
+        assertFalse(king.isInCheck());
     }
 
     @Test
@@ -224,7 +225,7 @@ public class KingTest {
         board.moveFigure(oppBishop, new Field(2, 1));
 
         Pawn myPawn = new Pawn(MyColor.WHITE, board);
-        board.moveFigure(myPawn, new Field(4, 3));
+        board.moveFigure(myPawn, new Field(4, 4));
 
         King figure = new King(MyColor.WHITE, board);
         board.moveFigure(figure, new Field(5, 4));
@@ -235,7 +236,7 @@ public class KingTest {
         1 - - - - r - - -
         2 - b - - - - - -
    row  3 - - - - - - - -
-        4 - - - P - - - -
+        4 - - - - P - - -
         5 - - - - X - - -
         6 - - - - - - - -
         7 - - - - - - - -

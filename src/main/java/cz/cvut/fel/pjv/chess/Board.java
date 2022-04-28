@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.chess;
 import cz.cvut.fel.pjv.chess.figures.*;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -21,6 +22,8 @@ public class Board {
     private Figure bKing;
     private Figure wKing;
 
+    private Figure capturedLastMove;
+
     /**
      * Initializes the board
      */
@@ -33,6 +36,7 @@ public class Board {
     }
 
     public void setFigure(Field pos, Figure figure) {
+        if (figure != null) figure.setPosition(pos);
         board[pos.row][pos.column] = figure;
     }
 
@@ -43,9 +47,7 @@ public class Board {
             }
             setFigure(figure.getPosition(), null);
         }
-//        if (getFigure(toPos) != null) {
-//            throw new UnsupportedOperationException("toPos already occupied, capturing is not implemented yet");
-//        }
+        capturedLastMove = getFigure(toPos);
         figure.move(toPos);
     }
 
@@ -53,7 +55,7 @@ public class Board {
      * Places figures to the fields
      */
     public void initialPosition() {
-        for (MyColor color: Arrays.asList(MyColor.BLACK, MyColor.WHITE)) {
+        for (MyColor color : Arrays.asList(MyColor.BLACK, MyColor.WHITE)) {
             int row = color == MyColor.WHITE ? 7 : 0;
             moveFigure(new Rook(color, this), new Field(row, 0));
             moveFigure(new Rook(color, this), new Field(row, 7));
@@ -74,13 +76,39 @@ public class Board {
      * Returns all valid moves for given figure, checks if king is not in check after them
      */
     public Set<Field> getValidMoves(Figure figure) {
-        throw new UnsupportedOperationException();
+        Set<Field> validMoves = figure.getValidMoves();
+        for (Iterator<Field> iterator = validMoves.iterator(); iterator.hasNext(); ) {
+            Field pos = iterator.next();
+            simulateMove(figure, pos);
+            if (getKing(figure.getColor()).isInCheck()) {
+                iterator.remove();
+            }
+            unsimulateMove(figure);
+        }
+        return validMoves;
     }
 
-    public Figure getKing(MyColor color) {
-        return switch (color) {
-            case WHITE -> wKing;
-            case BLACK -> bKing;
-        };
+    public King getKing(MyColor color) {
+        for (Figure[] row : board) {
+            for (Figure fig : row) {
+                if (fig instanceof King && fig.getColor() == color)
+                    return (King) fig;
+            }
+        }
+        return null;
+    }
+
+    public void simulateMove(Figure figure, Field toPos) {
+        figure.saveState();
+        moveFigure(figure, toPos);
+    }
+
+    public void unsimulateMove(Figure figure) {
+        setFigure(figure.getPosition(),null);
+        figure.restoreState();
+        setFigure(figure.getPosition(), figure);
+        if (capturedLastMove != null) {
+            setFigure(capturedLastMove.getPosition(), capturedLastMove);
+        }
     }
 }

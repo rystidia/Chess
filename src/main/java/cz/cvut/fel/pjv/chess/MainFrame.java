@@ -148,11 +148,11 @@ public class MainFrame extends Application {
                         Set<Field> figValidMoves = fig.getValidMoves();
                         updatedBoard = drawBoard(board, figValidMoves);
                     } else {
-                        Set<Field> movedFigureValidMoves = figureBeingMoved.getValidMoves();
+                        Set<Field> movedFigureValidMoves = board.getValidMoves(figureBeingMoved);
                         if (movedFigureValidMoves.contains(fieldPos)) {
                             board.moveFigure(figureBeingMoved, fieldPos);
-                            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)){
-                                promotionDialog((Pawn)figureBeingMoved, board);
+                            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
+                                promotionDialog((Pawn) figureBeingMoved, board);
                             }
                             switchCurPlayer();
                             figureBeingMoved = null;
@@ -277,14 +277,14 @@ public class MainFrame extends Application {
         vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
 
         dialog.setOnCloseRequest(evt -> {
-            dialog.setResult(null);
+            pawn.promotion(new Queen(pawn.getColor(), board));
         });
         dialog.getDialogPane().setContent(vbox);
         dialog.showAndWait();
         dialog.close();
     }
 
-    public Button newPromotionButton(Figure figure, Pawn pawn, Button applyButton){
+    public Button newPromotionButton(Figure figure, Pawn pawn, Button applyButton) {
         Button button = newButton(figure.getClass().getSimpleName());
         button.setOnAction(e -> {
             pawn.promotion(figure);
@@ -293,7 +293,7 @@ public class MainFrame extends Application {
         return button;
     }
 
-    private void switchCurPlayer(){
+    private void switchCurPlayer() {
         if (white.isCurrentPlayer()) {
             white.setCurrentPlayer(false);
             black.setCurrentPlayer(true);
@@ -303,7 +303,7 @@ public class MainFrame extends Application {
         }
     }
 
-    private boolean isCurrentColor(MyColor color){
+    private boolean isCurrentColor(MyColor color) {
         return white.isCurrentPlayer() ? color == MyColor.WHITE : color == MyColor.BLACK;
     }
 }
