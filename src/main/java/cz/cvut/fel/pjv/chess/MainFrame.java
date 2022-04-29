@@ -15,13 +15,15 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
 
 public class MainFrame extends Application {
 
@@ -40,6 +42,8 @@ public class MainFrame extends Application {
 
     private GridPane boardTable;
     private Figure figureBeingMoved;
+    private BorderPane timeWhite;
+    private BorderPane timeBlack;
     private Player white;
     private Player black;
 
@@ -48,7 +52,7 @@ public class MainFrame extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         // Create a scene and place it in the stage
         scene = new Scene(createMenuScene());
 
@@ -77,11 +81,14 @@ public class MainFrame extends Application {
 
     public GridPane createGameScene() {
         Board test = new Board();
+        test.initialPosition();
+
         white = new LocalPlayer(MyColor.WHITE);
         black = new LocalPlayer(MyColor.BLACK);
         white.setCurrentPlayer(true);
         black.setCurrentPlayer(false);
-        test.initialPosition();
+        white.setTimeLeft(25*60);
+        black.setTimeLeft(25*60);
 
         GridPane table = new GridPane();
         for (int i = 0; i < 8; i++) {
@@ -98,8 +105,9 @@ public class MainFrame extends Application {
         VBox leftVertMenu = new VBox();
         VBox options = newOptions();
         leftVertMenu.setPadding(new Insets(15));
-        leftVertMenu.getChildren().addAll(newClockBox(), options, newClockBox());
-
+        timeWhite = newClockBox(white);
+        timeBlack = newClockBox(black);
+        leftVertMenu.getChildren().addAll(timeBlack, options, timeWhite);
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
         root.add(table, 0, 0, 1, 1);
@@ -134,7 +142,7 @@ public class MainFrame extends Application {
                 }
 
                 field.setBackground(((r + c) & 1) == 0 ? white : brown);
-                ImageView image = getImageFigure(board, fig);
+                ImageView image = getImageFigure(fig);
                 if (image != null) {
                     field.getChildren().add(image);
                 }
@@ -173,7 +181,7 @@ public class MainFrame extends Application {
         boardTable = newBoardTable;
     }
 
-    private ImageView getImageFigure(Board board, Figure fig) {
+    private ImageView getImageFigure(Figure fig) {
         if (fig == null) return null;
         ImageView figImage = new ImageView(new Image(getImagePath(fig)));
         figImage.setFitWidth(size);
@@ -213,10 +221,10 @@ public class MainFrame extends Application {
         return button;
     }
 
-    private BorderPane newClockBox() {
+    private BorderPane newClockBox(Player player) {
         BorderPane clockBox = new BorderPane();
         Label playerName = newLabel("PlayerName", 20);
-        Label playerTime = newLabel("25:00", 30);
+        Label playerTime = newLabel(player.getTimeString(), 30);
         clockBox.setTop(playerName);
         clockBox.setCenter(playerTime);
         clockBox.setBorder(new Border((new BorderStroke(Color.BLACK,
@@ -253,6 +261,9 @@ public class MainFrame extends Application {
         scene = new Scene(gameScene);
         stage.setScene(scene);
         stage.show();
+        Clock clock = new Clock(white, black, timeWhite, timeBlack);
+        Thread timer = new Thread(clock);
+        timer.start();
     }
 
     public void switchToMenu(ActionEvent event) {
@@ -276,9 +287,7 @@ public class MainFrame extends Application {
         vbox.getChildren().add(newPromotionButton(new Rook(pawn.getColor(), board), pawn, applyButton));
         vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
 
-        dialog.setOnCloseRequest(evt -> {
-            pawn.promotion(new Queen(pawn.getColor(), board));
-        });
+        dialog.setOnCloseRequest(evt -> pawn.promotion(new Queen(pawn.getColor(), board)));
         dialog.getDialogPane().setContent(vbox);
         dialog.showAndWait();
         dialog.close();
@@ -291,6 +300,10 @@ public class MainFrame extends Application {
             applyButton.fire();
         });
         return button;
+    }
+
+    private Player getCurPlayer() {
+        return white.isCurrentPlayer() ? white : black;
     }
 
     private void switchCurPlayer() {

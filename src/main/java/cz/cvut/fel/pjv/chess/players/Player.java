@@ -38,7 +38,11 @@ public abstract class Player {
     }
 
     public void lose() {
-        throw new UnsupportedOperationException();
+
+    }
+
+    public MyColor getColor() {
+        return color;
     }
 
     public int getTimeLeft() {
@@ -55,6 +59,18 @@ public abstract class Player {
 
     public void setCurrentPlayer(boolean isCurrentPlayer) {
         this.isCurrentPlayer = isCurrentPlayer;
+    }
+
+    public String getTimeString(){
+        String minutes = String.valueOf(this.timeLeft / 60);
+        if (minutes.length() < 2) {
+            minutes = "0" + minutes;
+        }
+        String seconds = String.valueOf(this.timeLeft % 60);
+        if (seconds.length() < 2) {
+            seconds = "0" + seconds;
+        }
+        return minutes + ":" + seconds;
     }
 
     /**

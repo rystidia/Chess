@@ -1,6 +1,10 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.players.Player;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 
 /**
  * A clock for a chess game
@@ -10,28 +14,17 @@ import cz.cvut.fel.pjv.chess.players.Player;
  * @version 1.0
  */
 public class Clock implements Runnable {
-    private Player white;
-    private Player black;
+    private final Player white;
+    private final Player black;
 
-    public Clock(Player white, Player black) {
+    private final BorderPane timeWhite;
+    private final BorderPane timeBlack;
+
+    public Clock(Player white, Player black, BorderPane timeWhite, BorderPane timeBlack) {
         this.white = white;
         this.black = black;
-    }
-
-    public Player getWhite() {
-        return white;
-    }
-
-    public Player getBlack() {
-        return black;
-    }
-
-    public void setWhite(Player white) {
-        this.white = white;
-    }
-
-    public void setBlack(Player black) {
-        this.black = black;
+        this.timeWhite = timeWhite;
+        this.timeBlack = timeBlack;
     }
 
     /**
@@ -39,15 +32,19 @@ public class Clock implements Runnable {
      */
     @Override
     public void run() {
-        boolean stop = false;
-        while (!stop) {
-
+        boolean gameFinished = false;
+        while (!gameFinished) {
             synchronized (this) {
                 if (white.isCurrentPlayer()) {
                     white.setTimeLeft(white.getTimeLeft() - 1);
                 } else {
                     black.setTimeLeft(black.getTimeLeft() - 1);
                 }
+
+                Platform.runLater(() -> {
+                    redrawClockBox(white);
+                    redrawClockBox(black);
+                });
             }
 
             try {
@@ -56,25 +53,22 @@ public class Clock implements Runnable {
                 e.printStackTrace();
             }
 
-            if (this.white.getTimeLeft() == 0){
+            if (this.white.getTimeLeft() == 0) {
                 this.white.lose();
-                stop = true;
+                gameFinished = true;
             }
             if (this.black.getTimeLeft() == 0) {
                 this.black.lose();
-                stop = true;
+                gameFinished = true;
             }
         }
     }
 
-    public void switchPlayers() {
-        if (white.isCurrentPlayer()) {
-            white.setCurrentPlayer(false);
-            black.setCurrentPlayer(true);
-        } else {
-            black.setCurrentPlayer(false);
-            white.setCurrentPlayer(true);
-        }
+    public void redrawClockBox(Player player){
+        BorderPane timeBox = player.getColor() == MyColor.WHITE ? timeWhite : timeBlack;
+        Label playerTime = new Label(player.getTimeString());
+        playerTime.setFont(new Font("Segoe UI", 30));
+        timeBox.setCenter(playerTime);
     }
 }
 
