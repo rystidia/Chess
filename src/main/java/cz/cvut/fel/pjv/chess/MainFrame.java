@@ -87,8 +87,8 @@ public class MainFrame extends Application {
         black = new LocalPlayer(MyColor.BLACK);
         white.setCurrentPlayer(true);
         black.setCurrentPlayer(false);
-        white.setTimeLeft(25*60);
-        black.setTimeLeft(25*60);
+        white.setTimeLeft(25 * 60);
+        black.setTimeLeft(25 * 60);
 
         GridPane table = new GridPane();
         for (int i = 0; i < 8; i++) {
@@ -150,6 +150,7 @@ public class MainFrame extends Application {
 
                 field.setOnMouseClicked(evt -> {
                     GridPane updatedBoard;
+                    if (fig == figureBeingMoved) return;
                     if (figureBeingMoved == null) {
                         if (fig == null || !isCurrentColor(fig.getColor()) || !fig.hasValidMoves()) return;
                         figureBeingMoved = fig;
@@ -287,7 +288,11 @@ public class MainFrame extends Application {
         vbox.getChildren().add(newPromotionButton(new Rook(pawn.getColor(), board), pawn, applyButton));
         vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
 
-        dialog.setOnCloseRequest(evt -> pawn.promotion(new Queen(pawn.getColor(), board)));
+        dialog.setOnCloseRequest(evt -> {
+                if (applyButton.isPressed())
+                    pawn.promotion(new Queen(pawn.getColor(), board));
+            }
+        );
         dialog.getDialogPane().setContent(vbox);
         dialog.showAndWait();
         dialog.close();
