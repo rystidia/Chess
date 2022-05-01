@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+
 public class MainFrame extends Application {
 
     private final static Background BROWN = new Background(new BackgroundFill(Color.rgb(181, 136, 107), CornerRadii.EMPTY, Insets.EMPTY));
@@ -37,9 +38,9 @@ public class MainFrame extends Application {
     private final static String font = "Segoe UI";
     private final static double size = 70;
     private final static double minWidth = 800, minHeight = 600;
+    Thread timer;
     private Stage stage;
     private Scene scene;
-
     private GridPane boardTable;
     private Figure figureBeingMoved;
     private BorderPane timeWhite;
@@ -62,6 +63,9 @@ public class MainFrame extends Application {
         primaryStage.setTitle("Chess");
         primaryStage.setScene(scene); // Place in scene in the stage
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> {
+            if (timer != null) timer.stop();
+        });
     }
 
     public GridPane createMenuScene() {
@@ -150,7 +154,7 @@ public class MainFrame extends Application {
 
                 field.setOnMouseClicked(evt -> {
                     GridPane updatedBoard;
-                    if (fig == figureBeingMoved) return;
+                    if (fig != null && fig == figureBeingMoved) return;
                     if (figureBeingMoved == null) {
                         if (fig == null || !isCurrentColor(fig.getColor()) || !fig.hasValidMoves()) return;
                         figureBeingMoved = fig;
@@ -256,6 +260,7 @@ public class MainFrame extends Application {
     }
 
     public void switchToGame(ActionEvent event) {
+        if (timer != null) timer.stop();
         figureBeingMoved = null;
         GridPane gameScene = createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -263,7 +268,7 @@ public class MainFrame extends Application {
         stage.setScene(scene);
         stage.show();
         Clock clock = new Clock(white, black, timeWhite, timeBlack);
-        Thread timer = new Thread(clock);
+        timer = new Thread(clock);
         timer.start();
     }
 
