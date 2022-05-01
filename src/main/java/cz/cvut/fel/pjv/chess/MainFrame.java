@@ -69,14 +69,17 @@ public class MainFrame extends Application {
     }
 
     public GridPane createMenuScene() {
-        Button play = newButton("Player vs AI");
-        play.setOnAction(this::switchToGame);
+        Button local = newButton("Human vs. human local");
+        local.setOnAction(this::switchToGame);
+        Button ai = newButton("Human vs. AI local");
 
         GridPane root = new GridPane();
         root.setAlignment(Pos.BOTTOM_LEFT);
-        root.add(play, 0, 0, 1, 1);
-        root.add(newButton("Multiplayer"), 0, 1, 1, 1);
-        root.add(newButton("Quit"), 0, 2, 1, 1);
+        int row = 0;
+        root.add(local, 0, row++, 1, 1);
+        root.add(ai, 0, row++, 1, 1);
+        root.add(newButton("Human vs. human online"), 0, row++, 1, 1);
+        root.add(newButton("Quit"), 0, row++, 1, 1);
         root.setVgap(20);
         root.setPadding(new Insets(20));
         root.setMinSize(minWidth, minHeight);
@@ -218,7 +221,6 @@ public class MainFrame extends Application {
     private Button newButton(String label) {
         Button button = new Button(label);
         button.setFont(new Font(font, 20));
-        button.setPrefSize(150, 60);
         button.setAlignment(Pos.BASELINE_LEFT);
         button.setStyle("-fx-background-color: #e8e8e8");
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #e1e1e1"));
@@ -240,16 +242,16 @@ public class MainFrame extends Application {
 
     private VBox newOptions() {
         VBox options = new VBox();
-        Button restart = newButton("Restart");
-        restart.setOnAction(this::switchToGame);
         Button menu = newButton("Menu");
         menu.setOnAction(this::switchToMenu);
+        Button restart = newButton("Restart");
+        restart.setOnAction(this::switchToGame);
         Button save = newButton("Save");
         Button load = newButton("Load");
         Button create = newButton("Create");
         options.setSpacing(10);
         options.setPadding(new Insets(25, 0, 25, 0));
-        options.getChildren().addAll(restart, menu, save, load, create);
+        options.getChildren().addAll(menu, restart, save, load, create);
         return options;
     }
 
