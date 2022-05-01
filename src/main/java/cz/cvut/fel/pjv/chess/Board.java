@@ -47,7 +47,6 @@ public class Board {
             }
             setFigure(figure.getPosition(), null);
         }
-        capturedLastMove = getFigure(toPos);
         figure.move(toPos);
     }
 
@@ -99,12 +98,13 @@ public class Board {
     }
 
     public void simulateMove(Figure figure, Field toPos) {
+        capturedLastMove = getFigure(toPos);
         figure.saveState();
         moveFigure(figure, toPos);
     }
 
     public void unsimulateMove(Figure figure) {
-        setFigure(figure.getPosition(),null);
+        setFigure(figure.getPosition(), null);
         figure.restoreState();
         setFigure(figure.getPosition(), figure);
         if (capturedLastMove != null) {
