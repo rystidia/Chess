@@ -147,7 +147,7 @@ public abstract class Figure {
         return isFirstMove;
     }
 
-    public void addValidMove(Set<Field> validMoves, int row, int column){
+    protected void addValidMove(Set<Field> validMoves, int row, int column){
         Field pos = getPosition().plus(row, column);
         if (pos == null){
             return;
