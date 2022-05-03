@@ -17,12 +17,9 @@ import java.util.Set;
  */
 public abstract class Figure {
     private final MyColor color;
-    protected static Board board;
+    protected final Board board;
     private Field position;
-    private boolean isFirstMove = true;
-
-    private Field savedPosition;
-    private boolean savedIsFirstMove;
+    protected boolean isFirstMove = true;
 
     /**
      * Initializes the Figure
@@ -35,6 +32,8 @@ public abstract class Figure {
         this.color = color;
         this.board = board;
     }
+
+    public abstract Figure clone(Board dstBoard);
 
     /**
      * Captures the piece
@@ -160,15 +159,5 @@ public abstract class Figure {
 
     public boolean hasValidMoves(){
         return !board.getValidMoves(this).isEmpty();
-    }
-
-    public void saveState(){
-        savedPosition = position;
-        savedIsFirstMove = isFirstMove;
-    }
-
-    public void restoreState(){
-        position = savedPosition;
-        isFirstMove = savedIsFirstMove;
     }
 }

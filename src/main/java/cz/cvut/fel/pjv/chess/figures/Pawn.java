@@ -18,10 +18,18 @@ import java.util.Set;
  */
 public class Pawn extends Figure {
     private boolean doubleAdvance = false;
-    private  boolean savedDoubleAdvance;
 
     public Pawn(MyColor color, Board board) {
         super(color, board);
+    }
+
+    @Override
+    public Figure clone(Board dstBoard) {
+        Pawn fig = new Pawn(getColor(), dstBoard);
+        fig.isFirstMove = isFirstMove;
+        fig.doubleAdvance = doubleAdvance;
+        fig.setPosition(getPosition());
+        return fig;
     }
 
     @Override
@@ -104,15 +112,4 @@ public class Pawn extends Figure {
         return (getColor() == MyColor.WHITE && (dest.row == 0 || getPosition().row == 0)) || (getColor() == MyColor.BLACK && (dest.row == 7|| getPosition().row == 7));
     }
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        savedDoubleAdvance = doubleAdvance;
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        doubleAdvance = savedDoubleAdvance;
-    }
 }

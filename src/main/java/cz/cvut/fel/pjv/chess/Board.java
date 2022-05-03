@@ -19,16 +19,25 @@ public class Board {
     public static final int MAX_COL = 7;
 
     private final Figure[][] board;
-    private Figure bKing;
-    private Figure wKing;
-
-    private Figure capturedLastMove;
 
     /**
      * Initializes the board
      */
     public Board() {
         this.board = new Figure[MAX_ROW + 1][MAX_COL + 1];
+    }
+
+    public Board(Board srcBoard) {
+        this();
+        for (int r = 0; r <= MAX_ROW; r++) {
+            for (int c = 0; c <= MAX_COL; c++) {
+                Figure fig = srcBoard.board[r][c];
+                if (fig != null) {
+                    fig = fig.clone(this);
+                }
+                this.board[r][c] = fig;
+            }
+        }
     }
 
     public Figure getFigure(Field pos) {
@@ -78,11 +87,10 @@ public class Board {
         Set<Field> validMoves = figure.getValidMoves();
         for (Iterator<Field> iterator = validMoves.iterator(); iterator.hasNext(); ) {
             Field pos = iterator.next();
-            simulateMove(figure, pos);
-            if (getKing(figure.getColor()).isInCheck()) {
+            Board newBoard = simulateMove(figure, pos);
+            if (newBoard.getKing(figure.getColor()).isInCheck()) {
                 iterator.remove();
             }
-            unsimulateMove(figure);
         }
         return validMoves;
     }
@@ -97,18 +105,10 @@ public class Board {
         return null;
     }
 
-    public void simulateMove(Figure figure, Field toPos) {
-        capturedLastMove = getFigure(toPos);
-        figure.saveState();
-        moveFigure(figure, toPos);
-    }
-
-    public void unsimulateMove(Figure figure) {
-        setFigure(figure.getPosition(), null);
-        figure.restoreState();
-        setFigure(figure.getPosition(), figure);
-        if (capturedLastMove != null) {
-            setFigure(capturedLastMove.getPosition(), capturedLastMove);
-        }
+    public Board simulateMove(Figure figure, Field toPos) {
+        Board newBoard = new Board(this);
+        Figure newFig = newBoard.getFigure(figure.getPosition());
+        newBoard.moveFigure(newFig, toPos);
+        return newBoard;
     }
 }

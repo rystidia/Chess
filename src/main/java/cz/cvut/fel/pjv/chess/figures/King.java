@@ -22,6 +22,14 @@ public class King extends Figure {
     }
 
     @Override
+    public Figure clone(Board dstBoard) {
+        King fig = new King(getColor(), dstBoard);
+        fig.isFirstMove = isFirstMove;
+        fig.setPosition(getPosition());
+        return fig;
+    }
+
+    @Override
     public Set<Field> getValidMoves() {
         Set<Field> validMoves = new HashSet<>();
         for (int row : Arrays.asList(-1, 0, 1)) {
@@ -61,12 +69,11 @@ public class King extends Figure {
             Field between = getPosition().plus(0, dir * i);
             blockingFigure = board.getFigure(between);
             if (i != 3 && blockingFigure == null) {
-                board.simulateMove(this, between);
-                if (isInCheck()) {
+                Board newBoard = board.simulateMove(this, between);
+                if (newBoard.getKing(getColor()).isInCheck()) {
                     ret = false;
                     break;
                 }
-                board.unsimulateMove(this);
             }
         }
         return ret && blockingFigure == rook;

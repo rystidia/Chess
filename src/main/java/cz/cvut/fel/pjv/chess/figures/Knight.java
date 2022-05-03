@@ -22,6 +22,14 @@ public class Knight extends Figure {
     }
 
     @Override
+    public Figure clone(Board dstBoard) {
+        Knight fig = new Knight(getColor(), dstBoard);
+        fig.isFirstMove = isFirstMove;
+        fig.setPosition(getPosition());
+        return fig;
+    }
+
+    @Override
     public Set<Field> getValidMoves() {
         Set<Field> validMoves = new HashSet<>();
         for (int oneDiff : Arrays.asList(-1, 1)) {

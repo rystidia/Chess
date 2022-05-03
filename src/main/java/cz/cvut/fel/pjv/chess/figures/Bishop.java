@@ -20,6 +20,14 @@ public class Bishop extends Figure {
     }
 
     @Override
+    public Figure clone(Board dstBoard) {
+        Bishop fig = new Bishop(getColor(), dstBoard);
+        fig.isFirstMove = isFirstMove;
+        fig.setPosition(getPosition());
+        return fig;
+    }
+
+    @Override
     public Set<Field> getValidMoves() {
         return super.getDiagonalDirections();
     }

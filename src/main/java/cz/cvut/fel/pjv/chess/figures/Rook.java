@@ -20,6 +20,13 @@ public class Rook extends Figure {
     }
 
     @Override
+    public Figure clone(Board dstBoard) {
+        Rook fig = new Rook(getColor(), dstBoard);
+        fig.isFirstMove = isFirstMove;
+        fig.setPosition(getPosition());
+        return fig;
+    }
+    @Override
     public Set<Field> getValidMoves() {
         return super.getVertAndHorDirections();
     }

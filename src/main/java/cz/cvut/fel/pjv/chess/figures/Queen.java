@@ -21,6 +21,14 @@ public class Queen extends Figure {
     }
 
     @Override
+    public Figure clone(Board dstBoard) {
+        Queen fig = new Queen(getColor(), dstBoard);
+        fig.isFirstMove = isFirstMove;
+        fig.setPosition(getPosition());
+        return fig;
+    }
+
+    @Override
     public Set<Field> getValidMoves() {
         Set<Field> validMoves = new HashSet<>();
         validMoves.addAll(super.getDiagonalDirections());
