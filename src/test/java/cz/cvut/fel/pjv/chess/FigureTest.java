@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
 import org.testng.annotations.Test;
+
 import static org.testng.Assert.assertEquals;
 
 import java.util.*;
@@ -12,6 +13,11 @@ public class FigureTest {
         // FIXME: mock Board
         Board board = new Board();
         Figure figure = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return getDiagonalDirections();
@@ -54,6 +60,11 @@ public class FigureTest {
         // FIXME: mock Board
         Board board = new Board();
         Figure figure = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return getVertAndHorDirections();
@@ -102,6 +113,11 @@ public class FigureTest {
         Board board = new Board();
         Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -109,6 +125,11 @@ public class FigureTest {
         board.moveFigure(blockingMy1, new Field(1, 2));
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -118,6 +139,11 @@ public class FigureTest {
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -126,6 +152,11 @@ public class FigureTest {
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -133,6 +164,11 @@ public class FigureTest {
         board.moveFigure(blockingOpp2, new Field(4, 1));
 
         Figure figure = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return getDiagonalDirections();
@@ -166,11 +202,17 @@ public class FigureTest {
         }};
         assertEquals(figure.getValidMoves(), expected);
     }
+
     @Test
     public void testGetVertAndHorDirections_BlockingFigures() {
         // FIXME: mock Board
         Board board = new Board();
         Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -180,6 +222,11 @@ public class FigureTest {
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -187,6 +234,11 @@ public class FigureTest {
         board.moveFigure(blockingOpp1, new Field(1, 3));
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -196,6 +248,11 @@ public class FigureTest {
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -203,6 +260,11 @@ public class FigureTest {
         board.moveFigure(blockingOpp2, new Field(4, 3));
 
         Figure figure = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return getVertAndHorDirections();

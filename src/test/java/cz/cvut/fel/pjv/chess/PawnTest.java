@@ -97,6 +97,10 @@ public class PawnTest {
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -104,6 +108,10 @@ public class PawnTest {
         board.moveFigure(blockingOpp1, new Field(3, 2));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -146,6 +154,10 @@ public class PawnTest {
 
         Figure blockingOpp1 = new Figure(MyColor.WHITE, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -153,6 +165,10 @@ public class PawnTest {
         board.moveFigure(blockingOpp1, new Field(4, 1));
 
         Figure blockingMy1 = new Figure(MyColor.BLACK, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -193,6 +209,10 @@ public class PawnTest {
 
         Figure blockingOpp1 = new Figure(MyColor.WHITE, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -200,6 +220,10 @@ public class PawnTest {
         board.moveFigure(blockingOpp1, new Field(4, 1));
 
         Figure blockingOpp2 = new Figure(MyColor.WHITE, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
             @Override
             public Set<Field> getValidMoves() {
                 return null;

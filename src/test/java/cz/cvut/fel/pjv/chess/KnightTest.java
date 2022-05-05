@@ -45,6 +45,11 @@ public class KnightTest {
         Board board = new Board();
         Figure blockingMy1 = new Figure(MyColor.WHITE, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -52,6 +57,11 @@ public class KnightTest {
         board.moveFigure(blockingMy1, new Field(0, 2));
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return null;
@@ -61,6 +71,11 @@ public class KnightTest {
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
+            @Override
             public Set<Field> getValidMoves() {
                 return null;
             }
@@ -68,6 +83,11 @@ public class KnightTest {
         board.moveFigure(blockingMy2, new Field(3, 5));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
+            @Override
+            public Figure clone(Board dstBoard) {
+                return null;
+            }
+
             @Override
             public Set<Field> getValidMoves() {
                 return null;
