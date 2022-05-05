@@ -26,8 +26,5 @@ public class MainFrame extends Application {
         primaryStage.setTitle("Chess");
         primaryStage.setScene(scene); // Place in scene in the stage
         primaryStage.show();
-        primaryStage.setOnCloseRequest(e -> {
-            if (timer != null) timer.stop();
-        });
     }
 }

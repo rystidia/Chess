@@ -68,6 +68,7 @@ public class GameScene extends GridPane {
         if (timer != null) timer.stop();
         Clock clock = new Clock(white, black, timeWhite, timeBlack);
         timer = new Thread(clock);
+        timer.setDaemon(true);
         timer.start();
         return root;
     }
