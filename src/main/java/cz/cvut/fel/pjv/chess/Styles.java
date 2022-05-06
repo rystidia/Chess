@@ -16,12 +16,13 @@ import javafx.scene.text.Font;
 import java.util.Locale;
 
 public class Styles {
-    public final Background BROWN = new Background(new BackgroundFill(Color.rgb(181, 136, 107), CornerRadii.EMPTY, Insets.EMPTY));
-    public final Background WHITE = new Background(new BackgroundFill(Color.rgb(240, 222, 198), CornerRadii.EMPTY, Insets.EMPTY));
-    public final Background BROWN_GREEN = new Background(new BackgroundFill(Color.rgb(75, 179, 92), CornerRadii.EMPTY, Insets.EMPTY));
-    public final Background WHITE_GREEN = new Background(new BackgroundFill(Color.rgb(99, 214, 120), CornerRadii.EMPTY, Insets.EMPTY));
-    public final Background BROWN_YELLOW = new Background(new BackgroundFill(Color.rgb(219, 151, 34), CornerRadii.EMPTY, Insets.EMPTY));
-    public final Background WHITE_YELLOW = new Background(new BackgroundFill(Color.rgb(237, 177, 61), CornerRadii.EMPTY, Insets.EMPTY));
+
+    public final String BROWN = "-fx-background-color: #b5886b";
+    public final String WHITE = "-fx-background-color: #f0dec6";
+    public final String BROWN_GREEN = "-fx-background-color: #4bb35c";
+    public final String WHITE_GREEN = "-fx-background-color: #63d678";
+    public final String BROWN_YELLOW = "-fx-background-color: #db9722";
+    public final String WHITE_YELLOW = "-fx-background-color: #edb13d";
 
     public final String font = "Segoe UI";
     public final double size = 70;

@@ -20,6 +20,16 @@ public class SceneController {
         stage.show();
     }
 
+    public void switchToGame(ActionEvent event, Player white, Player black, boolean createMode) {
+        final GameScene gs = new GameScene(white, black);
+        GridPane gameScene = gs.createGameScene();
+        gs.setCreateMode(createMode);
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(gameScene);
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public void switchToMenu(ActionEvent event) {
         final MenuScene ms = new MenuScene();
         GridPane menuScene = ms.createMenuScene();

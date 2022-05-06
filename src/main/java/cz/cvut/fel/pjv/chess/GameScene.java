@@ -6,11 +6,9 @@ import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -28,6 +26,7 @@ public class GameScene extends GridPane {
     Thread timer;
     private GridPane boardTable;
     private Figure figureBeingMoved;
+    private boolean createMode = false;
 
     public GameScene(Player white, Player black) {
         this.white = white;
@@ -39,9 +38,6 @@ public class GameScene extends GridPane {
         Board test = new Board();
         test.initialPosition();
         figureBeingMoved = null;
-
-//        white = new LocalPlayer(MyColor.WHITE);
-//        black = new LocalPlayer(MyColor.BLACK);
 
         white.setCurrentPlayer(true);
         black.setCurrentPlayer(false);
@@ -73,15 +69,15 @@ public class GameScene extends GridPane {
         root.setMinSize(style.minWidth, style.minHeight);
 
         Clock clock = new Clock(white, black, timeWhite, timeBlack);
-        if (timer == null) {
-            timer = new Thread(clock);
-            timer.setDaemon(true);
-            timer.start();
-        } else {
-            white.setTimeLeft(25*60);
-            black.setTimeLeft((25*60));
-        }
+        timer = new Thread(clock);
+        timer.setDaemon(true);
+        timer.start();
+
         return root;
+    }
+
+    public void setCreateMode(boolean createMode) {
+        this.createMode = createMode;
     }
 
     private GridPane drawBoard(Board board) {
@@ -90,38 +86,43 @@ public class GameScene extends GridPane {
 
     private GridPane drawBoard(Board board, Set<Field> validMoves) {
         GridPane grid = new GridPane();
-        ColumnConstraints columnConstraints = new ColumnConstraints(style.size);
-        RowConstraints rowConstraints = new RowConstraints(style.size);
 
         Field figPos = figureBeingMoved != null ? figureBeingMoved.getPosition() : null;
         for (int r = 0; r <= Board.MAX_ROW; r++) {
-            grid.getColumnConstraints().add(columnConstraints);
-            grid.getRowConstraints().add(rowConstraints);
             for (int c = 0; c <= Board.MAX_COL; c++) {
                 final Field fieldPos = new Field(r, c);
-                StackPane field = new StackPane();
+                Label field = new Label();
+                field.setMinSize(style.size, style.size);
+                field.setMaxSize(style.size, style.size);
                 Figure fig = board.getFigure(fieldPos);
 
-                Background white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
-                Background brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
+                String white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
+                String brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
                 if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
                     white = fig.hasValidMoves() ? style.WHITE_YELLOW : style.WHITE;
                     brown = fig.hasValidMoves() ? style.BROWN_YELLOW : style.BROWN;
                 }
 
-                field.setBackground(((r + c) & 1) == 0 ? white : brown);
+                field.setStyle(((r + c) & 1) == 0 ? white : brown);
+
                 ImageView image = style.getImageFigure(fig);
                 if (image != null) {
-                    field.getChildren().add(image);
+                    field.setGraphic(image);
                 }
-                grid.add(field, c, r); // intentionally (c, r)
 
+                if (createMode) {
+                    field.setContextMenu(new CreateMenu(board, fieldPos));
+                }
+
+                grid.add(field, c, r); // intentionally (c, r)
                 field.setOnMouseClicked(evt -> {
-                    if (gc.getCurPlayer() instanceof LocalPlayer) {
-                        localPlayerMove(board, fieldPos, fig);
-                    }
-                    if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
-                        AIPlayerMove(board);
+                    if (evt.getButton() == MouseButton.PRIMARY) {
+                        if (gc.getCurPlayer() instanceof LocalPlayer) {
+                            localPlayerMove(board, fieldPos, fig);
+                        }
+                        if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
+                            AIPlayerMove(board);
+                        }
                     }
                 });
             }
@@ -167,8 +168,7 @@ public class GameScene extends GridPane {
         Label playerTime = style.newLabel(player.getTimeString(), 30);
         clockBox.setTop(playerName);
         clockBox.setCenter(playerTime);
-        clockBox.setBorder(new Border((new BorderStroke(Color.BLACK,
-            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))));
+        clockBox.setBorder(new Border((new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))));
         clockBox.setPadding(new Insets(10));
         return clockBox;
     }
@@ -182,6 +182,9 @@ public class GameScene extends GridPane {
         Button save = style.newButton("Save");
         Button load = style.newButton("Load");
         Button create = style.newButton("Create");
+
+        create.setOnAction(evt -> sceneController.switchToGame(evt, white, black, true));
+
         options.setSpacing(10);
         options.setPadding(new Insets(25, 0, 25, 0));
         options.getChildren().addAll(menu, restart, save, load, create);
@@ -209,10 +212,8 @@ public class GameScene extends GridPane {
         vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
 
         dialog.setOnCloseRequest(evt -> {
-                if (applyButton.isPressed())
-                    pawn.promotion(new Queen(pawn.getColor(), board));
-            }
-        );
+            if (applyButton.isPressed()) pawn.promotion(new Queen(pawn.getColor(), board));
+        });
         dialog.getDialogPane().setContent(vbox);
         dialog.showAndWait();
         dialog.close();
