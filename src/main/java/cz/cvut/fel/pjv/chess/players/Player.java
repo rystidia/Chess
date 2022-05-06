@@ -1,7 +1,9 @@
 package cz.cvut.fel.pjv.chess.players;
 
 import cz.cvut.fel.pjv.chess.Board;
+import cz.cvut.fel.pjv.chess.Field;
 import cz.cvut.fel.pjv.chess.MyColor;
+import cz.cvut.fel.pjv.chess.figures.Figure;
 
 /**
  * An abstract model of a player
@@ -76,7 +78,17 @@ public abstract class Player {
     /**
      * @return true if player hasValidMoves, false otherwise
      */
-    public boolean hasValidMoves() {
-        throw new UnsupportedOperationException();
+    public boolean hasNoValidMoves(Board board) {
+        boolean ret = false;
+        for (int r = 0; r <= Board.MAX_ROW && !ret; r++) {
+            for (int c = 0; c <= Board.MAX_COL && !ret; c++) {
+                Field field = new Field(r, c);
+                Figure fig = board.getFigure(field);
+                if (fig != null && fig.getColor() == getColor() && fig.hasValidMoves()) {
+                    ret = true;
+                }
+            }
+        }
+        return !ret;
     }
 }

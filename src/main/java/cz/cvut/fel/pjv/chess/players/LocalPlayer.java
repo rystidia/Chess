@@ -24,6 +24,7 @@ public class LocalPlayer extends Player {
 
     @Override
     public void makeMove(Board board) {
+
         throw new UnsupportedOperationException();
     }
 }

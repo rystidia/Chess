@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 public class MainFrame extends Application {
 
     private final Styles style = new Styles();
-    Thread timer;
 
     public static void main(String[] args) {
         launch();

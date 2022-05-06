@@ -29,5 +29,15 @@ public class GameController {
     public boolean isCurrentColor(MyColor color) {
         return white.isCurrentPlayer() ? color == MyColor.WHITE : color == MyColor.BLACK;
     }
+
+    public boolean isStaleMate(Board board){
+        Player curPlayer = getCurPlayer();
+        return curPlayer.hasNoValidMoves(board) && !board.getKing(curPlayer.getColor()).isInCheck();
+    }
+
+    public boolean isCheckMate(Board board){
+        Player curPlayer = getCurPlayer();
+        return curPlayer.hasNoValidMoves(board) && board.getKing(curPlayer.getColor()).isInCheck();
+    }
 }
 

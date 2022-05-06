@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.*;
+import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 import javafx.geometry.Insets;
@@ -21,12 +22,18 @@ public class GameScene extends GridPane {
 
     private final Styles style = new Styles();
     private final SceneController sceneController = new SceneController();
+    private final Player white;
+    private final Player black;
+    private final GameController gc;
+    Thread timer;
     private GridPane boardTable;
     private Figure figureBeingMoved;
-    private final Player white = new LocalPlayer(MyColor.WHITE);
-    private final Player black = new LocalPlayer(MyColor.BLACK);
-    private final GameController gc = new GameController(white, black);
-    Thread timer;
+
+    public GameScene(Player white, Player black) {
+        this.white = white;
+        this.black = black;
+        this.gc = new GameController(white, black);
+    }
 
     public GridPane createGameScene() {
         Board test = new Board();
@@ -65,11 +72,15 @@ public class GameScene extends GridPane {
         root.add(leftVertMenu, 1, 0, 1, 1);
         root.setMinSize(style.minWidth, style.minHeight);
 
-        if (timer != null) timer.stop();
         Clock clock = new Clock(white, black, timeWhite, timeBlack);
-        timer = new Thread(clock);
-        timer.setDaemon(true);
-        timer.start();
+        if (timer == null) {
+            timer = new Thread(clock);
+            timer.setDaemon(true);
+            timer.start();
+        } else {
+            white.setTimeLeft(25*60);
+            black.setTimeLeft((25*60));
+        }
         return root;
     }
 
@@ -106,30 +117,48 @@ public class GameScene extends GridPane {
                 grid.add(field, c, r); // intentionally (c, r)
 
                 field.setOnMouseClicked(evt -> {
-                    GridPane updatedBoard;
-                    if (fig != null && fig == figureBeingMoved) return;
-                    if (figureBeingMoved == null) {
-                        if (fig == null || !gc.isCurrentColor(fig.getColor()) || !fig.hasValidMoves()) return;
-                        figureBeingMoved = fig;
-                        Set<Field> figValidMoves = board.getValidMoves(fig);
-                        updatedBoard = drawBoard(board, figValidMoves);
-                    } else {
-                        Set<Field> movedFigureValidMoves = board.getValidMoves(figureBeingMoved);
-                        if (movedFigureValidMoves.contains(fieldPos)) {
-                            board.moveFigure(figureBeingMoved, fieldPos);
-                            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
-                                promotionDialog((Pawn) figureBeingMoved, board);
-                            }
-                            gc.switchCurPlayer();
-                            figureBeingMoved = null;
-                        }
-                        updatedBoard = drawBoard(board);
+                    if (gc.getCurPlayer() instanceof LocalPlayer) {
+                        localPlayerMove(board, fieldPos, fig);
                     }
-                    redrawBoard(updatedBoard);
+                    if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
+                        AIPlayerMove(board);
+                    }
                 });
             }
         }
         return grid;
+    }
+
+    private void AIPlayerMove(Board board) {
+        gc.getCurPlayer().makeMove(board);
+        gc.switchCurPlayer();
+        GridPane updatedBoard = drawBoard(board);
+        redrawBoard(updatedBoard);
+    }
+
+    private void localPlayerMove(Board board, Field fieldPos, Figure fig) {
+        GridPane updatedBoard;
+        if (fig != null && fig == figureBeingMoved) return;
+        if (figureBeingMoved == null) {
+            if (fig == null || !gc.isCurrentColor(fig.getColor()) || !fig.hasValidMoves()) return;
+            figureBeingMoved = fig;
+            Set<Field> figValidMoves = board.getValidMoves(fig);
+            updatedBoard = drawBoard(board, figValidMoves);
+        } else {
+            Set<Field> movedFigureValidMoves = board.getValidMoves(figureBeingMoved);
+            if (movedFigureValidMoves.contains(fieldPos)) {
+                board.moveFigure(figureBeingMoved, fieldPos);
+                if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
+                    promotionDialog((Pawn) figureBeingMoved, board);
+                }
+                gc.switchCurPlayer();
+                figureBeingMoved = null;
+            } else {
+                return;
+            }
+            updatedBoard = drawBoard(board);
+        }
+        redrawBoard(updatedBoard);
     }
 
     private BorderPane newClockBox(Player player) {
@@ -149,7 +178,7 @@ public class GameScene extends GridPane {
         Button menu = style.newButton("Menu");
         menu.setOnAction(sceneController::switchToMenu);
         Button restart = style.newButton("Restart");
-        restart.setOnAction(sceneController::switchToGame);
+        restart.setOnAction(evt -> sceneController.switchToGame(evt, white, black));
         Button save = style.newButton("Save");
         Button load = style.newButton("Load");
         Button create = style.newButton("Create");

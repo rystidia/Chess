@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.chess;
 
+import cz.cvut.fel.pjv.chess.players.Player;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -10,8 +11,8 @@ public class SceneController {
     private Stage stage;
     private Scene scene;
 
-    public void switchToGame(ActionEvent event) {
-        final GameScene gs = new GameScene();
+    public void switchToGame(ActionEvent event, Player white, Player black) {
+        final GameScene gs = new GameScene(white, black);
         GridPane gameScene = gs.createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(gameScene);

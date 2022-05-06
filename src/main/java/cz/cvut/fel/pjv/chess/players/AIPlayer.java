@@ -5,6 +5,8 @@ import cz.cvut.fel.pjv.chess.Field;
 import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.figures.Figure;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -29,20 +31,27 @@ public class AIPlayer extends Player {
 
     @Override
     public void makeMove(Board board) {
-        Random rndm = new Random();
+        List<Figure> figs = getMovableFigures(board);
+        Random random = new Random();
+        int randomFig = random.nextInt(figs.size());
+        Figure fig = figs.get(randomFig);
+        Set<Field> valMoves = board.getValidMoves(fig);
+        Field[] valMovesArray = valMoves.toArray(new Field[0]);
+        int rNumber = random.nextInt(valMoves.size());
+        board.moveFigure(fig, valMovesArray[rNumber]);
+    }
+
+    private List<Figure> getMovableFigures(Board board) {
+        List<Figure> figs = new ArrayList<>();
         for (int r = 0; r <= Board.MAX_ROW; r++) {
             for (int c = 0; c <= Board.MAX_COL; c++) {
                 Field field = new Field(r, c);
                 Figure fig = board.getFigure(field);
-                if (fig != null && fig.getColor() == getColor()){
-                    Set<Field> valMoves = board.getValidMoves(fig);
-                    if (valMoves.size() == 0) continue;
-                    Field[] valMovesArray = valMoves.toArray(new Field[0]);
-                    int rNumber = rndm.nextInt(valMoves.size());
-                    board.moveFigure(fig, valMovesArray[rNumber]);
-                    return;
+                if (fig != null && fig.getColor() == getColor() && fig.hasValidMoves()) {
+                    figs.add(fig);
                 }
             }
         }
+        return figs;
     }
 }
