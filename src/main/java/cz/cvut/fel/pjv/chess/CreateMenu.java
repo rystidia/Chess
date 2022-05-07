@@ -41,8 +41,16 @@ public class CreateMenu extends ContextMenu {
             a.setContentText("The maximum number of figures of the same color is 16.");
             a.show();
             return;
-        } else if (figure != null && board.getNumOfSameFigs(figure) > 7) {
-            a.setContentText("The maximum number of figures of the same type is 8.");
+        } else if (figure instanceof Pawn && board.getNumOfSameFigs(figure) > 7) {
+            a.setContentText("The maximum number of pawns of the same color is 8.");
+            a.show();
+            return;
+        } else if (figure instanceof Pawn && ((figure.getColor() == MyColor.WHITE && toPos.row == 7) || (figure.getColor() == MyColor.BLACK && toPos.row == 0))) {
+            a.setContentText("A pawn cannot be placed here.");
+            a.show();
+            return;
+        } else if (figure != null && !board.canPlaceFigure(figure)) {
+            a.setContentText("The number of promoted pawns must be greater than or equal to the number of additional pieces.");
             a.show();
             return;
         }

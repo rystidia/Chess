@@ -112,7 +112,7 @@ public class Board {
         return newBoard;
     }
 
-    public int getNumOfFigs(MyColor color){
+    public int getNumOfFigs(MyColor color) {
         int ret = 0;
         for (Figure[] row : board) {
             for (Figure fig : row) {
@@ -123,7 +123,7 @@ public class Board {
         return ret;
     }
 
-    public int getNumOfSameFigs(Figure figure){
+    public int getNumOfSameFigs(Figure figure) {
         int ret = 0;
         for (Figure[] row : board) {
             for (Figure fig : row) {
@@ -132,5 +132,17 @@ public class Board {
             }
         }
         return ret;
+    }
+
+    public boolean canPlaceFigure(Figure figure) {
+        MyColor c = figure.getColor();
+        int extraKnights = Math.max(getNumOfSameFigs(new Knight(c, null)) - 2, 0);
+        int extraBishops = Math.max(getNumOfSameFigs(new Bishop(c, null)) - 2, 0);
+        int extraQueens = Math.max(getNumOfSameFigs(new Queen(c, null)) - 1, 0);
+        int extraRooks = Math.max(getNumOfSameFigs(new Rook(c, null)) - 2, 0);
+        int extraFigs = extraRooks + extraQueens + extraBishops + extraKnights;
+        System.out.println(extraFigs);
+        System.out.println(8 - getNumOfSameFigs(new Pawn(c, null)));
+        return extraFigs < 8 - getNumOfSameFigs(new Pawn(c, null));
     }
 }
