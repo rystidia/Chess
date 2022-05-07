@@ -24,13 +24,15 @@ public class GameScene extends GridPane {
     private final Player black;
     private final GameController gc;
     Thread timer;
+    private Board board;
     private GridPane boardTable;
     private Figure figureBeingMoved;
     private boolean createMode = false;
 
-    public GameScene(Player white, Player black) {
+    public GameScene(Player white, Player black, Board board) {
         this.white = white;
         this.black = black;
+        this.board = board;
         this.gc = new GameController(white, black);
     }
 
@@ -42,8 +44,10 @@ public class GameScene extends GridPane {
     }
 
     public GridPane createGameScene() {
-        Board test = new Board();
-        test.initialPosition();
+        if (board == null) {
+            board = new Board();
+            board.initialPosition();
+        }
         figureBeingMoved = null;
 
         white.setCurrentPlayer(true);
@@ -58,7 +62,7 @@ public class GameScene extends GridPane {
             table.add(style.newColLabel(i), i + 1, 0, 1, 1);
             table.add(style.newColLabel(i), i + 1, 9, 1, 1);
         }
-        boardTable = drawBoard(test);
+        boardTable = drawBoard(board);
         table.add(boardTable, 1, 1, 8, 8);
         table.setAlignment(Pos.CENTER);
 
@@ -83,10 +87,6 @@ public class GameScene extends GridPane {
         return root;
     }
 
-    public void setCreateMode(boolean createMode) {
-        this.createMode = createMode;
-    }
-
     private GridPane drawBoard(Board board) {
         return drawBoard(board, new HashSet<>());
     }
@@ -103,13 +103,19 @@ public class GameScene extends GridPane {
                 field.setMaxSize(style.size, style.size);
                 Figure fig = board.getFigure(fieldPos);
 
-                String white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
-                String brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
-                if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
-                    white = fig.hasValidMoves() ? style.WHITE_YELLOW : style.WHITE;
-                    brown = fig.hasValidMoves() ? style.BROWN_YELLOW : style.BROWN;
+                String white;
+                String brown;
+                if (!createMode) {
+                    white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
+                    brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
+                    if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
+                        white = fig.hasValidMoves() ? style.WHITE_YELLOW : style.WHITE;
+                        brown = fig.hasValidMoves() ? style.BROWN_YELLOW : style.BROWN;
+                    }
+                } else {
+                    white = Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
+                    brown = Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
                 }
-
                 field.setStyle(((r + c) & 1) == 0 ? white : brown);
 
                 ImageView image = style.getImageFigure(fig);
@@ -123,16 +129,30 @@ public class GameScene extends GridPane {
                     field.setOnContextMenuRequested(e -> cm.show(field, e.getScreenX(), e.getScreenY()));
                 }
 
-
                 grid.add(field, c, r); // intentionally (c, r)
 
                 field.setOnMouseClicked(evt -> {
                     if (evt.getButton() == MouseButton.PRIMARY) {
-                        if (gc.getCurPlayer() instanceof LocalPlayer) {
-                            localPlayerMove(board, fieldPos, fig);
-                        }
-                        if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
-                            AIPlayerMove(board);
+                        if (!createMode) {
+                            if (gc.getCurPlayer() instanceof LocalPlayer) {
+                                localPlayerMove(board, fieldPos, fig);
+                            }
+                            if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
+                                AIPlayerMove(board);
+                            }
+                        } else {
+                            if (fig != null && fig == figureBeingMoved) return;
+                            if (figureBeingMoved == null) {
+                                if (fig == null) return;
+                                figureBeingMoved = fig;
+                            } else {
+                                board.moveFigure(figureBeingMoved, fieldPos);
+                                if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
+                                    promotionDialog((Pawn) figureBeingMoved, board);
+                                }
+                                figureBeingMoved = null;
+                            }
+                            redrawBoard(drawBoard(board));
                         }
                     }
                 });
@@ -188,15 +208,20 @@ public class GameScene extends GridPane {
         VBox options = new VBox();
         Button menu = style.newButton("Menu");
         menu.setOnAction(sceneController::switchToMenu);
-        Button restart = style.newButton("Restart");
-        restart.setOnAction(evt -> sceneController.switchToGame(evt, white, black));
+        Button restart;
+        if (!createMode) {
+            restart = style.newButton("Restart");
+            restart.setOnAction(evt -> sceneController.switchToGame(evt, white, black));
+        } else {
+            restart = style.newButton("Start");
+            restart.setStyle("-fx-background-color: #e8b5b5");
+            restart.setOnAction(evt -> sceneController.switchToGame(evt, white, black, board));
+        }
         Button save = style.newButton("Save");
         Button load = style.newButton("Load");
         Button create = style.newButton("Create");
-
         create.setOnAction(evt -> sceneController.switchToGame(evt, white, black, true));
-
-        options.setSpacing(10);
+        options.setSpacing(15);
         options.setPadding(new Insets(25, 0, 25, 0));
         options.getChildren().addAll(menu, restart, save, load, create);
         return options;

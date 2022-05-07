@@ -111,4 +111,26 @@ public class Board {
         newBoard.moveFigure(newFig, toPos);
         return newBoard;
     }
+
+    public int getNumOfFigs(MyColor color){
+        int ret = 0;
+        for (Figure[] row : board) {
+            for (Figure fig : row) {
+                if (fig != null && fig.getColor() == color)
+                    ret++;
+            }
+        }
+        return ret;
+    }
+
+    public int getNumOfSameFigs(Figure figure){
+        int ret = 0;
+        for (Figure[] row : board) {
+            for (Figure fig : row) {
+                if (fig != null && fig.getColor() == figure.getColor() && fig.getClass().getSimpleName().equals(figure.getClass().getSimpleName()))
+                    ret++;
+            }
+        }
+        return ret;
+    }
 }

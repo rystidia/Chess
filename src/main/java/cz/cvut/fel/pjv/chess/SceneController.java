@@ -15,8 +15,17 @@ public class SceneController {
         switchToGame(event, white, black, false);
     }
 
+    public void switchToGame(ActionEvent event, Player white, Player black, Board board) {
+        final GameScene gs = new GameScene(white, black, board);
+        goToGameScene(event, gs);
+    }
+
     public void switchToGame(ActionEvent event, Player white, Player black, boolean createMode) {
         final GameScene gs = new GameScene(white, black, createMode);
+        goToGameScene(event, gs);
+    }
+
+    public void goToGameScene(ActionEvent event, GameScene gs){
         GridPane gameScene = gs.createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(gameScene);

@@ -3,10 +3,10 @@ package cz.cvut.fel.pjv.chess;
 import cz.cvut.fel.pjv.chess.figures.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 
 public class CreateMenu extends ContextMenu {
     private final Styles style = new Styles();
@@ -30,6 +30,24 @@ public class CreateMenu extends ContextMenu {
     }
 
     private void setFigure(Figure figure, Field toPos, Label field) {
+        Figure fig = board.getFigure(toPos);
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(" ");
+        a.setHeaderText(figure != null ? "Cannot place figure." : "Cannot remove figure");
+
+        if (fig instanceof King) {
+            a.setContentText("Each Player must have a King.");
+            a.show();
+            return;
+        } else if (figure != null && board.getNumOfFigs(figure.getColor()) > 15) {
+            a.setContentText("The maximum number of figures of the same color is 16.");
+            a.show();
+            return;
+        } else if (figure != null && board.getNumOfSameFigs(figure) > 7) {
+            a.setContentText("The maximum number of figures of the same type is 8.");
+            a.show();
+            return;
+        }
         board.setFigure(toPos, figure);
         field.setGraphic(style.getImageFigure(figure));
     }

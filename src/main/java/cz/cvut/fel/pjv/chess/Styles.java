@@ -1,16 +1,11 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.Locale;
@@ -36,6 +31,8 @@ public class Styles {
 
     public Button newButton(String label) {
         Button button = new Button(label);
+        button.setMinWidth(130);
+        button.setMinHeight(55);
         button.setFont(new Font(font, 20));
         button.setAlignment(Pos.BASELINE_LEFT);
         button.setStyle("-fx-background-color: #e8e8e8");
