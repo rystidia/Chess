@@ -6,15 +6,15 @@ import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class GameScene extends GridPane {
 
@@ -210,32 +210,33 @@ public class GameScene extends GridPane {
     }
 
     public void promotionDialog(Pawn pawn, Board board) {
-        Dialog<String> dialog = new Dialog<>();
+        Dialog<Class<? extends Figure>> dialog = new Dialog<>();
         dialog.setTitle("Promotion");
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.APPLY);
-        Button applyButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-        applyButton.setVisible(false);
+        dialog.setContentText("Promote the pawn to:");
 
-        VBox vbox = new VBox();
-        vbox.getChildren().add(newPromotionButton(new Queen(pawn.getColor(), board), pawn, applyButton));
-        vbox.getChildren().add(newPromotionButton(new Knight(pawn.getColor(), board), pawn, applyButton));
-        vbox.getChildren().add(newPromotionButton(new Rook(pawn.getColor(), board), pawn, applyButton));
-        vbox.getChildren().add(newPromotionButton(new Bishop(pawn.getColor(), board), pawn, applyButton));
+        // Allow closing the dialog (https://stackoverflow.com/a/32058500)
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+        closeButton.managedProperty().bind(closeButton.visibleProperty());
+        closeButton.setVisible(false);
 
-        dialog.setOnCloseRequest(evt -> {
-            if (applyButton.isPressed()) pawn.promotion(new Queen(pawn.getColor(), board));
-        });
-        dialog.getDialogPane().setContent(vbox);
-        dialog.showAndWait();
-        dialog.close();
-    }
+        final List<Class<? extends Figure>> possiblePromFigClasses = Arrays.asList(Queen.class, Knight.class, Rook.class, Bishop.class);
+        final Map<ButtonType, Class<? extends Figure>> figClassByBtnType = new HashMap<>();
+        for (Class<? extends Figure> figClass : possiblePromFigClasses) {
+            ButtonType btnType = new ButtonType(figClass.getSimpleName());
+            dialog.getDialogPane().getButtonTypes().add(btnType);
+            figClassByBtnType.put(btnType, figClass);
+        }
+        dialog.setResultConverter(figClassByBtnType::get);
 
-    public Button newPromotionButton(Figure figure, Pawn pawn, Button applyButton) {
-        Button button = style.newButton(figure.getClass().getSimpleName());
-        button.setOnAction(e -> {
-            pawn.promotion(figure);
-            applyButton.fire();
-        });
-        return button;
+        Optional<Class<? extends Figure>> result = dialog.showAndWait();
+        try {
+            pawn.promotion(result
+                .orElse(Queen.class)
+                .getConstructor(MyColor.class, Board.class)
+                .newInstance(pawn.getColor(), board));
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
