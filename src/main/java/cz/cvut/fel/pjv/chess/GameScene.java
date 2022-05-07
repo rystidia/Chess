@@ -34,6 +34,13 @@ public class GameScene extends GridPane {
         this.gc = new GameController(white, black);
     }
 
+    public GameScene(Player white, Player black, boolean createMode) {
+        this.white = white;
+        this.black = black;
+        this.createMode = createMode;
+        this.gc = new GameController(white, black);
+    }
+
     public GridPane createGameScene() {
         Board test = new Board();
         test.initialPosition();
@@ -111,10 +118,14 @@ public class GameScene extends GridPane {
                 }
 
                 if (createMode) {
-                    field.setContextMenu(new CreateMenu(board, fieldPos));
+                    ContextMenu cm = new CreateMenu(board, fieldPos, field);
+                    field.setContextMenu(cm);
+                    field.setOnContextMenuRequested(e -> cm.show(field, e.getScreenX(), e.getScreenY()));
                 }
 
+
                 grid.add(field, c, r); // intentionally (c, r)
+
                 field.setOnMouseClicked(evt -> {
                     if (evt.getButton() == MouseButton.PRIMARY) {
                         if (gc.getCurPlayer() instanceof LocalPlayer) {
