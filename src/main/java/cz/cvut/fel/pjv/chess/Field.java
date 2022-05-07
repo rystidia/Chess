@@ -20,7 +20,7 @@ public class Field {
      *
      * @param row    a rank in the board
      * @param column a file in the board encoded by integer
-     * @throws IllegalArgumentException if the given coordinates are not inside the board
+     * @throws FieldOutOfRangeException if the given coordinates are not inside the board
      */
     public Field(int row, int column) throws FieldOutOfRangeException {
         if (row >= 0 && row <= Board.MAX_ROW) {
@@ -61,5 +61,24 @@ public class Field {
     @Override
     public String toString() {
         return "(" + row + ", " + column + ")";
+    }
+
+    public String toAlgebraicNotation() {
+        return (char)('a' + column) + Integer.toString(1 + (Board.MAX_ROW - row));
+    }
+
+    public static Field fromAlgebraicNotation(String algNotation) {
+        if (algNotation.length() != 2) {
+            throw new IllegalArgumentException("invalid square AN: expected 2 chars, got " + algNotation.length() + " chars");
+        }
+        char colChar = algNotation.charAt(0);
+        char rowChar = algNotation.charAt(1);
+        if (colChar < 'a' || (colChar - 'a') > Board.MAX_COL) {
+            throw new IllegalArgumentException("invalid square AN: expected first char to be in [a-" + ('a' + Board.MAX_COL) + "], got '" + colChar + "'");
+        }
+        if (rowChar < '1' || (rowChar - '1') > Board.MAX_ROW) {
+            throw new IllegalArgumentException("invalid square AN: expected second char to be in [1-" + ('1' + Board.MAX_ROW) + "], got '" + rowChar + "'");
+        }
+        return new Field(Board.MAX_ROW - (rowChar - '1'), colChar - 'a');
     }
 }
