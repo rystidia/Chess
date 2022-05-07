@@ -19,13 +19,11 @@ public class CreateMenu extends ContextMenu {
         getItems().add(new CreateMenuOption("Add White Bishop", e -> setFigure(new Bishop(MyColor.WHITE, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add White Knight", e -> setFigure(new Knight(MyColor.WHITE, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add White Rook", e -> setFigure(new Rook(MyColor.WHITE, board), toPos, field)));
-        getItems().add(new CreateMenuOption("Add White King", e -> setFigure(new King(MyColor.WHITE, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add White Pawn", e -> setFigure(new Pawn(MyColor.WHITE, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add Black Queen", e -> setFigure(new Queen(MyColor.BLACK, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add Black Bishop", e -> setFigure(new Bishop(MyColor.BLACK, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add Black Knight", e -> setFigure(new Knight(MyColor.BLACK, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add Black Rook", e -> setFigure(new Rook(MyColor.BLACK, board), toPos, field)));
-        getItems().add(new CreateMenuOption("Add Black King", e -> setFigure(new King(MyColor.BLACK, board), toPos, field)));
         getItems().add(new CreateMenuOption("Add Black Pawn", e -> setFigure(new Pawn(MyColor.BLACK, board), toPos, field)));
     }
 
