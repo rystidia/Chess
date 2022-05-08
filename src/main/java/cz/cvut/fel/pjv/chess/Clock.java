@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 public class Clock implements Runnable {
     private final Player white;
     private final Player black;
+    private volatile boolean shutdown = false;
 
     private final BorderPane timeWhite;
     private final BorderPane timeBlack;
@@ -33,7 +34,7 @@ public class Clock implements Runnable {
     @Override
     public void run() {
         boolean gameFinished = false;
-        while (!gameFinished) {
+        while (!gameFinished && !shutdown) {
             synchronized (this) {
                 if (white.isCurrentPlayer()) {
                     white.setTimeLeft(white.getTimeLeft() - 1);
@@ -62,6 +63,10 @@ public class Clock implements Runnable {
                 gameFinished = true;
             }
         }
+    }
+
+    public void shutdown() {
+        shutdown = true;
     }
 
     public void redrawClockBox(Player player){

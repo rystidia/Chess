@@ -23,7 +23,7 @@ public class GameScene extends GridPane {
     private final Player white;
     private final Player black;
     private final GameController gc;
-    Thread timer;
+    Clock clock;
     private Board board;
     private GridPane boardTable;
     private Figure figureBeingMoved;
@@ -79,10 +79,16 @@ public class GameScene extends GridPane {
         root.add(leftVertMenu, 1, 0, 1, 1);
         root.setMinSize(style.minWidth, style.minHeight);
 
-        Clock clock = new Clock(white, black, timeWhite, timeBlack);
-        timer = new Thread(clock);
+        if (clock != null) {
+            clock.shutdown();
+        }
+        clock = new Clock(white, black, timeWhite, timeBlack);
+        Thread timer = new Thread(clock);
+        timer.setPriority(Thread.MAX_PRIORITY);
         timer.setDaemon(true);
-        timer.start();
+        if (!createMode) {
+            timer.start();
+        }
 
         return root;
     }
@@ -211,20 +217,35 @@ public class GameScene extends GridPane {
         Button restart;
         if (!createMode) {
             restart = style.newButton("Restart");
-            restart.setOnAction(evt -> sceneController.switchToGame(evt, white, black));
+            restart.setOnAction(evt -> {
+                stopClock();
+                sceneController.switchToGame(evt, white, black);
+            });
         } else {
             restart = style.newButton("Start");
             restart.setStyle("-fx-background-color: #e8b5b5");
-            restart.setOnAction(evt -> sceneController.switchToGame(evt, white, black, board));
+            restart.setOnAction(evt -> {
+                stopClock();
+                sceneController.switchToGame(evt, white, black, board);
+            });
         }
         Button save = style.newButton("Save");
         Button load = style.newButton("Load");
         Button create = style.newButton("Create");
-        create.setOnAction(evt -> sceneController.switchToGame(evt, white, black, true));
+        create.setOnAction(evt -> {
+            stopClock();
+            sceneController.switchToGame(evt, white, black, true);
+        });
         options.setSpacing(15);
         options.setPadding(new Insets(25, 0, 25, 0));
         options.getChildren().addAll(menu, restart, save, load, create);
         return options;
+    }
+
+    private void stopClock() {
+        if (clock != null) {
+            clock.shutdown();
+        }
     }
 
     private void redrawBoard(GridPane newBoardTable) {
