@@ -150,8 +150,6 @@ public class Board {
         int extraQueens = Math.max(getNumOfSameFigs(new Queen(c, null)) - 1, 0);
         int extraRooks = Math.max(getNumOfSameFigs(new Rook(c, null)) - 2, 0);
         int extraFigs = extraRooks + extraQueens + extraBishops + extraKnights;
-        System.out.println(extraFigs);
-        System.out.println(8 - getNumOfSameFigs(new Pawn(c, null)));
         return extraFigs < 8 - getNumOfSameFigs(new Pawn(c, null));
     }
 }

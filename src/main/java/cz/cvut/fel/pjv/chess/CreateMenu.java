@@ -54,6 +54,14 @@ public class CreateMenu extends ContextMenu {
             a.show();
             return;
         }
+        Board newBoard = new Board(board);
+        newBoard.setFigure(toPos, figure);
+        if (newBoard.getKing(MyColor.WHITE).isInCheck() || newBoard.getKing(MyColor.BLACK).isInCheck()) {
+            a.setContentText("The king must not be in check after placing/removing a piece.");
+            a.show();
+            return;
+
+        }
         board.setFigure(toPos, figure);
         field.setGraphic(style.getImageFigure(figure));
     }

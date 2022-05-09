@@ -108,10 +108,10 @@ public class AIPlayer extends Player {
 
     private float minValue(Board b, ArrayList<Pair<Figure, Field>> state, float alpha, float beta, int depth) {
         if(depth > maxDepth)
-            return eval1(b, state, getOppositeColor(getColor()));
+            return eval1(b, state, MyColor.getOppositeColor(getColor()));
 
         Board newBoard = simulateAllMoves(state, b);
-        List<Pair<Figure, Field>> moves = getAllMoves(newBoard, getOppositeColor(getColor()));
+        List<Pair<Figure, Field>> moves = getAllMoves(newBoard, MyColor.getOppositeColor(getColor()));
 
         if(moves.size() == 0) // TODO add draw
             return Float.POSITIVE_INFINITY;
@@ -222,9 +222,5 @@ public class AIPlayer extends Player {
             case "King" -> 900;
             default -> 0;
         };
-    }
-
-    private MyColor getOppositeColor(MyColor color){
-        return color == MyColor.WHITE ? MyColor.BLACK : MyColor.WHITE;
     }
 }
