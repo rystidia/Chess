@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.chess.figures.*;
 import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -168,10 +169,14 @@ public class GameScene extends GridPane {
     }
 
     private void AIPlayerMove(Board board) {
-        gc.getCurPlayer().makeMove(board);
-        gc.switchCurPlayer();
-        GridPane updatedBoard = drawBoard(board);
-        redrawBoard(updatedBoard);
+        new Thread(() -> {
+            gc.getCurPlayer().makeMove(board);
+            gc.switchCurPlayer();
+            Platform.runLater(() -> {
+                GridPane updatedBoard = drawBoard(board);
+                redrawBoard(updatedBoard);
+            });
+        }).start();
     }
 
     private void localPlayerMove(Board board, Field fieldPos, Figure fig) {

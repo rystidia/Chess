@@ -7,6 +7,7 @@ import cz.cvut.fel.pjv.chess.figures.Figure;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -146,7 +147,6 @@ public class AIPlayer extends Player {
                 Future<Float> result = exec.submit(() -> {
                     ArrayList<Pair<Figure, Field>> state = new ArrayList<>();
                     state.add(move);
-
                     return minValue(b, state, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 1);
                 });
                 costs.set(i, result);
