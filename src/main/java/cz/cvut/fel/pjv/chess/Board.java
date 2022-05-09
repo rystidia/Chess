@@ -19,6 +19,8 @@ public class Board {
     public static final int MAX_COL = 7;
 
     private final Figure[][] board;
+    private King whiteKing;
+    private King blackKing;
 
     /**
      * Initializes the board
@@ -96,10 +98,17 @@ public class Board {
     }
 
     public King getKing(MyColor color) {
+        if (whiteKing != null && color ==MyColor.WHITE) return whiteKing;
+        if (blackKing != null && color == MyColor.BLACK) return blackKing;
+        King king;
         for (Figure[] row : board) {
             for (Figure fig : row) {
-                if (fig instanceof King && fig.getColor() == color)
+                if (fig instanceof King && fig.getColor() == color) {
+                    king = (King) fig;
+                    if (color == MyColor.WHITE && whiteKing == null) whiteKing = king;
+                    if (color == MyColor.BLACK && blackKing == null) blackKing = king;
                     return (King) fig;
+                }
             }
         }
         return null;

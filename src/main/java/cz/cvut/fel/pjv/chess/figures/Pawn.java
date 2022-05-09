@@ -48,7 +48,8 @@ public class Pawn extends Figure {
             }
         }
         if (isFirstMove()) {
-            addValidMoveIfNull(validMoves, 2 * dir, 0);
+            if (board.getFigure(getPosition().plus(1, 0)) == null)
+                addValidMoveIfNull(validMoves, 2 * dir, 0);
         }
         return validMoves;
     }
@@ -109,7 +110,7 @@ public class Pawn extends Figure {
     }
 
     public boolean moveLeadsToPromotion(Field dest) {
-        return (getColor() == MyColor.WHITE && (dest.row == 0 || getPosition().row == 0)) || (getColor() == MyColor.BLACK && (dest.row == 7|| getPosition().row == 7));
+        return (getColor() == MyColor.WHITE && (dest.row == 0 || getPosition().row == 0)) || (getColor() == MyColor.BLACK && (dest.row == 7 || getPosition().row == 7));
     }
 
 }
