@@ -4,6 +4,8 @@ import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Field;
 import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.figures.Figure;
+import cz.cvut.fel.pjv.chess.figures.Pawn;
+import cz.cvut.fel.pjv.chess.figures.Queen;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -39,7 +41,14 @@ public class AIPlayer extends Player {
     @Override
     public void makeMove(Board board) {
         Pair<Figure, Field> decision = decision(board);
-        board.moveFigure(decision.getKey(), decision.getValue());
+        Figure figure = decision.getKey();
+        Field toPos = decision.getValue();
+        board.moveFigure(figure, toPos);
+        if (figure instanceof Pawn){
+            if ((figure.getColor() == MyColor.WHITE && toPos.row == 0) || (figure.getColor() == MyColor.BLACK && toPos.row == 7)){
+                ((Pawn)figure).promotion(new Queen(figure.getColor(), board));
+            }
+        }
     }
 
     private List<Figure> getMovableFigures(Board board) {

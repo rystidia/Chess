@@ -157,13 +157,10 @@ public class GameScene extends GridPane {
                         }
                     } else {
                         if (fig != null && fig == figureBeingMoved) {
-                            System.out.println("fig == figureBeingMoved");
                             return;
                         }
                         if (figureBeingMoved == null) {
                             if (fig == null) {
-                                System.out.println(fieldPos);
-                                System.out.println("fig is null");
                                 return;
                             }
                             figureBeingMoved = fig;
