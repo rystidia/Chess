@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.chess;
 
+import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 
 public class GameController {
@@ -7,9 +8,21 @@ public class GameController {
     private final Player white;
     private final Player black;
 
-    public GameController(Player white, Player black) {
+    private final Board board;
+    private final GameScene game;
+
+
+    public GameController(Player white, Player black, GameScene game, Board board) {
         this.white = white;
         this.black = black;
+        this.game = game;
+        this.board = board;
+    }
+
+    public void start(){
+        if (getCurPlayer() instanceof AIPlayer){
+            game.AIPlayerMove(board);
+        }
     }
 
     public Player getCurPlayer() {

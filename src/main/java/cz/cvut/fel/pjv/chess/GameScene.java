@@ -23,8 +23,8 @@ public class GameScene extends GridPane {
     private final SceneController sceneController = new SceneController();
     private final Player white;
     private final Player black;
-    private final GameController gc;
     Clock clock;
+    private GameController gc;
     private Board board;
     private GridPane boardTable;
     private Figure figureBeingMoved;
@@ -34,14 +34,12 @@ public class GameScene extends GridPane {
         this.white = white;
         this.black = black;
         this.board = board;
-        this.gc = new GameController(white, black);
     }
 
     public GameScene(Player white, Player black, boolean createMode) {
         this.white = white;
         this.black = black;
         this.createMode = createMode;
-        this.gc = new GameController(white, black);
     }
 
     public GridPane createGameScene() {
@@ -49,6 +47,9 @@ public class GameScene extends GridPane {
             board = new Board();
             board.initialPosition();
         }
+
+        gc = new GameController(white, black, this, board);
+
         figureBeingMoved = null;
 
         white.setCurrentPlayer(true);
@@ -90,6 +91,7 @@ public class GameScene extends GridPane {
         if (!createMode) {
             timer.start();
         }
+        gc.start();
 
         return root;
     }
@@ -106,63 +108,73 @@ public class GameScene extends GridPane {
             for (int c = 0; c <= Board.MAX_COL; c++) {
                 final Field fieldPos = new Field(r, c);
                 Label field = new Label();
-                field.setMinSize(style.size, style.size);
-                field.setMaxSize(style.size, style.size);
-                Figure fig = board.getFigure(fieldPos);
-
-                String white;
-                String brown;
-                if (!createMode) {
-                    white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
-                    brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
-                    if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
-                        white = fig.hasValidMoves() ? style.WHITE_YELLOW : style.WHITE;
-                        brown = fig.hasValidMoves() ? style.BROWN_YELLOW : style.BROWN;
-                    }
-                } else {
-                    white = Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
-                    brown = Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
-                }
-                field.setStyle(((r + c) & 1) == 0 ? white : brown);
-
-                ImageView image = style.getImageFigure(fig);
-                if (image != null) {
-                    field.setGraphic(image);
-                }
 
                 if (createMode) {
                     ContextMenu cm = new CreateMenu(board, fieldPos, field);
-                    field.setContextMenu(cm);
-                    field.setOnContextMenuRequested(e -> cm.show(field, e.getScreenX(), e.getScreenY()));
+                    if (figureBeingMoved == null) {
+                        field.setContextMenu(cm);
+                        field.setOnContextMenuRequested(e -> cm.show(field, e.getScreenX(), e.getScreenY()));
+                    }
                 }
 
-                grid.add(field, c, r); // intentionally (c, r)
+                field.setMinSize(style.size, style.size);
+                field.setMaxSize(style.size, style.size);
+                {
+                    final Figure fig = board.getFigure(fieldPos);
+
+                    String white;
+                    String brown;
+                    if (!createMode) {
+                        white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
+                        brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
+                        if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
+                            white = fig.hasValidMoves() ? style.WHITE_YELLOW : style.WHITE;
+                            brown = fig.hasValidMoves() ? style.BROWN_YELLOW : style.BROWN;
+                        }
+                    } else {
+                        white = Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
+                        brown = Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
+                    }
+                    field.setStyle(((r + c) & 1) == 0 ? white : brown);
+
+                    ImageView image = style.getImageFigure(fig);
+                    if (image != null) {
+                        field.setGraphic(image);
+                    }
+
+                    grid.add(field, c, r); // intentionally (c, r)
+                }
 
                 field.setOnMouseClicked(evt -> {
-                    if (evt.getButton() == MouseButton.PRIMARY) {
-                        if (!createMode) {
-                            if (gc.getCurPlayer() instanceof LocalPlayer && gc.isCurrentColor(gc.getCurPlayer().getColor())) {
-                                System.out.println("Local");
-                                localPlayerMove(board, fieldPos, fig);
-                            }
-                            if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
-                                System.out.println("AI");
-                                AIPlayerMove(board);
-                            }
-                        } else {
-                            if (fig != null && fig == figureBeingMoved) return;
-                            if (figureBeingMoved == null) {
-                                if (fig == null) return;
-                                figureBeingMoved = fig;
-                            } else {
-                                board.moveFigure(figureBeingMoved, fieldPos);
-                                if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
-                                    promotionDialog((Pawn) figureBeingMoved, board);
-                                }
-                                figureBeingMoved = null;
-                            }
-                            redrawBoard(drawBoard(board));
+                    if (evt.getButton() != MouseButton.PRIMARY) return;
+                    Figure fig = board.getFigure(fieldPos);
+                    if (!createMode) {
+                        if (gc.getCurPlayer() instanceof LocalPlayer && gc.isCurrentColor(gc.getCurPlayer().getColor())) {
+                            localPlayerMove(board, fieldPos, fig);
                         }
+                        if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
+                            AIPlayerMove(board);
+                        }
+                    } else {
+                        if (fig != null && fig == figureBeingMoved) {
+                            System.out.println("fig == figureBeingMoved");
+                            return;
+                        }
+                        if (figureBeingMoved == null) {
+                            if (fig == null) {
+                                System.out.println(fieldPos);
+                                System.out.println("fig is null");
+                                return;
+                            }
+                            figureBeingMoved = fig;
+                        } else {
+                            board.moveFigure(figureBeingMoved, fieldPos);
+                            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
+                                promotionDialog((Pawn) figureBeingMoved, board);
+                            }
+                            figureBeingMoved = null;
+                        }
+                        redrawBoard(drawBoard(board));
                     }
                 });
             }
@@ -170,7 +182,7 @@ public class GameScene extends GridPane {
         return grid;
     }
 
-    private void AIPlayerMove(Board board) {
+    public void AIPlayerMove(Board board) {
         new Thread(() -> {
             gc.getCurPlayer().makeMove(board);
             gc.switchCurPlayer();

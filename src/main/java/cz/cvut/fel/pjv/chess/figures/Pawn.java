@@ -48,7 +48,8 @@ public class Pawn extends Figure {
             }
         }
         if (isFirstMove()) {
-            if (board.getFigure(getPosition().plus(dir, 0)) == null)
+            Field posBefore = getPosition().plus(dir, 0);
+            if (posBefore != null && board.getFigure(posBefore) == null)
                 addValidMoveIfNull(validMoves, 2 * dir, 0);
         }
         return validMoves;

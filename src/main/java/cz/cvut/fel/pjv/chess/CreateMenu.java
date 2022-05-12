@@ -8,6 +8,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 
+
 public class CreateMenu extends ContextMenu {
     private final Styles style = new Styles();
     private final Board board;
@@ -45,7 +46,7 @@ public class CreateMenu extends ContextMenu {
             a.setContentText("The maximum number of pawns of the same color is 8.");
             a.show();
             return;
-        } else if (figure instanceof Pawn && ((figure.getColor() == MyColor.WHITE && toPos.row == 7) || (figure.getColor() == MyColor.BLACK && toPos.row == 0))) {
+        } else if (figure instanceof Pawn && (toPos.row == 7 || toPos.row == 0)) {
             a.setContentText("A pawn cannot be placed here.");
             a.show();
             return;
@@ -54,15 +55,26 @@ public class CreateMenu extends ContextMenu {
             a.show();
             return;
         }
-        Board newBoard = new Board(board);
-        newBoard.setFigure(toPos, figure);
-        if (newBoard.getKing(MyColor.WHITE).isInCheck() || newBoard.getKing(MyColor.BLACK).isInCheck()) {
-            a.setContentText("The king must not be in check after placing/removing a piece.");
-            a.show();
-            return;
+        {
+            Board newBoard = new Board(board);
+            if (figure == null) {
+                newBoard.setFigure(toPos, null);
+            } else {
+                Figure clonedFigure = figure.clone(newBoard);
+                newBoard.moveFigure(clonedFigure, toPos);
+            }
 
+            if (newBoard.getKing(MyColor.WHITE).isInCheck() || newBoard.getKing(MyColor.BLACK).isInCheck()) {
+                a.setContentText("The king must not be in check after placing/removing a piece.");
+                a.show();
+                return;
+            }
         }
-        board.setFigure(toPos, figure);
+        if (figure == null) {
+            board.setFigure(toPos, null);
+        } else {
+            board.moveFigure(figure, toPos);
+        }
         field.setGraphic(style.getImageFigure(figure));
     }
 
