@@ -75,8 +75,8 @@ public class MenuScene {
                 white = new LocalPlayer(MyColor.WHITE);
                 black = new AIPlayer(MyColor.BLACK);
             } else {
-                white = new LocalPlayer(MyColor.BLACK);
-                black = new AIPlayer(MyColor.WHITE);
+                black = new LocalPlayer(MyColor.BLACK);
+                white = new AIPlayer(MyColor.WHITE);
             }
             applyButton.fire();
         });

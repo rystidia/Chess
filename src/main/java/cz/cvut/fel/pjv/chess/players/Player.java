@@ -14,7 +14,7 @@ import cz.cvut.fel.pjv.chess.figures.Figure;
  */
 public abstract class Player {
     private final MyColor color;
-    private int timeLeft;
+    private long timeLeft;
     private boolean isCurrentPlayer;
 
     /**
@@ -47,11 +47,11 @@ public abstract class Player {
         return color;
     }
 
-    public int getTimeLeft() {
+    public long getTimeLeft() {
         return timeLeft;
     }
 
-    public void setTimeLeft(int timeLeft) {
+    public void setTimeLeft(long timeLeft) {
         this.timeLeft = timeLeft;
     }
 
@@ -64,11 +64,12 @@ public abstract class Player {
     }
 
     public String getTimeString(){
-        String minutes = String.valueOf(this.timeLeft / 60);
+        long secondsLeft = timeLeft/1000;
+        String minutes = String.valueOf(secondsLeft / 60);
         if (minutes.length() < 2) {
             minutes = "0" + minutes;
         }
-        String seconds = String.valueOf(this.timeLeft % 60);
+        String seconds = String.valueOf(secondsLeft % 60);
         if (seconds.length() < 2) {
             seconds = "0" + seconds;
         }

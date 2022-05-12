@@ -53,8 +53,8 @@ public class GameScene extends GridPane {
 
         white.setCurrentPlayer(true);
         black.setCurrentPlayer(false);
-        white.setTimeLeft(25 * 60);
-        black.setTimeLeft(25 * 60);
+        white.setTimeLeft(25 * 60 * 1000);
+        black.setTimeLeft(25 * 60 * 1000);
 
         GridPane table = new GridPane();
         for (int i = 0; i < 8; i++) {
@@ -141,10 +141,12 @@ public class GameScene extends GridPane {
                 field.setOnMouseClicked(evt -> {
                     if (evt.getButton() == MouseButton.PRIMARY) {
                         if (!createMode) {
-                            if (gc.getCurPlayer() instanceof LocalPlayer) {
+                            if (gc.getCurPlayer() instanceof LocalPlayer && gc.isCurrentColor(gc.getCurPlayer().getColor())) {
+                                System.out.println("Local");
                                 localPlayerMove(board, fieldPos, fig);
                             }
                             if (gc.getCurPlayer() instanceof AIPlayer) { // check if an AIPlayer does return a random move, not a real implementation
+                                System.out.println("AI");
                                 AIPlayerMove(board);
                             }
                         } else {
