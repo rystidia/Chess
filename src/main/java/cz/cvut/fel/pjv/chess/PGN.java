@@ -133,25 +133,6 @@ public class PGN {
         throw new ParseException("expected closing quote \" of a string token, but reached end of file");
     }
 
-    protected static int parseIntegerToken(CharReader r) throws IOException {
-        StringBuilder s = new StringBuilder();
-        boolean first = true;
-        for (int ch; (ch = r.read()) != -1;) {
-            if (ch >= '0' && ch <= '9') {
-                s.append((char)ch);
-                first = false;
-            } else {
-                r.goBackOne();
-                if (first) {
-                    return -1;
-                } else {
-                    break;
-                }
-            }
-        }
-        return Integer.parseInt(s.toString());
-    }
-
     protected static String parseSymbolToken(CharReader r) throws IOException, ParseException {
         StringBuilder s = new StringBuilder();
         {
