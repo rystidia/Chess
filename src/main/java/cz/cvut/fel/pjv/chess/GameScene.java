@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.chess.figures.*;
 import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
+import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -34,12 +35,37 @@ public class GameScene extends GridPane {
         this.white = white;
         this.black = black;
         this.board = board;
+
+        setUpRemotePlayer();
     }
 
     public GameScene(Player white, Player black, boolean createMode) {
         this.white = white;
         this.black = black;
         this.createMode = createMode;
+
+        setUpRemotePlayer();
+    }
+
+    private void setUpRemotePlayer() {
+        RemotePlayer p = getRemotePlayer();
+
+        if (p == null) return;
+        p.setMoveCallback(this::remotePlayerMove);
+        p.setAlertCallback(this::illegalNameAlert);
+        p.setOpponentSurrenderCallback(this::opponentSurrenderAlert);
+        p.setDrawOfferDialogCallback(this::drawOfferDialog);
+    }
+
+    private RemotePlayer getRemotePlayer() {
+        RemotePlayer p = null;
+
+        if (white instanceof RemotePlayer) {
+            p = (RemotePlayer) white;
+        } else if (black instanceof RemotePlayer) {
+            p = (RemotePlayer) black;
+        }
+        return p;
     }
 
     public GridPane createGameScene() {
@@ -177,6 +203,61 @@ public class GameScene extends GridPane {
             }
         }
         return grid;
+    }
+
+    public void remotePlayerMove() {
+        new Thread(() -> {
+            gc.getCurPlayer().makeMove(board);
+            gc.switchCurPlayer();
+            Platform.runLater(() -> {
+                GridPane updatedBoard = drawBoard(board);
+                redrawBoard(updatedBoard);
+            });
+        }).start();
+    }
+
+    public void illegalNameAlert() {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(" ");
+        a.setHeaderText("Illegal name.");
+        a.setContentText("Someone is already logged in with this name.");
+        a.show();
+    }
+
+    public void opponentSurrenderAlert() {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(" ");
+        a.setHeaderText("You win.");
+        a.setContentText("You opponent has surrendered.");
+        a.show();
+    }
+
+    public void drawOfferDialog(){
+        RemotePlayer player = getRemotePlayer();
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Draw Offer");
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.APPLY);
+        Button applyButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+        applyButton.setVisible(false);
+
+        VBox vbox = new VBox();
+        vbox.getChildren().add(newDrawResponseButton(true, applyButton, player));
+        vbox.getChildren().add(newDrawResponseButton(false, applyButton, player));
+
+        dialog.setOnCloseRequest(evt -> dialog.close());
+        dialog.getDialogPane().setContent(vbox);
+        dialog.showAndWait();
+        dialog.close();
+    }
+
+    private Button newDrawResponseButton(boolean response, Button applyButton, RemotePlayer player){
+        String title = response ? "Yes" : "No";
+        Button button = style.newButton(title);
+        button.setOnAction(e -> {
+            player.sendDrawResponse(response);
+            applyButton.fire();
+        });
+        return button;
     }
 
     public void AIPlayerMove(Board board) {

@@ -3,13 +3,14 @@ package cz.cvut.fel.pjv.chess;
 import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
+import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -26,12 +27,14 @@ public class MenuScene {
         local.setOnAction(evt -> sceneController.switchToGame(evt, new LocalPlayer(MyColor.WHITE), new LocalPlayer(MyColor.BLACK)));
         Button ai = style.newButton("Human vs. AI local");
         ai.setOnAction(this::AImode);
+        Button online = style.newButton("Human vs. human online");
+        online.setOnAction(sceneController::switchToLoginWindow);
         GridPane root = new GridPane();
         root.setAlignment(Pos.BOTTOM_LEFT);
         int row = 0;
         root.add(local, 0, row++, 1, 1);
         root.add(ai, 0, row++, 1, 1);
-        root.add(style.newButton("Human vs. human online"), 0, row++, 1, 1);
+        root.add(online, 0, row++, 1, 1);
         Button quit = style.newButton("Quit");
         root.add(quit, 0, row, 1, 1);
         quit.setOnAction(this::closeStage);
@@ -82,4 +85,5 @@ public class MenuScene {
         });
         return button;
     }
+
 }

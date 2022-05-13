@@ -1,10 +1,18 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.players.Player;
+import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class SceneController {
@@ -40,5 +48,42 @@ public class SceneController {
         scene = new Scene(menuScene);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void switchToLoginWindow(ActionEvent event) {
+        final HBox loginWindow = newLoginWindow();
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(loginWindow);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private HBox newLoginWindow() {
+        TextField nameField;
+        Label nameLabel = new Label("Enter your name:");
+        nameField = new TextField();
+        nameField.setOnKeyPressed((event) -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // 2. start server (if not already running) and client
+                String userName = nameField.getText().strip();
+                RemotePlayer rp = new RemotePlayer();
+                rp.sendMMRequest();
+                //TODO wait until connected and set white and black
+                // then switch to game
+                //switchToGame(event, white, black);
+            }
+        });
+        Button startButton = new Button("Start");
+        startButton.setOnAction((ActionEvent e) -> {
+            // 2. as above
+            String userName = nameField.getText().strip();
+            RemotePlayer rp = new RemotePlayer();
+            rp.sendMMRequest();
+            //TODO
+        });
+        HBox hbox = new HBox(4, nameLabel, nameField, startButton);
+        hbox.setPadding(new Insets(8));
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
     }
 }

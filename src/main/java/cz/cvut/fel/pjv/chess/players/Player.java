@@ -13,9 +13,12 @@ import cz.cvut.fel.pjv.chess.figures.Figure;
  * @version 1.0
  */
 public abstract class Player {
-    private final MyColor color;
+    private MyColor color;
     private long timeLeft;
     private boolean isCurrentPlayer;
+
+    public Player() {
+    }
 
     /**
      * Initializes the player and sets the given color to him
@@ -47,6 +50,11 @@ public abstract class Player {
         return color;
     }
 
+    public void setColor(MyColor color) {
+        if (this.color == null)
+            this.color = color;
+    }
+
     public long getTimeLeft() {
         return timeLeft;
     }
@@ -63,8 +71,8 @@ public abstract class Player {
         this.isCurrentPlayer = isCurrentPlayer;
     }
 
-    public String getTimeString(){
-        long secondsLeft = timeLeft/1000;
+    public String getTimeString() {
+        long secondsLeft = timeLeft / 1000;
         String minutes = String.valueOf(secondsLeft / 60);
         if (minutes.length() < 2) {
             minutes = "0" + minutes;
