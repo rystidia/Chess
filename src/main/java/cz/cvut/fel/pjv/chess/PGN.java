@@ -81,11 +81,20 @@ public class PGN {
             }
             curColor = MyColor.getOppositeColor(curColor);
         }
-        if (terminationMarker != null) {
-            if (tags.containsKey("Result") && !terminationMarker.equals(tags.get("Result"))) {
-                throw new ParseException("game termination marker is '" + terminationMarker + "', " +
-                    "but the Result tag value is '" + tags.get("Result") + "'");
-            }
+        if (tags.containsKey("Result") && !terminationMarker.equals(tags.get("Result"))) {
+            throw new ParseException("game termination marker is '" + terminationMarker + "', " +
+                "but the Result tag value is '" + tags.get("Result") + "'");
+        }
+        switch (terminationMarker) {
+            case "1-0":
+                winnerColor = MyColor.WHITE;
+                break;
+            case "0-1":
+                winnerColor = MyColor.BLACK;
+                break;
+            case "1/2-1/2":
+                winnerColor = null;
+                break;
         }
     }
 
@@ -183,6 +192,10 @@ public class PGN {
 
     public Board getBoard() {
         return board;
+    }
+
+    public MyColor getWinnerColor() {
+        return winnerColor;
     }
 
     public static class CharReader extends Reader {
