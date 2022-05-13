@@ -1,5 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
+import cz.cvut.fel.pjv.chess.figures.Pawn;
+import cz.cvut.fel.pjv.chess.figures.Queen;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -9,11 +11,11 @@ public class SANTest {
     public void testPromotion() throws PGN.ParseException {
         SAN san = new SAN("fxg1=Q+");
         assertNull(san.getQueenSideCastling());
-        assertEquals(san.getFigureType(), 'P');
+        assertEquals(san.getFigureType(), Pawn.class);
         assertNull(san.getOrigRow());
         assertEquals(san.getOrigColumn(), 'f' - 'a');
         assertEquals(san.getDestPos(), Field.fromAlgebraicNotation("g1"));
-        assertEquals(san.getPromotionFigure(), 'Q');
+        assertEquals(san.getPromotionFigure(), Queen.class);
     }
 
     @Test
@@ -42,7 +44,7 @@ public class SANTest {
     public void testPawnMove() throws PGN.ParseException {
         SAN san = new SAN("d4");
         assertNull(san.getQueenSideCastling());
-        assertEquals(san.getFigureType(), 'P');
+        assertEquals(san.getFigureType(), Pawn.class);
         assertNull(san.getOrigRow());
         assertNull(san.getOrigColumn());
         assertEquals(san.getDestPos(), Field.fromAlgebraicNotation("d4"));
@@ -53,7 +55,7 @@ public class SANTest {
     public void testPawnCapture() throws PGN.ParseException {
         SAN san = new SAN("cxb4");
         assertNull(san.getQueenSideCastling());
-        assertEquals(san.getFigureType(), 'P');
+        assertEquals(san.getFigureType(), Pawn.class);
         assertNull(san.getOrigRow());
         assertEquals(san.getOrigColumn(), 'c' - 'a');
         assertEquals(san.getDestPos(), Field.fromAlgebraicNotation("b4"));
@@ -64,7 +66,7 @@ public class SANTest {
     public void testStandardMove() throws PGN.ParseException {
         SAN san = new SAN("Qa6xb7#");
         assertNull(san.getQueenSideCastling());
-        assertEquals(san.getFigureType(), 'Q');
+        assertEquals(san.getFigureType(), Queen.class);
         assertEquals(new Field(san.getOrigRow(), san.getOrigColumn()), Field.fromAlgebraicNotation("a6"));
         assertEquals(san.getDestPos(), Field.fromAlgebraicNotation("b7"));
         assertNull(san.getPromotionFigure());

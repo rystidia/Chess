@@ -2,9 +2,7 @@ package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.*;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A board for a chess game
@@ -19,8 +17,6 @@ public class Board {
     public static final int MAX_COL = 7;
 
     private final Figure[][] board;
-    private King whiteKing;
-    private King blackKing;
 
     /**
      * Initializes the board
@@ -97,21 +93,20 @@ public class Board {
         return validMoves;
     }
 
-    public King getKing(MyColor color) {
-        if (whiteKing != null && color ==MyColor.WHITE) return whiteKing;
-        if (blackKing != null && color == MyColor.BLACK) return blackKing;
-        King king;
+    public Set<Figure> getFiguresByColorAndType(MyColor color, Class<? extends Figure> figClass) {
+        Set<Figure> figures = new HashSet<>();
         for (Figure[] row : board) {
             for (Figure fig : row) {
-                if (fig instanceof King && fig.getColor() == color) {
-                    king = (King) fig;
-                    if (color == MyColor.WHITE && whiteKing == null) whiteKing = king;
-                    if (color == MyColor.BLACK && blackKing == null) blackKing = king;
-                    return (King) fig;
+                if (figClass.isInstance(fig) && fig.getColor() == color) {
+                    figures.add(fig);
                 }
             }
         }
-        return null;
+        return figures;
+    }
+
+    public King getKing(MyColor color) {
+        return (King) getFiguresByColorAndType(color, King.class).iterator().next();
     }
 
     public Board simulateMove(Figure figure, Field toPos) {

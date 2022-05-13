@@ -1,5 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
+import cz.cvut.fel.pjv.chess.figures.Figure;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,14 +21,14 @@ public class SAN {
 
     private Boolean queenSideCastling;
 
-    private Character figureType;
+    private Class<? extends Figure> figureType;
 
     private Integer origRow;
     private Integer origColumn;
 
     private Field destPos;
 
-    private Character promotionFigure;
+    private Class<? extends Figure> promotionFigure;
 
 
     public SAN(String move) throws PGN.ParseException {
@@ -37,7 +39,7 @@ public class SAN {
         if (m.group("castling") != null) {
             queenSideCastling = Objects.equals(m.group("castling"), "O-O-O");
         } else if (m.group("stdDest") != null) {
-            figureType = m.group("stdPiece").equals("") ? 'P' : m.group("stdPiece").charAt(0);
+            figureType = Figure.getFigureClassByCharacter(m.group("stdPiece").equals("") ? 'P' : m.group("stdPiece").charAt(0));
             if (!m.group("stdOrigRank").equals("")) {
                 origRow = Field.fromAlgebraicNotation("a" + m.group("stdOrigRank")).row;
             }
@@ -47,7 +49,7 @@ public class SAN {
             destPos = Field.fromAlgebraicNotation(m.group("stdDest"));
             // FIXME: maybe process "stdCapture"
             if (m.group("promotionPiece") != null) {
-                promotionFigure = m.group("promotionPiece").charAt(0);
+                promotionFigure = Figure.getFigureClassByCharacter(m.group("promotionPiece").charAt(0));
             }
         }
     }
@@ -56,7 +58,7 @@ public class SAN {
         return queenSideCastling;
     }
 
-    public Character getFigureType() {
+    public Class<? extends Figure> getFigureType() {
         return figureType;
     }
 
@@ -72,7 +74,7 @@ public class SAN {
         return destPos;
     }
 
-    public Character getPromotionFigure() {
+    public Class<? extends Figure> getPromotionFigure() {
         return promotionFigure;
     }
 }
