@@ -31,6 +31,7 @@ public class PGN {
         String terminationMarker;
 
         while (true) {
+            skipComments(r);
             if (r.read() == '*') {
                 terminationMarker = "*";
                 break;
@@ -184,6 +185,44 @@ public class PGN {
 
     protected static void skipWhitespace(CharReader r) throws IOException {
         skipChars(r, " \r\n\t");
+    }
+
+    protected static void skipComments(CharReader r) throws IOException, ParseException {
+        while (true) {
+            int ch = r.read();
+            if (ch == '{') {
+                skipBraceComment(r);
+            } else if (ch == ';') {
+                skipRestOfLineComment(r);
+            } else {
+                r.goBackOne();
+                skipWhitespace(r);
+                break;
+            }
+            skipWhitespace(r);
+        }
+    }
+
+    protected static void skipBraceComment(CharReader r) throws IOException, ParseException {
+        for (int ch; (ch = r.read()) != -1;) {
+            if (ch == '}') {
+                return;
+            }
+        }
+        throw new ParseException("expected right brace } to end the comment, but reached end of file");
+    }
+
+    protected static void skipRestOfLineComment(CharReader r) throws IOException {
+        boolean skipLF = false;
+        for (int ch; (ch = r.read()) != -1;) {
+            if (ch == '\n') {
+                break;
+            } else if (skipLF) {
+                r.goBackOne();
+                break;
+            }
+            skipLF = (ch == '\r');
+        }
     }
 
     public String getTagValue(String key) {
