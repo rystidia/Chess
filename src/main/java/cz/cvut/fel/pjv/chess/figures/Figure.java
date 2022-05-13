@@ -4,9 +4,7 @@ import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.Field;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An abstract model of a chess piece on the board
@@ -20,6 +18,21 @@ public abstract class Figure {
     protected final Board board;
     private Field position;
     protected boolean isFirstMove = true;
+
+    private final Map<Character, Class<? extends Figure>> charToFigClass = new HashMap<>() {{
+        put('P', Pawn.class);
+        put('N', Knight.class);
+        put('B', Bishop.class);
+        put('R', Rook.class);
+        put('Q', Queen.class);
+        put('K', King.class);
+    }};
+
+    private final Map<Class<? extends Figure>, Character> figClassToChar = new HashMap<>() {{
+        for (Entry<Character, Class<? extends Figure>> entry : charToFigClass.entrySet()) {
+            put(entry.getValue(), entry.getKey());
+        }
+    }};
 
     /**
      * Initializes the Figure
@@ -159,5 +172,13 @@ public abstract class Figure {
 
     public boolean hasValidMoves(){
         return !board.getValidMoves(this).isEmpty();
+    }
+
+    public char getCharacterByFigureClass(Class<? extends Figure> figClass) {
+        return figClassToChar.get(figClass);
+    }
+
+    public Class<? extends Figure> getFigureClassByCharacter(char ch) {
+        return charToFigClass.get(ch);
     }
 }
