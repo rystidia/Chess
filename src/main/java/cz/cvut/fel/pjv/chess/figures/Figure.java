@@ -19,7 +19,7 @@ public abstract class Figure {
     private Field position;
     protected boolean isFirstMove = true;
 
-    private final Map<Character, Class<? extends Figure>> charToFigClass = new HashMap<>() {{
+    private static final Map<Character, Class<? extends Figure>> charToFigClass = new HashMap<>() {{
         put('P', Pawn.class);
         put('N', Knight.class);
         put('B', Bishop.class);
@@ -28,7 +28,7 @@ public abstract class Figure {
         put('K', King.class);
     }};
 
-    private final Map<Class<? extends Figure>, Character> figClassToChar = new HashMap<>() {{
+    private static final Map<Class<? extends Figure>, Character> figClassToChar = new HashMap<>() {{
         for (Entry<Character, Class<? extends Figure>> entry : charToFigClass.entrySet()) {
             put(entry.getValue(), entry.getKey());
         }
@@ -174,11 +174,11 @@ public abstract class Figure {
         return !board.getValidMoves(this).isEmpty();
     }
 
-    public char getCharacterByFigureClass(Class<? extends Figure> figClass) {
+    public static char getCharacterByFigureClass(Class<? extends Figure> figClass) {
         return figClassToChar.get(figClass);
     }
 
-    public Class<? extends Figure> getFigureClassByCharacter(char ch) {
+    public static Class<? extends Figure> getFigureClassByCharacter(char ch) {
         return charToFigClass.get(ch);
     }
 }
