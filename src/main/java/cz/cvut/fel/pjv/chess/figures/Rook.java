@@ -14,7 +14,7 @@ import java.util.Set;
  * @version 1.0
  * @see #Figure for the description of all methods
  */
-public class Rook extends Figure {
+final public class Rook extends Figure {
     public Rook(MyColor color, Board board) {
         super(color, board);
     }

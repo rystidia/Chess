@@ -15,7 +15,7 @@ import java.util.Set;
  * @version 1.0
  * @see #Figure for the description of all methods
  */
-public class Queen extends Figure {
+final public class Queen extends Figure {
     public Queen(MyColor color, Board board) {
         super(color, board);
     }

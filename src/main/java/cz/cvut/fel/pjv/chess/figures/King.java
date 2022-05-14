@@ -16,7 +16,7 @@ import java.util.Set;
  * @version 1.0
  * @see #Figure for the description of all methods
  */
-public class King extends Figure {
+final public class King extends Figure {
     public King(MyColor color, Board board) {
         super(color, board);
     }
