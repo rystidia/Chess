@@ -1,9 +1,10 @@
 package cz.cvut.fel.pjv.chess.figures;
 
 import cz.cvut.fel.pjv.chess.Board;
-import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.Field;
+import cz.cvut.fel.pjv.chess.MyColor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,8 +79,15 @@ public class Pawn extends Figure {
     /**
      * Promotes the pawn to the chosen piece
      */
-    public void promotion(Figure figure) {
-        board.moveFigure(figure, getPosition());
+    public void promotion(Class<? extends Figure> figClass) {
+        try {
+            Figure figure = figClass
+                .getConstructor(MyColor.class, Board.class)
+                .newInstance(getColor(), board);
+            board.moveFigure(figure, getPosition());
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void addValidMoveIfNull(Set<Field> validMoves, int row, int column) {

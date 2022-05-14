@@ -193,7 +193,7 @@ public class GameScene extends GridPane {
                         } else {
                             board.moveFigure(figureBeingMoved, fieldPos);
                             if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
-                                promotionDialog((Pawn) figureBeingMoved, board);
+                                promotionDialog((Pawn) figureBeingMoved);
                             }
                             figureBeingMoved = null;
                         }
@@ -284,7 +284,7 @@ public class GameScene extends GridPane {
             if (movedFigureValidMoves.contains(fieldPos)) {
                 board.moveFigure(figureBeingMoved, fieldPos);
                 if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
-                    promotionDialog((Pawn) figureBeingMoved, board);
+                    promotionDialog((Pawn) figureBeingMoved);
                 }
                 gc.switchCurPlayer();
                 figureBeingMoved = null;
@@ -352,7 +352,7 @@ public class GameScene extends GridPane {
         boardTable = newBoardTable;
     }
 
-    public void promotionDialog(Pawn pawn, Board board) {
+    public void promotionDialog(Pawn pawn) {
         Dialog<Class<? extends Figure>> dialog = new Dialog<>();
         dialog.setTitle("Promotion");
         dialog.setContentText("Promote the pawn to:");
@@ -373,13 +373,6 @@ public class GameScene extends GridPane {
         dialog.setResultConverter(figClassByBtnType::get);
 
         Optional<Class<? extends Figure>> result = dialog.showAndWait();
-        try {
-            pawn.promotion(result
-                .orElse(Queen.class)
-                .getConstructor(MyColor.class, Board.class)
-                .newInstance(pawn.getColor(), board));
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        pawn.promotion(result.orElse(Queen.class));
     }
 }

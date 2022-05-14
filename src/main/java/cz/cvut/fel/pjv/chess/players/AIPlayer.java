@@ -43,9 +43,9 @@ public class AIPlayer extends Player {
         Figure figure = decision.getKey();
         Field toPos = decision.getValue();
         board.moveFigure(figure, toPos);
-        if (figure instanceof Pawn){
-            if ((figure.getColor() == MyColor.WHITE && toPos.row == 0) || (figure.getColor() == MyColor.BLACK && toPos.row == 7)){
-                ((Pawn)figure).promotion(new Queen(figure.getColor(), board));
+        if (figure instanceof Pawn) {
+            if ((figure.getColor() == MyColor.WHITE && toPos.row == 0) || (figure.getColor() == MyColor.BLACK && toPos.row == 7)) {
+                ((Pawn) figure).promotion(Queen.class);
             }
         }
     }

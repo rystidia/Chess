@@ -120,13 +120,7 @@ public class RemotePlayer extends Player {
                 Figure fig = board.getFigure(Field.fromAlgebraicNotation(packet.getFrom()));
                 board.moveFigure(fig, Field.fromAlgebraicNotation(packet.getTo()));
                 if (packet.getPromotionFigure() != null) {
-                    try {
-                        ((Pawn) fig).promotion(Figure.getFigureClassByCharacter(packet.getPromotionFigure())
-                            .getConstructor(MyColor.class, Board.class)
-                            .newInstance(fig.getColor(), board));
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
+                    ((Pawn) fig).promotion(Figure.getFigureClassByCharacter(packet.getPromotionFigure()));
                 }
                 moveCallback.run();
                 break;
