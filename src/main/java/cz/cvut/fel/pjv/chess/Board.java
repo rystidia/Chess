@@ -43,7 +43,6 @@ public class Board {
     }
 
     public void setFigure(Field pos, Figure figure) {
-        if (figure != null) figure.setPosition(pos);
         board[pos.row][pos.column] = figure;
     }
 
