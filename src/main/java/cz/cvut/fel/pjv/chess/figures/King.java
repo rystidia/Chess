@@ -63,21 +63,22 @@ public class King extends Figure {
     }
 
     public boolean isCastlingPossibleWith(Rook rook) {
-        int dir = getPosition().column - rook.getPosition().column > 0 ? -1 : 1;
-        boolean ret = true;
-        Figure blockingFigure = null;
-        for (int i = 1; blockingFigure == null; i++) {
+        int dir = rook.getPosition().column - getPosition().column < 0 ? -1 : 1;
+        Figure blockingFigure;
+        for (int i = 1; ; i++) {
             Field between = getPosition().plus(0, dir * i);
             blockingFigure = board.getFigure(between);
-            if (i != 3 && blockingFigure == null) {
+            if (blockingFigure != null) {
+                break;
+            }
+            if (i <= 2) {
                 Board newBoard = board.simulateMove(this, between);
                 if (newBoard.getKing(getColor()).isInCheck()) {
-                    ret = false;
-                    break;
+                    return false;
                 }
             }
         }
-        return ret && blockingFigure == rook;
+        return blockingFigure == rook;
     }
 
     @Override
