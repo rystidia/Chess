@@ -126,24 +126,24 @@ public class Board {
         return ret;
     }
 
-    public int getNumOfSameFigs(Figure figure) {
+    public int getNumOfSameFigs(Class<? extends Figure> figClass, MyColor color) {
         int ret = 0;
         for (Figure[] row : board) {
             for (Figure fig : row) {
-                if (fig != null && fig.getColor() == figure.getColor() && fig.getClass().getSimpleName().equals(figure.getClass().getSimpleName()))
+                if (figClass.isInstance(fig) && fig.getColor() == color)
                     ret++;
             }
         }
         return ret;
     }
 
-    public boolean canPlaceFigure(Figure figure) {
-        MyColor c = figure.getColor();
-        int extraKnights = Math.max(getNumOfSameFigs(new Knight(c, null)) - 2, 0);
-        int extraBishops = Math.max(getNumOfSameFigs(new Bishop(c, null)) - 2, 0);
-        int extraQueens = Math.max(getNumOfSameFigs(new Queen(c, null)) - 1, 0);
-        int extraRooks = Math.max(getNumOfSameFigs(new Rook(c, null)) - 2, 0);
+    public boolean canPlaceFigure(Class<? extends Figure> figClass, MyColor color) {
+        int extraKnights = Math.max(getNumOfSameFigs(Knight.class, color) + (figClass == Knight.class ? 1 : 0) - 2, 0);
+        int extraBishops = Math.max(getNumOfSameFigs(Bishop.class, color) + (figClass == Bishop.class ? 1 : 0) - 2, 0);
+        int extraQueens = Math.max(getNumOfSameFigs(Queen.class, color) + (figClass == Queen.class ? 1 : 0) - 1, 0);
+        int extraRooks = Math.max(getNumOfSameFigs(Rook.class, color) + (figClass == Rook.class ? 1 : 0) - 2, 0);
         int extraFigs = extraRooks + extraQueens + extraBishops + extraKnights;
-        return extraFigs < 8 - getNumOfSameFigs(new Pawn(c, null));
+        int missingPawns = 8 - (getNumOfSameFigs(Pawn.class, color) + (figClass == Pawn.class ? 1 : 0));
+        return extraFigs <= missingPawns;
     }
 }
