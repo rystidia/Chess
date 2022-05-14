@@ -87,11 +87,7 @@ public class SceneController {
             String userName = nameField.getText().strip();
             RemotePlayer rp = new RemotePlayer();
             rp.setName(userName);
-            rp.setStartGameCallback(new Runnable(){
-                public void run(){
-                    switchToOnlineGame(e, rp);
-                }
-            });
+            rp.setStartGameCallback(() -> switchToOnlineGame(e, rp));
             rp.sendMMRequest();
         });
         HBox hbox = new HBox(4, nameLabel, nameField, startButton);

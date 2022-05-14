@@ -166,7 +166,6 @@ public class GameScene extends GridPane {
                     if (image != null) {
                         field.setGraphic(image);
                     }
-
                     grid.add(field, c, r); // intentionally (c, r)
                 }
 
@@ -281,6 +280,7 @@ public class GameScene extends GridPane {
                 if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
                     promotionDialog((Pawn) figureBeingMoved);
                 }
+                
                 gc.switchCurPlayer();
                 figureBeingMoved = null;
             } else {

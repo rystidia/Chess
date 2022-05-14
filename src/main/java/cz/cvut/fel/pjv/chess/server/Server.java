@@ -24,6 +24,11 @@ public class Server implements Runnable {
         opponents = new HashMap<>();
     }
 
+    public static void main(String[] args) {
+        Server server = new Server(5556);
+        server.run();
+    }
+
     @Override
     public void run() {
         try {

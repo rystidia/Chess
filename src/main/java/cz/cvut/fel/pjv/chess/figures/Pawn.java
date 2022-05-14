@@ -17,7 +17,7 @@ import java.util.Set;
  * @version 1.0
  * @see #Figure for the description of all methods
  */
-final public class Pawn extends Figure {
+public class Pawn extends Figure {
     private boolean doubleAdvance = false;
 
     public Pawn(MyColor color, Board board) {

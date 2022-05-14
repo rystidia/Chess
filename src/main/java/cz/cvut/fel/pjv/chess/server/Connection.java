@@ -79,26 +79,28 @@ public class Connection implements Runnable {
         return true;
     }
 
-    private synchronized void handleMMRequest(){
-        Connection opponent = server.getWaitingConnection();
-        if (!server.isNameUnique(name)) {
-            sendPacket(new Packet(REJECTED.name()));
-        } else {
-            if (opponent == null) {
-                server.setWaitingConnection(this);
-                while(server.getWaitingConnection() != null) {
-                    try {
-                        wait();
-                        sendGameStart(true);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+    private void handleMMRequest(){
+        synchronized (server) {
+            Connection opponent = server.getWaitingConnection();
+            if (!server.isNameUnique(name)) {
+                sendPacket(new Packet(REJECTED.name()));
             } else {
-                server.addConnection(this, opponent);
-                server.setWaitingConnection(null);
-                opponent.notify();
-                sendGameStart(false);
+                if (opponent == null) {
+                    server.setWaitingConnection(this);
+                    while (server.getWaitingConnection() != null) {
+                        try {
+                            wait();
+                            sendGameStart(true);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    server.addConnection(this, opponent);
+                    server.setWaitingConnection(null);
+                    opponent.notify();
+                    sendGameStart(false);
+                }
             }
         }
     }

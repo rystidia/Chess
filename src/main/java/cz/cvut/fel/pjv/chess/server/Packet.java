@@ -1,7 +1,9 @@
 package cz.cvut.fel.pjv.chess.server;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import cz.cvut.fel.pjv.chess.MyColor;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Packet {
     private String type;
     private String name;

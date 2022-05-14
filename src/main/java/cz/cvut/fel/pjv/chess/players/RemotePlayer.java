@@ -70,18 +70,19 @@ public class RemotePlayer extends Player {
     }
 
     private void start() {
-
+        new Thread(() -> {
         try (
             Socket socket = new Socket(host, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         ) {
             out = new PrintWriter(socket.getOutputStream(), true);
-            new Thread(() -> {
                 boolean running = true;
                 while (running) {
                     String msg = null;
                     try {
+
                         msg = in.readLine();
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -91,12 +92,13 @@ public class RemotePlayer extends Player {
                         running = false;
                     }
                 }
-            }).start();
+
         } catch (ConnectException ex) {
             LOGGER.log(Level.SEVERE, "Server is not running. {0}", ex.getMessage());
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Client can't connect. {0}", ex.getMessage());
         }
+        }).start();
     }
 
     public void makeMove(Board board) {
@@ -116,7 +118,7 @@ public class RemotePlayer extends Player {
             case GAME_START:
                 setColor(packet.getColor());
                 setName(packet.getName());
-                //startGameCallback.run;
+                startGameCallback.run();
                 break;
             case MOVE:
                 Figure fig = board.getFigure(Field.fromAlgebraicNotation(packet.getFrom()));
@@ -147,7 +149,9 @@ public class RemotePlayer extends Player {
         ObjectMapper objectMapper = new ObjectMapper();
         String msg;
         try {
+            packet.setDrawAccepted(true);
             msg = objectMapper.writeValueAsString(packet);
+            System.out.println(msg);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
