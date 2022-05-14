@@ -49,7 +49,6 @@ public class GameScene extends GridPane {
 
     private void setUpRemotePlayer() {
         RemotePlayer p = getRemotePlayer();
-
         if (p == null) return;
         p.setMoveCallback(this::remotePlayerMove);
         p.setAlertCallback(this::illegalNameAlert);
@@ -206,14 +205,10 @@ public class GameScene extends GridPane {
     }
 
     public void remotePlayerMove() {
-        new Thread(() -> {
-            gc.getCurPlayer().makeMove(board);
-            gc.switchCurPlayer();
-            Platform.runLater(() -> {
-                GridPane updatedBoard = drawBoard(board);
-                redrawBoard(updatedBoard);
-            });
-        }).start();
+        gc.getCurPlayer().makeMove(board);
+        gc.switchCurPlayer();
+        GridPane updatedBoard = drawBoard(board);
+        redrawBoard(updatedBoard);
     }
 
     public void illegalNameAlert() {
@@ -232,7 +227,7 @@ public class GameScene extends GridPane {
         a.show();
     }
 
-    public void drawOfferDialog(){
+    public void drawOfferDialog() {
         RemotePlayer player = getRemotePlayer();
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Draw Offer");
@@ -250,7 +245,7 @@ public class GameScene extends GridPane {
         dialog.close();
     }
 
-    private Button newDrawResponseButton(boolean response, Button applyButton, RemotePlayer player){
+    private Button newDrawResponseButton(boolean response, Button applyButton, RemotePlayer player) {
         String title = response ? "Yes" : "No";
         Button button = style.newButton(title);
         button.setOnAction(e -> {

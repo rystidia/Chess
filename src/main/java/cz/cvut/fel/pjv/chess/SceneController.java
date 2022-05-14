@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.chess;
 
+import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 import javafx.event.ActionEvent;
@@ -33,6 +34,13 @@ public class SceneController {
         goToGameScene(event, gs);
     }
 
+    public void switchToOnlineGame(ActionEvent event, RemotePlayer rp) {
+        Player white = rp.getColor() == MyColor.WHITE ? rp : new LocalPlayer(MyColor.WHITE);
+        Player black = white instanceof LocalPlayer ? rp : new LocalPlayer(MyColor.BLACK);
+        final GameScene gs = new GameScene(white, black, false);
+        goToGameScene(event, gs);
+    }
+
     public void goToGameScene(ActionEvent event, GameScene gs){
         GridPane gameScene = gs.createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -62,24 +70,29 @@ public class SceneController {
         TextField nameField;
         Label nameLabel = new Label("Enter your name:");
         nameField = new TextField();
-        nameField.setOnKeyPressed((event) -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                // 2. start server (if not already running) and client
-                String userName = nameField.getText().strip();
-                RemotePlayer rp = new RemotePlayer();
-                rp.sendMMRequest();
-                //TODO wait until connected and set white and black
-                // then switch to game
-                //switchToGame(event, white, black);
-            }
-        });
+//        nameField.setOnKeyPressed((event) -> {
+//            if (event.getCode() == KeyCode.ENTER) {
+//                // 2. start server (if not already running) and client
+//                String userName = nameField.getText().strip();
+//                RemotePlayer rp = new RemotePlayer();
+//                rp.sendMMRequest();
+//                rp.setStartGameCallback( switchToGame(event, rp));
+//                //TODO wait until connected and set white and black
+//                // then switch to game
+//            }
+//        });
         Button startButton = new Button("Start");
         startButton.setOnAction((ActionEvent e) -> {
             // 2. as above
             String userName = nameField.getText().strip();
             RemotePlayer rp = new RemotePlayer();
+            rp.setName(userName);
+            rp.setStartGameCallback(new Runnable(){
+                public void run(){
+                    switchToOnlineGame(e, rp);
+                }
+            });
             rp.sendMMRequest();
-            //TODO
         });
         HBox hbox = new HBox(4, nameLabel, nameField, startButton);
         hbox.setPadding(new Insets(8));

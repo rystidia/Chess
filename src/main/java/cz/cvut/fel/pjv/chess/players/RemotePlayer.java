@@ -45,6 +45,7 @@ public class RemotePlayer extends Player {
     private Runnable alertCallback;
     private Runnable opponentSurrenderCallback;
     private Runnable drawOfferDialogCallback;
+    private Runnable startGameCallback;
 
     private Board board;
 
@@ -115,6 +116,7 @@ public class RemotePlayer extends Player {
             case GAME_START:
                 setColor(packet.getColor());
                 setName(packet.getName());
+                //startGameCallback.run;
                 break;
             case MOVE:
                 Figure fig = board.getFigure(Field.fromAlgebraicNotation(packet.getFrom()));
@@ -174,6 +176,10 @@ public class RemotePlayer extends Player {
         this.drawOfferDialogCallback = drawOfferDialogCallback;
     }
 
+    public void setStartGameCallback(Runnable startGameCallback) {
+        this.startGameCallback = startGameCallback;
+    }
+
     public void sendDrawResponse(boolean drawResponse) {
         Packet response = new Packet(RESPONSE_TO_OFFER.name());
         response.setDrawAccepted(drawResponse);
@@ -190,6 +196,7 @@ public class RemotePlayer extends Player {
 
     public void sendMMRequest(){
         Packet mmReq = new Packet(MATCHMAKE_REQUEST.name());
+        mmReq.setName(name);
         sendToServer(mmReq);
     }
 }
