@@ -74,10 +74,10 @@ public class Field {
         char colChar = algNotation.charAt(0);
         char rowChar = algNotation.charAt(1);
         if (colChar < 'a' || (colChar - 'a') > Board.MAX_COL) {
-            throw new IllegalArgumentException("invalid square AN: expected first char to be in [a-" + ('a' + Board.MAX_COL) + "], got '" + colChar + "'");
+            throw new IllegalArgumentException("invalid square AN: expected first char to be in [a-" + (char) ('a' + Board.MAX_COL) + "], got '" + colChar + "'");
         }
         if (rowChar < '1' || (rowChar - '1') > Board.MAX_ROW) {
-            throw new IllegalArgumentException("invalid square AN: expected second char to be in [1-" + ('1' + Board.MAX_ROW) + "], got '" + rowChar + "'");
+            throw new IllegalArgumentException("invalid square AN: expected second char to be in [1-" + (char) ('1' + Board.MAX_ROW) + "], got '" + rowChar + "'");
         }
         return new Field(Board.MAX_ROW - (rowChar - '1'), colChar - 'a');
     }

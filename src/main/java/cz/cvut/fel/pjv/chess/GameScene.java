@@ -72,6 +72,9 @@ public class GameScene extends GridPane {
             board = new Board();
             board.initialPosition();
         }
+        if (!createMode) {
+            board.switchToGameMode();
+        }
 
         gc = new GameController(white, black, this, board);
 

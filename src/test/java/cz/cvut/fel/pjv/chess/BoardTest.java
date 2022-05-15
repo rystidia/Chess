@@ -116,4 +116,10 @@ public class BoardTest {
         assertTrue(board.getValidMoves(myRook).isEmpty());
     }
 
+    @Test
+    public void testToFEN() {
+        Board board = new Board();
+        board.initialPosition();
+        assertEquals(board.toFEN(), "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    }
 }

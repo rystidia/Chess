@@ -2,21 +2,21 @@ package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
 import cz.cvut.fel.pjv.chess.figures.King;
+import cz.cvut.fel.pjv.chess.figures.Pawn;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.*;
 
 public class PGN {
     protected final Map<String, String> tags = new HashMap<>();
 
-    private Board board;
-
     private MyColor winnerColor;
 
-    public void load(Reader reader) throws IOException, ParseException {
+    public Board load(Reader reader) throws IOException, ParseException {
         CharReader r = new CharReader(reader);
+        tags.clear();
         {
             boolean isPresent;
             do {
@@ -24,8 +24,19 @@ public class PGN {
             } while (isPresent);
         }
 
-        board = new Board();
-        board.initialPosition();
+        Board board;
+
+        if (Objects.equals(tags.get("SetUp"), "1")) {
+            String fen = tags.get("FEN");
+            if (fen == null) {
+                throw new ParseException("the value of SetUp tag is \"1\", but no FEN tag present");
+            }
+            board = Board.fromFEN(fen);
+        } else {
+            board = new Board();
+            board.initialPosition();
+        }
+        board.switchToGameMode();
 
         MyColor curColor = MyColor.WHITE;
         String terminationMarker;
@@ -64,7 +75,7 @@ public class PGN {
                 }
                 board.moveFigure(king, toPos);
             } else {
-                Set<Figure> candidateFigs = board.getFiguresByColorAndType(curColor, sanMove.getFigureType());
+                Set<Figure> candidateFigs = board.getFiguresByTypeAndColor(sanMove.getFigureType(), curColor);
                 Set<Figure> possibleFigs = new HashSet<>();
                 for (Figure fig : candidateFigs) {
                     if (
@@ -97,9 +108,108 @@ public class PGN {
                 winnerColor = null;
                 break;
         }
+        return board;
     }
 
-    public static void save(Writer writer) {
+    public void save(PrintWriter writer, Board board) {
+        String fen = board.getInitialBoard().toFEN();
+        if (Objects.equals(fen, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")) {
+            tags.remove("SetUp");
+            tags.remove("FEN");
+        } else {
+            tags.put("SetUp", "1");
+            tags.put("FEN", fen);
+        }
+        if (!tags.containsKey("Result")) {
+            tags.put("Result", "*");
+        }
+
+        final List<String> sevenTags = Arrays.asList("Event", "Site", "Date", "Round", "White", "Black", "Result");
+        for (String key : sevenTags) {
+            if (!tags.containsKey(key)) continue;
+            writeTag(writer, key);
+        }
+        List<String> restOfTags = new ArrayList<>(tags.keySet());
+        restOfTags.removeAll(sevenTags);
+        restOfTags.sort(String::compareTo);
+        for (String key : restOfTags) {
+            writeTag(writer, key);
+        }
+        writer.print('\n'); // intentionally use line feed (LF, 0x0a) per the PGN specification
+        List<String> tokens = new ArrayList<>();
+        Board simBoard = new Board(board.getInitialBoard());
+        simBoard.switchToGameMode();
+        int halfMoveNum = 0;
+        for (Move move : board.getHistory()) {
+            if (halfMoveNum % 2 == 0) {
+                tokens.add(((halfMoveNum / 2) + 1) + ".");
+            }
+            String moveStr = "";
+            Figure fig = simBoard.getFigure(move.getFrom());
+            if (fig instanceof King && Math.abs(move.getTo().column - move.getFrom().column) > 1) {
+                moveStr = "O-O" + (move.getTo().column - move.getFrom().column < 0 ? "-O" : "");
+            } else {
+                if (!(fig instanceof Pawn)) {
+                    moveStr += Figure.getCharacterByFigureClass(fig.getClass());
+                }
+                Set<Figure> possibleFigs = new HashSet<>();
+                {
+                    Set<Figure> candidateFigs = simBoard.getFiguresByTypeAndColor(fig.getClass(), fig.getColor());
+                    for (Figure candFig : candidateFigs) {
+                        if (candFig.getValidMoves().contains(move.getTo())) {
+                            possibleFigs.add(candFig);
+                        }
+                    }
+                }
+                boolean ambiguous = (possibleFigs.size() != 1);
+                if (ambiguous || (fig instanceof Pawn && (simBoard.getFigure(move.getTo()) != null))) {
+                    Set<Figure> fileDisambig = new HashSet<>(possibleFigs);
+                    fileDisambig.removeIf(f -> f.getPosition().column != fig.getPosition().column);
+                    if (fileDisambig.size() == 1) {
+                        moveStr += fig.getPosition().toAlgebraicNotation().charAt(0);
+                        ambiguous = false;
+                    }
+                }
+                if (ambiguous) {
+                    Set<Figure> rankDisambig = new HashSet<>(possibleFigs);
+                    rankDisambig.removeIf(f -> f.getPosition().row != fig.getPosition().row);
+                    if (rankDisambig.size() == 1) {
+                        moveStr += fig.getPosition().toAlgebraicNotation().charAt(1);
+                        ambiguous = false;
+                    }
+                }
+                if (ambiguous) {
+                    moveStr += fig.getPosition().toAlgebraicNotation();
+                }
+                if (simBoard.getFigure(move.getTo()) != null) {
+                    moveStr += 'x';
+                }
+                moveStr += move.getTo().toAlgebraicNotation();
+                if (move.getPromotionFigure() != null) {
+                    moveStr += "=" + Figure.getCharacterByFigureClass(move.getPromotionFigure());
+                }
+            }
+            simBoard.moveFigure(fig, move.getTo());
+            if (simBoard.getKing(MyColor.getOppositeColor(fig.getColor())).isInCheck()) {
+                // FIXME: '#' for checkmate
+                moveStr += '+';
+            }
+            tokens.add(moveStr);
+            halfMoveNum++;
+        }
+        tokens.add(tags.get("Result"));
+        StringBuilder line = new StringBuilder();
+        for (String token : tokens) {
+            if (line.length() + (line.isEmpty() ? 0 : 1) + token.length() >= 80) {
+                writer.print(line);
+                writer.print('\n');
+                line.setLength(0);
+            }
+            if (!line.isEmpty()) line.append(' ');
+            line.append(token);
+        }
+        writer.print(line);
+        writer.print('\n');
     }
 
     protected boolean parseTag(CharReader r) throws IOException, ParseException {
@@ -116,6 +226,10 @@ public class PGN {
         tags.put(name, value);
         skipWhitespace(r);
         return true;
+    }
+
+    protected void writeTag(PrintWriter w, String key) {
+        w.format("[%s \"%s\"]\n", key, tags.get(key).replaceAll("([\"\\\\])", "\\\\$1"));
     }
 
     protected static String parseStringToken(Reader r) throws IOException, ParseException {
@@ -229,8 +343,8 @@ public class PGN {
         return tags.get(key);
     }
 
-    public Board getBoard() {
-        return board;
+    public void setTagValue(String key, String value) {
+        tags.put(key, value);
     }
 
     public MyColor getWinnerColor() {

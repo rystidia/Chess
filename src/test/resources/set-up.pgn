@@ -4,10 +4,11 @@
 [White "ERIQ"]
 [Black "DaveTheRook"]
 [Result "0-1"]
-[WhiteElo "2069"]
 [BlackElo "1606"]
 [ECO "C77"]
+[FEN "r5k1/1b1p1ppp/p7/1p1Q4/2p1r3/PP4Pq/BBP2b1P/R4R1K w KQkq - 0 1"]
 [SetUp "1"]
-[FEN "r5k1/1b1p1ppp/p7/1p1Q4/2p1r3/PP4Pq/BBP2b1P/R4R1K w - - 0 20"]
+[WhiteElo "2069"]
 
-20.Qxb7 Rae8 21.Qd5 R8e6 22.Qxd7 f6 23.Qc8+ Kf7 24.Qd7+ Kg6 25.Qc7 Be1 26.Rg1 Re2 27.g4 Qf3+ {White resigns} 0-1
+1. Qxb7 Rae8 2. Qd5 R8e6 3. Qxd7 f6 4. Qc8+ Kf7 5. Qd7+ Kg6 6. Qc7 Be1 7. Rg1
+Re2 8. g4 Qf3+ 0-1

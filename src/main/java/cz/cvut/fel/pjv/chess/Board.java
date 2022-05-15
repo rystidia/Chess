@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -18,6 +19,14 @@ public class Board {
 
     private final Figure[][] board;
 
+    boolean gameMode = false;
+
+    private Board initialBoard;
+
+    private final MyColor startingColor = MyColor.WHITE; // FIXME: maybe make configurable
+
+    private final List<Move> history = new ArrayList<>();
+
     /**
      * Initializes the board
      */
@@ -27,6 +36,8 @@ public class Board {
 
     public Board(Board srcBoard) {
         this();
+        gameMode = srcBoard.gameMode;
+        initialBoard = srcBoard.initialBoard;
         for (int r = 0; r <= MAX_ROW; r++) {
             for (int c = 0; c <= MAX_COL; c++) {
                 Figure fig = srcBoard.board[r][c];
@@ -47,13 +58,33 @@ public class Board {
     }
 
     public void moveFigure(Figure figure, Field toPos) {
+        moveFigure(figure, toPos, true);
+    }
+
+    public void moveFigure(Figure figure, Field toPos, boolean writeToHistory) {
         if (figure.getPosition() != null) {
             if (getFigure(figure.getPosition()) != figure) {
                 throw new IllegalArgumentException("provided figure was not found where it should be");
             }
             setFigure(figure.getPosition(), null);
+            if (writeToHistory) {
+                history.add(new Move(figure.getPosition(), toPos));
+            }
+        } else if (gameMode) {
+            throw new IllegalStateException("placing new figure in game mode");
         }
         figure.move(toPos);
+    }
+
+    public void pawnPromotion(Pawn pawn, Figure promotionFig) {
+        Move pawnMove = history.get(history.size() - 1);
+        history.set(history.size() - 1, new Move(
+            pawnMove.getFrom(),
+            pawnMove.getTo(),
+            promotionFig.getClass()
+        ));
+        // NB: calling moveFigure() instead would result in an IllegalStateException
+        promotionFig.move(pawn.getPosition());
     }
 
     /**
@@ -92,7 +123,7 @@ public class Board {
         return validMoves;
     }
 
-    public Set<Figure> getFiguresByColorAndType(MyColor color, Class<? extends Figure> figClass) {
+    public Set<Figure> getFiguresByTypeAndColor(Class<? extends Figure> figClass, MyColor color) {
         Set<Figure> figures = new HashSet<>();
         for (Figure[] row : board) {
             for (Figure fig : row) {
@@ -105,7 +136,7 @@ public class Board {
     }
 
     public King getKing(MyColor color) {
-        return (King) getFiguresByColorAndType(color, King.class).iterator().next();
+        return (King) getFiguresByTypeAndColor(King.class, color).iterator().next();
     }
 
     public Board simulateMove(Figure figure, Field toPos) {
@@ -127,14 +158,7 @@ public class Board {
     }
 
     public int getNumOfSameFigs(Class<? extends Figure> figClass, MyColor color) {
-        int ret = 0;
-        for (Figure[] row : board) {
-            for (Figure fig : row) {
-                if (figClass.isInstance(fig) && fig.getColor() == color)
-                    ret++;
-            }
-        }
-        return ret;
+        return getFiguresByTypeAndColor(figClass, color).size();
     }
 
     public boolean canPlaceFigure(Class<? extends Figure> figClass, MyColor color) {
@@ -145,5 +169,107 @@ public class Board {
         int extraFigs = extraRooks + extraQueens + extraBishops + extraKnights;
         int missingPawns = 8 - (getNumOfSameFigs(Pawn.class, color) + (figClass == Pawn.class ? 1 : 0));
         return extraFigs <= missingPawns;
+    }
+
+    public List<Move> getHistory() {
+        return Collections.unmodifiableList(history);
+    }
+
+    public Board getInitialBoard() {
+        return initialBoard;
+    }
+
+    public void switchToGameMode() {
+        initialBoard = new Board(this);
+        gameMode = true;
+    }
+
+    /**
+     * @see <a href="http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c16.1">http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c16.1</a>
+     */
+    public String toFEN() {
+        if (gameMode) {
+            throw new UnsupportedOperationException("generating FEN for a board in game mode is not supported");
+        }
+        List<String> fields = new ArrayList<>();
+        {
+            StringBuilder s = new StringBuilder();
+            for (Figure[] row : board) {
+                if (!s.isEmpty()) {
+                    s.append('/');
+                }
+                int numEmpty = 0;
+                for (Figure fig : row) {
+                    if (fig == null) {
+                        numEmpty++;
+                        continue;
+                    } else {
+                        if (numEmpty != 0) {
+                            s.append(numEmpty);
+                        }
+                        numEmpty = 0;
+                    }
+                    char ch = Figure.getCharacterByFigureClass(fig.getClass());
+                    if (fig.getColor() == MyColor.BLACK) {
+                        ch = Character.toLowerCase(ch);
+                    }
+                    s.append(ch);
+                }
+                if (numEmpty != 0) {
+                    s.append(numEmpty);
+                }
+            }
+            fields.add(s.toString());
+        }
+        fields.add(((history.size() + (startingColor == MyColor.BLACK ? 1 : 0)) & 1) == 0 ? "w" : "b");
+//        {
+//            StringBuilder s = new StringBuilder();
+//            for (MyColor color : Arrays.asList(MyColor.WHITE, MyColor.BLACK)) {
+//                for (boolean queenSide : Arrays.asList(false, true)) {
+//                    if (getKing(color).canCastlingBeAvailable(queenSide)) {
+//                        char ch = Figure.getCharacterByFigureClass(queenSide ? Queen.class : King.class);
+//                        if (color == MyColor.BLACK) {
+//                            ch = Character.toLowerCase(ch);
+//                        }
+//                        s.append(ch);
+//                    }
+//                }
+//            }
+//            fields.add(s.toString());
+//        }
+        // FIXME
+        fields.add("KQkq"); // castling availability
+        fields.add("-"); // en passant target square
+        fields.add("0"); // halfmove clock
+        fields.add("1"); // fullmove number
+        return String.join(" ", fields);
+    }
+
+    public static Board fromFEN(String fen) {
+        String[] fields = fen.split(" ");
+        Board brd = new Board();
+        int row = 0;
+        for (String rowStr : fields[0].split("/")) {
+            int column = 0;
+            for (char ch : rowStr.toCharArray()) {
+                if (ch >= '0' && ch <= '9') {
+                    column += (ch - '0');
+                    continue;
+                }
+                Class<? extends Figure> figClass = Figure.getFigureClassByCharacter(Character.toUpperCase(ch));
+                try {
+                    brd.moveFigure(figClass
+                        .getConstructor(MyColor.class, Board.class)
+                        .newInstance(Character.isLowerCase(ch) ? MyColor.BLACK : MyColor.WHITE, brd), new Field(row, column));
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                         NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+                column++;
+            }
+            row++;
+        }
+        // FIXME: ignored active color
+        return brd;
     }
 }
