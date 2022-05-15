@@ -28,21 +28,21 @@ public class GameScene extends GridPane {
     private Board board;
     private GridPane boardTable;
     private Figure figureBeingMoved;
-    private boolean createMode = false;
+    private final GameMode gameMode;
 
-    public GameScene(Player white, Player black, Board board) {
+    public GameScene(Player white, Player black, GameMode gameMode, Board board) {
         this.white = white;
         this.black = black;
+        this.gameMode = gameMode;
         this.board = board;
 
         setUpRemotePlayer();
     }
 
-    public GameScene(Player white, Player black, boolean createMode) {
+    public GameScene(Player white, Player black, GameMode gameMode) {
         this.white = white;
         this.black = black;
-        this.createMode = createMode;
-
+        this.gameMode = gameMode;
         setUpRemotePlayer();
     }
 
@@ -57,7 +57,6 @@ public class GameScene extends GridPane {
 
     private RemotePlayer getRemotePlayer() {
         RemotePlayer p = null;
-
         if (white instanceof RemotePlayer) {
             p = (RemotePlayer) white;
         } else if (black instanceof RemotePlayer) {
@@ -71,12 +70,11 @@ public class GameScene extends GridPane {
             board = new Board();
             board.initialPosition();
         }
-        if (!createMode) {
+        if (gameMode != GameMode.CREATE) {
             board.switchToGameMode();
         }
 
         gc = new GameController(white, black, this, board);
-
         figureBeingMoved = null;
 
         white.setCurrentPlayer(true);
@@ -97,7 +95,7 @@ public class GameScene extends GridPane {
 
         // vert menu
         VBox leftVertMenu = new VBox();
-        VBox options = newOptions();
+        VBox options = createOptions();
         leftVertMenu.setPadding(new Insets(15));
         BorderPane timeWhite = newClockBox(white);
         BorderPane timeBlack = newClockBox(black);
@@ -115,7 +113,7 @@ public class GameScene extends GridPane {
         Thread timer = new Thread(clock);
         timer.setPriority(Thread.MAX_PRIORITY);
         timer.setDaemon(true);
-        if (!createMode) {
+        if (gameMode != GameMode.CREATE) {
             timer.start();
         }
         gc.start();
@@ -136,7 +134,7 @@ public class GameScene extends GridPane {
                 final Field fieldPos = new Field(r, c);
                 Label field = new Label();
 
-                if (createMode) {
+                if (gameMode == GameMode.CREATE) {
                     ContextMenu cm = new CreateMenu(board, fieldPos, field);
                     if (figureBeingMoved == null) {
                         field.setContextMenu(cm);
@@ -148,10 +146,9 @@ public class GameScene extends GridPane {
                 field.setMaxSize(style.size, style.size);
                 {
                     final Figure fig = board.getFigure(fieldPos);
-
                     String white;
                     String brown;
-                    if (!createMode) {
+                    if (gameMode != GameMode.CREATE) {
                         white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
                         brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
                         if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
@@ -174,7 +171,7 @@ public class GameScene extends GridPane {
                 field.setOnMouseClicked(evt -> {
                     if (evt.getButton() != MouseButton.PRIMARY) return;
                     Figure fig = board.getFigure(fieldPos);
-                    if (!createMode) {
+                    if (gameMode != GameMode.CREATE) {
                         if (gc.getCurPlayer() instanceof LocalPlayer && gc.isCurrentColor(gc.getCurPlayer().getColor())) {
                             localPlayerMove(board, fieldPos, fig);
                         }
@@ -206,7 +203,6 @@ public class GameScene extends GridPane {
     }
 
     public void remotePlayerMoveReceived() {
-        //gc.getCurPlayer().makeMove(board);
         gc.switchCurPlayer();
         GridPane updatedBoard = drawBoard(board);
         redrawBoard(updatedBoard);
@@ -229,21 +225,23 @@ public class GameScene extends GridPane {
     }
 
     public void drawOfferDialog() {
-        RemotePlayer player = getRemotePlayer();
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Draw Offer");
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.APPLY);
-        Button applyButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-        applyButton.setVisible(false);
+        Platform.runLater(() -> {
+            RemotePlayer player = getRemotePlayer();
+            Dialog<String> dialog = new Dialog<>();
+            dialog.setTitle("Draw Offer");
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.APPLY);
+            Button applyButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+            applyButton.setVisible(false);
 
-        VBox vbox = new VBox();
-        vbox.getChildren().add(newDrawResponseButton("Yes", applyButton, player));
-        vbox.getChildren().add(newDrawResponseButton("No", applyButton, player));
+            VBox vbox = new VBox();
+            vbox.getChildren().add(newDrawResponseButton("Yes", applyButton, player));
+            vbox.getChildren().add(newDrawResponseButton("No", applyButton, player));
 
-        dialog.setOnCloseRequest(evt -> dialog.close());
-        dialog.getDialogPane().setContent(vbox);
-        dialog.showAndWait();
-        dialog.close();
+            dialog.setOnCloseRequest(evt -> dialog.close());
+            dialog.getDialogPane().setContent(vbox);
+            dialog.showAndWait();
+            dialog.close();
+        });
     }
 
     private Button newDrawResponseButton(String response, Button applyButton, RemotePlayer player) {
@@ -298,7 +296,13 @@ public class GameScene extends GridPane {
 
     private BorderPane newClockBox(Player player) {
         BorderPane clockBox = new BorderPane();
-        Label playerName = style.newLabel("PlayerName", 20);
+        String name;
+        if (gameMode == GameMode.ONLINE) {
+            name = player instanceof RemotePlayer ? RemotePlayer.getOpponentName() : RemotePlayer.getName();
+        } else {
+            name = player.getColor() == MyColor.WHITE ? "White" : "Black";
+        }
+        Label playerName = style.newLabel(name, 20);
         Label playerTime = style.newLabel(player.getTimeString(), 30);
         clockBox.setTop(playerName);
         clockBox.setCenter(playerTime);
@@ -307,23 +311,28 @@ public class GameScene extends GridPane {
         return clockBox;
     }
 
-    private VBox newOptions() {
+    private VBox createOptions() {
         VBox options = new VBox();
         Button menu = style.newButton("Menu");
         menu.setOnAction(sceneController::switchToMenu);
         Button restart;
-        if (!createMode) {
-            restart = style.newButton("Restart");
-            restart.setOnAction(evt -> {
-                stopClock();
-                sceneController.switchToGame(evt, white, black);
-            });
-        } else {
+        if (gameMode == GameMode.CREATE) {
             restart = style.newButton("Start");
             restart.setStyle("-fx-background-color: #e8b5b5");
             restart.setOnAction(evt -> {
                 stopClock();
                 sceneController.switchToGame(evt, white, black, board);
+            });
+        } else if (gameMode == GameMode.ONLINE) {
+            restart = style.newButton("Draw offer");
+            restart.setOnAction(evt -> {
+                getRemotePlayer().sendDrawOffer();
+            });
+        } else {
+            restart = style.newButton("Restart");
+            restart.setOnAction(evt -> {
+                stopClock();
+                sceneController.switchToGame(evt, white, black);
             });
         }
         Button save = style.newButton("Save");
@@ -331,7 +340,7 @@ public class GameScene extends GridPane {
         Button create = style.newButton("Create");
         create.setOnAction(evt -> {
             stopClock();
-            sceneController.switchToGame(evt, white, black, true);
+            sceneController.switchToGame(evt, white, black, GameMode.CREATE);
         });
         options.setSpacing(15);
         options.setPadding(new Insets(25, 0, 25, 0));

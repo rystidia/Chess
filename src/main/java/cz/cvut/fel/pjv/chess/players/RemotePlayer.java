@@ -39,6 +39,7 @@ public class RemotePlayer extends Player {
     private static final int port = 5556;
     private static final String host = "localhost";
     private static String name;
+    private static String opponentName;
 
     private PrintWriter out;
     private Runnable moveCallback;
@@ -69,6 +70,18 @@ public class RemotePlayer extends Player {
         RemotePlayer.name = name;
     }
 
+    public static void setOpponentName(String opponentName) {
+        RemotePlayer.opponentName = opponentName;
+    }
+
+    public static String getName() {
+        return name;
+    }
+
+    public static String getOpponentName() {
+        return opponentName;
+    }
+
     private void start() {
         new Thread(() -> {
         try (
@@ -80,9 +93,7 @@ public class RemotePlayer extends Player {
                 while (running) {
                     String msg = null;
                     try {
-
                         msg = in.readLine();
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -116,8 +127,8 @@ public class RemotePlayer extends Player {
 
         switch (Protocol.valueOf(packet.getType())) {
             case GAME_START:
-                setColor(packet.getColor());
-                setName(packet.getName());
+                setColor(MyColor.getOppositeColor(packet.getColor()));
+                setOpponentName(packet.getOpponentName());
                 startGameCallback.run();
                 break;
             case MOVE:
@@ -187,6 +198,11 @@ public class RemotePlayer extends Player {
         Packet response = new Packet(RESPONSE_TO_OFFER.name());
         response.setDrawAccepted(drawResponse);
         sendToServer(response);
+    }
+
+    public void sendDrawOffer(){
+        Packet drawOffer = new Packet(DRAW_OFFER.name());
+        sendToServer(drawOffer);
     }
 
     public void sendMove(Field from, Field toPos, Class<? extends Figure> promClass) {

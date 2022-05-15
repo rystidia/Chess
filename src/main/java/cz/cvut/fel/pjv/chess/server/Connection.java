@@ -133,9 +133,11 @@ public class Connection implements Runnable {
     }
 
     private void sendGameStart(boolean color) {
+        Connection opponent = server.getOpponent(this);
+        String opponentName = opponent.getName();
         MyColor playerColor = color ? MyColor.WHITE : MyColor.BLACK;
         Packet gs = new Packet(GAME_START.name());
-        gs.setOpponentName(name);
+        gs.setOpponentName(opponentName);
         gs.setColor(playerColor);
         sendPacket(gs);
     }

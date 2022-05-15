@@ -22,23 +22,23 @@ public class SceneController {
     private Scene scene;
 
     public void switchToGame(ActionEvent event, Player white, Player black) {
-        switchToGame(event, white, black, false);
+        switchToGame(event, white, black, GameMode.LOCAL);
     }
 
     public void switchToGame(ActionEvent event, Player white, Player black, Board board) {
-        final GameScene gs = new GameScene(white, black, board);
+        final GameScene gs = new GameScene(white, black, GameMode.LOCAL, board);
         goToGameScene(event, gs);
     }
 
-    public void switchToGame(ActionEvent event, Player white, Player black, boolean createMode) {
-        final GameScene gs = new GameScene(white, black, createMode);
+    public void switchToGame(ActionEvent event, Player white, Player black, GameMode gameMode) {
+        final GameScene gs = new GameScene(white, black, gameMode);
         goToGameScene(event, gs);
     }
 
     public void switchToOnlineGame(ActionEvent event, RemotePlayer rp) {
         Player white = rp.getColor() == MyColor.WHITE ? rp : new LocalPlayer(MyColor.WHITE);
         Player black = white instanceof LocalPlayer ? rp : new LocalPlayer(MyColor.BLACK);
-        final GameScene gs = new GameScene(white, black, false);
+        final GameScene gs = new GameScene(white, black, GameMode.ONLINE);
         goToGameScene(event, gs);
     }
 
@@ -89,7 +89,7 @@ public class SceneController {
             // 2. as above
             String userName = nameField.getText().strip();
             RemotePlayer rp = new RemotePlayer();
-            rp.setName(userName);
+            RemotePlayer.setName(userName);
             rp.setStartGameCallback(() -> switchToOnlineGame(e, rp));
             rp.sendMMRequest();
         });
