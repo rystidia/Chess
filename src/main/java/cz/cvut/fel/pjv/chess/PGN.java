@@ -89,7 +89,11 @@ public class PGN {
                 if (possibleFigs.size() != 1) {
                     throw new ParseException("expected SAN move identifier '" + symbolToken + "' to match exactly 1 figure, but " + possibleFigs.size() + " were matched");
                 }
-                board.moveFigure(possibleFigs.iterator().next(), sanMove.getDestPos());
+                Figure fig = possibleFigs.iterator().next();
+                board.moveFigure(fig, sanMove.getDestPos());
+                if (sanMove.getPromotionFigure() != null) {
+                    ((Pawn) fig).promotion(sanMove.getPromotionFigure());
+                }
             }
             curColor = MyColor.getOppositeColor(curColor);
         }
@@ -190,6 +194,9 @@ public class PGN {
                 }
             }
             simBoard.moveFigure(fig, move.getTo());
+            if (move.getPromotionFigure() != null) {
+                ((Pawn) fig).promotion(move.getPromotionFigure());
+            }
             if (simBoard.getKing(MyColor.getOppositeColor(fig.getColor())).isInCheck()) {
                 // FIXME: '#' for checkmate
                 moveStr += '+';
