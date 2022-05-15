@@ -13,7 +13,7 @@ public class Packet {
     private String to;
     private Character promotionFigure;
     private MyColor winnerColor;
-    private Boolean drawAccepted;
+    private String drawAccepted;
 
     public Packet() {
     }
@@ -78,11 +78,11 @@ public class Packet {
         this.winnerColor = winnerColor;
     }
 
-    public boolean getDrawAccepted() {
+    public String getDrawAccepted() {
         return drawAccepted;
     }
 
-    public void setDrawAccepted(boolean drawAccepted) {
+    public void setDrawAccepted(String drawAccepted) {
         this.drawAccepted = drawAccepted;
     }
 

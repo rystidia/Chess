@@ -132,7 +132,7 @@ public class RemotePlayer extends Player {
                 drawOfferDialogCallback.run();
                 break;
             case RESPONSE_TO_OFFER:
-                if (packet.getDrawAccepted()) {
+                if (packet.getDrawAccepted().equals("Yes")) {
                     gameEnd(null);
                 }
                 break;
@@ -149,7 +149,6 @@ public class RemotePlayer extends Player {
         ObjectMapper objectMapper = new ObjectMapper();
         String msg;
         try {
-            packet.setDrawAccepted(true);
             msg = objectMapper.writeValueAsString(packet);
             System.out.println(msg);
         } catch (JsonProcessingException e) {
@@ -184,7 +183,7 @@ public class RemotePlayer extends Player {
         this.startGameCallback = startGameCallback;
     }
 
-    public void sendDrawResponse(boolean drawResponse) {
+    public void sendDrawResponse(String drawResponse) {
         Packet response = new Packet(RESPONSE_TO_OFFER.name());
         response.setDrawAccepted(drawResponse);
         sendToServer(response);

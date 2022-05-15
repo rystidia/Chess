@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.chess;
 import cz.cvut.fel.pjv.chess.players.LocalPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 import cz.cvut.fel.pjv.chess.players.RemotePlayer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -45,8 +46,10 @@ public class SceneController {
         GridPane gameScene = gs.createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(gameScene);
-        stage.setScene(scene);
-        stage.show();
+        Platform.runLater(() -> {
+            stage.setScene(scene);
+            stage.show();
+        });
     }
 
     public void switchToMenu(ActionEvent event) {

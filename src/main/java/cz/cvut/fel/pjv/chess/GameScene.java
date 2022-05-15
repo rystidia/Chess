@@ -238,8 +238,8 @@ public class GameScene extends GridPane {
         applyButton.setVisible(false);
 
         VBox vbox = new VBox();
-        vbox.getChildren().add(newDrawResponseButton(true, applyButton, player));
-        vbox.getChildren().add(newDrawResponseButton(false, applyButton, player));
+        vbox.getChildren().add(newDrawResponseButton("Yes", applyButton, player));
+        vbox.getChildren().add(newDrawResponseButton("No", applyButton, player));
 
         dialog.setOnCloseRequest(evt -> dialog.close());
         dialog.getDialogPane().setContent(vbox);
@@ -247,9 +247,8 @@ public class GameScene extends GridPane {
         dialog.close();
     }
 
-    private Button newDrawResponseButton(boolean response, Button applyButton, RemotePlayer player) {
-        String title = response ? "Yes" : "No";
-        Button button = style.newButton(title);
+    private Button newDrawResponseButton(String response, Button applyButton, RemotePlayer player) {
+        Button button = style.newButton(response);
         button.setOnAction(e -> {
             player.sendDrawResponse(response);
             applyButton.fire();
@@ -283,7 +282,7 @@ public class GameScene extends GridPane {
                 if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
                     promotionDialog((Pawn) figureBeingMoved);
                 }
-                
+
                 gc.switchCurPlayer();
                 figureBeingMoved = null;
             } else {

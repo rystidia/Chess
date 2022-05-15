@@ -55,7 +55,7 @@ public class Connection implements Runnable {
         }
     }
 
-    private boolean processIncomingMessage(String msg){
+    private boolean processIncomingMessage(String msg) {
         ObjectMapper objectMapper = new ObjectMapper();
         Packet packet;
         try {
@@ -79,8 +79,8 @@ public class Connection implements Runnable {
         return true;
     }
 
-    private void handleMMRequest(){
-        synchronized (server) {
+    private void handleMMRequest() {
+
             Connection opponent = server.getWaitingConnection();
             if (!server.isNameUnique(name)) {
                 sendPacket(new Packet(REJECTED.name()));
@@ -88,21 +88,26 @@ public class Connection implements Runnable {
                 if (opponent == null) {
                     server.setWaitingConnection(this);
                     while (server.getWaitingConnection() != null) {
-                        try {
-                            wait();
-                            sendGameStart(true);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        synchronized (this) {
+                            try {
+                                wait();
+                                sendGameStart(true);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 } else {
                     server.addConnection(this, opponent);
                     server.setWaitingConnection(null);
-                    opponent.notify();
+                    LOGGER.log(Level.INFO, "Waiting connection: >>>{0}<<<", opponent.name);
+                    synchronized (opponent) {
+                        opponent.notify();
+                    }
                     sendGameStart(false);
                 }
             }
-        }
+
     }
 
     public void sendPacket(Packet packet) {
@@ -137,6 +142,7 @@ public class Connection implements Runnable {
 
     private void quit() {
         LOGGER.info("Quitting connection.");
+        server.removeConnection(this);
         try {
             if (socket != null) {
                 socket.close();
