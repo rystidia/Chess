@@ -189,11 +189,15 @@ public class RemotePlayer extends Player {
         sendToServer(response);
     }
 
-    public void sendMove(Figure figure, Field toPos, Figure promotionFig) {
+    public void sendMove(Field from, Field toPos, Class<? extends Figure> promClass) {
         Packet move = new Packet(MOVE.name());
-        move.setFrom(figure.getPosition().toAlgebraicNotation());
+        move.setFrom(from.toAlgebraicNotation());
         move.setTo(toPos.toAlgebraicNotation());
-        move.setPromotionFigure(Figure.getCharacterByFigureClass(promotionFig.getClass()));
+        if (promClass != null) {
+            move.setPromotionFigure(Figure.getCharacterByFigureClass(promClass));
+        } else {
+            move.setPromotionFigure(null);
+        }
         sendToServer(move);
     }
 

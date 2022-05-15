@@ -15,7 +15,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class GameScene extends GridPane {
@@ -50,7 +49,7 @@ public class GameScene extends GridPane {
     private void setUpRemotePlayer() {
         RemotePlayer p = getRemotePlayer();
         if (p == null) return;
-        p.setMoveCallback(this::remotePlayerMove);
+        p.setMoveCallback(this::remotePlayerMoveReceived);
         p.setAlertCallback(this::illegalNameAlert);
         p.setOpponentSurrenderCallback(this::opponentSurrenderAlert);
         p.setDrawOfferDialogCallback(this::drawOfferDialog);
@@ -206,8 +205,8 @@ public class GameScene extends GridPane {
         return grid;
     }
 
-    public void remotePlayerMove() {
-        gc.getCurPlayer().makeMove(board);
+    public void remotePlayerMoveReceived() {
+        //gc.getCurPlayer().makeMove(board);
         gc.switchCurPlayer();
         GridPane updatedBoard = drawBoard(board);
         redrawBoard(updatedBoard);
@@ -278,11 +277,15 @@ public class GameScene extends GridPane {
         } else {
             Set<Field> movedFigureValidMoves = board.getValidMoves(figureBeingMoved);
             if (movedFigureValidMoves.contains(fieldPos)) {
+                Field from = figureBeingMoved.getPosition();
                 board.moveFigure(figureBeingMoved, fieldPos);
+                Class<? extends Figure> promClass = null;
                 if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
-                    promotionDialog((Pawn) figureBeingMoved);
+                    promClass = promotionDialog((Pawn) figureBeingMoved);
                 }
-
+                if (gc.getOpponent(gc.getCurPlayer()) instanceof RemotePlayer) {
+                    ((RemotePlayer) gc.getOpponent(gc.getCurPlayer())).sendMove(from, fieldPos, promClass);
+                }
                 gc.switchCurPlayer();
                 figureBeingMoved = null;
             } else {
@@ -343,13 +346,15 @@ public class GameScene extends GridPane {
     }
 
     private void redrawBoard(GridPane newBoardTable) {
-        GridPane parentTable = (GridPane) boardTable.getParent();
-        ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
-        parentTable.add(newBoardTable, 1, 1, 8, 8);
-        boardTable = newBoardTable;
+        Platform.runLater(() -> {
+            GridPane parentTable = (GridPane) boardTable.getParent();
+            ((GridPane) boardTable.getParent()).getChildren().remove(boardTable);
+            parentTable.add(newBoardTable, 1, 1, 8, 8);
+            boardTable = newBoardTable;
+        });
     }
 
-    public void promotionDialog(Pawn pawn) {
+    public Class<? extends Figure> promotionDialog(Pawn pawn) {
         Dialog<Class<? extends Figure>> dialog = new Dialog<>();
         dialog.setTitle("Promotion");
         dialog.setContentText("Promote the pawn to:");
@@ -371,5 +376,6 @@ public class GameScene extends GridPane {
 
         Optional<Class<? extends Figure>> result = dialog.showAndWait();
         pawn.promotion(result.orElse(Queen.class));
+        return result.orElse(Queen.class);
     }
 }

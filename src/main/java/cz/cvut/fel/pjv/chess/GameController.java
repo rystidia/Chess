@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
+import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 
 public class GameController {
 
@@ -23,6 +24,9 @@ public class GameController {
         if (getCurPlayer() instanceof AIPlayer){
             game.AIPlayerMove(board);
         }
+        if (getCurPlayer() instanceof RemotePlayer){
+            getCurPlayer().makeMove(board);
+        }
     }
 
     public Player getCurPlayer() {
@@ -37,10 +41,17 @@ public class GameController {
             black.setCurrentPlayer(false);
             white.setCurrentPlayer(true);
         }
+        if (getCurPlayer() instanceof RemotePlayer){
+            getCurPlayer().makeMove(board);
+        }
     }
 
     public boolean isCurrentColor(MyColor color) {
         return white.isCurrentPlayer() ? color == MyColor.WHITE : color == MyColor.BLACK;
+    }
+
+    public Player getOpponent(Player player){
+        return player.getColor() == MyColor.WHITE ? black : white;
     }
 
     public boolean isStaleMate(Board board){
