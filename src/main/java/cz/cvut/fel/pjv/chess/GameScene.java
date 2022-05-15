@@ -23,12 +23,12 @@ public class GameScene extends GridPane {
     private final SceneController sceneController = new SceneController();
     private final Player white;
     private final Player black;
+    private final GameMode gameMode;
     Clock clock;
     private GameController gc;
     private Board board;
     private GridPane boardTable;
     private Figure figureBeingMoved;
-    private final GameMode gameMode;
 
     public GameScene(Player white, Player black, GameMode gameMode, Board board) {
         this.white = white;
@@ -50,7 +50,6 @@ public class GameScene extends GridPane {
         RemotePlayer p = getRemotePlayer();
         if (p == null) return;
         p.setMoveCallback(this::remotePlayerMoveReceived);
-        p.setAlertCallback(this::illegalNameAlert);
         p.setOpponentSurrenderCallback(this::opponentSurrenderAlert);
         p.setDrawOfferDialogCallback(this::drawOfferDialog);
     }
@@ -208,20 +207,15 @@ public class GameScene extends GridPane {
         redrawBoard(updatedBoard);
     }
 
-    public void illegalNameAlert() {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle(" ");
-        a.setHeaderText("Illegal name.");
-        a.setContentText("Someone is already logged in with this name.");
-        a.show();
-    }
-
     public void opponentSurrenderAlert() {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle(" ");
-        a.setHeaderText("You win.");
-        a.setContentText("You opponent has surrendered.");
-        a.show();
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle(" ");
+            a.setHeaderText("You win.");
+            a.setContentText("You opponent has surrendered.");
+            a.show();
+            stopClock();
+        });
     }
 
     public void drawOfferDialog() {
@@ -337,11 +331,20 @@ public class GameScene extends GridPane {
         }
         Button save = style.newButton("Save");
         Button load = style.newButton("Load");
-        Button create = style.newButton("Create");
-        create.setOnAction(evt -> {
-            stopClock();
-            sceneController.switchToGame(evt, white, black, GameMode.CREATE);
-        });
+        Button create;
+        if (gameMode != GameMode.ONLINE) {
+            create = style.newButton("Create");
+            create.setOnAction(evt -> {
+                stopClock();
+                sceneController.switchToGame(evt, white, black, GameMode.CREATE);
+            });
+        } else {
+            create = style.newButton("Surrender");
+            create.setOnAction(evt -> {
+                stopClock();
+                getRemotePlayer().sendSurrender();
+            });
+        }
         options.setSpacing(15);
         options.setPadding(new Insets(25, 0, 25, 0));
         options.getChildren().addAll(menu, restart, save, load, create);

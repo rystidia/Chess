@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,9 +75,13 @@ public class Server implements Runnable {
     public boolean isNameUnique(String name){
         for (Connection connection: opponents.values()) {
             if (connection.getName().equals(name)) {
+                System.out.println("reject");
                 return false;
             }
         }
+//        if (getWaitingConnection() != null && getWaitingConnection() != this){
+//            return !getWaitingConnection().getName().equals(name);
+//        }
         return true;
     }
 

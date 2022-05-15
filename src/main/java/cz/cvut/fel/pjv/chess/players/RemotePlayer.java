@@ -222,4 +222,9 @@ public class RemotePlayer extends Player {
         mmReq.setName(name);
         sendToServer(mmReq);
     }
+
+    public void sendSurrender(){
+        Packet surrender = new Packet(SURRENDER.name());
+        sendToServer(surrender);
+    }
 }

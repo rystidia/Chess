@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -90,6 +91,7 @@ public class SceneController {
             String userName = nameField.getText().strip();
             RemotePlayer rp = new RemotePlayer();
             RemotePlayer.setName(userName);
+            rp.setAlertCallback(this::illegalNameAlert);
             rp.setStartGameCallback(() -> switchToOnlineGame(e, rp));
             rp.sendMMRequest();
         });
@@ -97,5 +99,15 @@ public class SceneController {
         hbox.setPadding(new Insets(8));
         hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    public void illegalNameAlert() {
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle(" ");
+            a.setHeaderText("Illegal name.");
+            a.setContentText("Someone is already logged in with this name.");
+            a.show();
+        });
     }
 }

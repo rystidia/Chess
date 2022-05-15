@@ -23,6 +23,7 @@ public class MainFrame extends Application {
         primaryStage.setMinWidth(style.minWidth);
         primaryStage.setMinHeight(style.minHeight + 40);
         primaryStage.setTitle("Chess");
+        primaryStage.setOnCloseRequest(evt -> System.exit(1));
         primaryStage.setScene(scene); // Place in scene in the stage
         primaryStage.show();
     }

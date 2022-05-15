@@ -50,6 +50,7 @@ public class Connection implements Runnable {
             }
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Error communicating with client {0}", ex.getMessage());
+
         } finally {
             quit();
         }
@@ -70,7 +71,12 @@ public class Connection implements Runnable {
                 name = packet.getName();
                 handleMMRequest();
             }
-            case MOVE, DRAW_OFFER, RESPONSE_TO_OFFER, SURRENDER -> sendToOpponent(packet);
+            case MOVE, DRAW_OFFER, RESPONSE_TO_OFFER -> sendToOpponent(packet);
+            case SURRENDER -> {
+                sendToOpponent(packet);
+                server.removeConnection(this);
+                return false;
+            }
             case GAME_END -> {
                 server.removeConnection(this);
                 return false;
@@ -81,32 +87,32 @@ public class Connection implements Runnable {
 
     private void handleMMRequest() {
 
-            Connection opponent = server.getWaitingConnection();
-            if (!server.isNameUnique(name)) {
-                sendPacket(new Packet(REJECTED.name()));
-            } else {
-                if (opponent == null) {
-                    server.setWaitingConnection(this);
-                    while (server.getWaitingConnection() != null) {
-                        synchronized (this) {
-                            try {
-                                wait();
-                                sendGameStart(true);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+        Connection opponent = server.getWaitingConnection();
+        if (!server.isNameUnique(name)) {
+            sendPacket(new Packet(REJECTED.name()));
+        } else {
+            if (opponent == null) {
+                server.setWaitingConnection(this);
+                while (server.getWaitingConnection() != null) {
+                    synchronized (this) {
+                        try {
+                            wait();
+                            sendGameStart(true);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
-                } else {
-                    server.addConnection(this, opponent);
-                    server.setWaitingConnection(null);
-                    LOGGER.log(Level.INFO, "Waiting connection: >>>{0}<<<", opponent.name);
-                    synchronized (opponent) {
-                        opponent.notify();
-                    }
-                    sendGameStart(false);
                 }
+            } else {
+                server.addConnection(this, opponent);
+                server.setWaitingConnection(null);
+                LOGGER.log(Level.INFO, "Waiting connection: >>>{0}<<<", opponent.name);
+                synchronized (opponent) {
+                    opponent.notify();
+                }
+                sendGameStart(false);
             }
+        }
 
     }
 
