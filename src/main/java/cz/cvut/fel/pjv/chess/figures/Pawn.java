@@ -84,7 +84,7 @@ import java.util.Set;
             Figure figure = figClass
                 .getConstructor(MyColor.class, Board.class)
                 .newInstance(getColor(), board);
-            board.moveFigure(figure, getPosition());
+            board.pawnPromotion(this, figure);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
