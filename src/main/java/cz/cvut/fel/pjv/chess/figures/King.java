@@ -21,10 +21,15 @@ final public class King extends Figure {
         super(color, board);
     }
 
+    private boolean kingSideCastlingNotAvailable = false;
+    private boolean queenSideCastlingNotAvailable = false;
+
     @Override
     public Figure clone(Board dstBoard) {
         King fig = new King(getColor(), dstBoard);
         fig.isFirstMove = isFirstMove;
+        fig.kingSideCastlingNotAvailable = kingSideCastlingNotAvailable;
+        fig.queenSideCastlingNotAvailable = queenSideCastlingNotAvailable;
         fig.setPosition(getPosition());
         return fig;
     }
@@ -58,6 +63,9 @@ final public class King extends Figure {
     }
 
     public boolean canCastlingBeAvailable(boolean queenSide) {
+        if (queenSide ? queenSideCastlingNotAvailable : kingSideCastlingNotAvailable) {
+            return false;
+        }
         if (!isFirstMove()) {
             return false;
         }
@@ -122,5 +130,13 @@ final public class King extends Figure {
         int column = queenSide ? 0 : Board.MAX_COL;
         Figure fig = board.getFigure(new Field(row, column));
         return (fig instanceof Rook) ? (Rook) fig : null;
+    }
+
+    public void setKingSideCastlingNotAvailable() {
+        kingSideCastlingNotAvailable = true;
+    }
+
+    public void setQueenSideCastlingNotAvailable() {
+        queenSideCastlingNotAvailable = true;
     }
 }

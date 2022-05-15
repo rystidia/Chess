@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.figures.Figure;
+import cz.cvut.fel.pjv.chess.figures.Pawn;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -102,12 +103,35 @@ public class PGNTest {
         assertEquals(pgn.getWinnerColor(), MyColor.BLACK);
     }
 
+    @Test
+    public void testLoadPromotion() throws IOException, PGN.ParseException {
+        Reader rdr = new InputStreamReader(getPromotionResourceStream());
+        PGN pgn = new PGN();
+        Board board = pgn.load(rdr);
+
+        char[][] expected = {
+            {'r','r','-','-','N','-','-','-'},
+            {'-','-','-','n','-','-','k','p'},
+            {'p','-','-','-','-','-','p','-'},
+            {'-','p','-','q','-','-','-','-'},
+            {'P','-','p','-','N','-','-','-'},
+            {'-','-','-','-','Q','N','-','P'},
+            {'-','P','-','-','-','-','-','b'},
+            {'-','-','-','-','R','R','-','K'},
+        };
+        assertBoard(board, expected);
+    }
+
     private InputStream getSpecResourceStream() {
         return Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("spec.pgn"));
     }
 
     private InputStream getSetUpResourceStream() {
         return Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("set-up.pgn"));
+    }
+
+    private InputStream getPromotionResourceStream() {
+        return Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("promotion.pgn"));
     }
 
     @Test
@@ -231,6 +255,69 @@ public class PGNTest {
         String actual = out.toString();
         String expected =
             new BufferedReader(new InputStreamReader(getSetUpResourceStream(), StandardCharsets.UTF_8))
+                .lines()
+                .collect(Collectors.joining("\n")) + '\n';
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testSavePromotion() {
+        PGN pgn = new PGN();
+        pgn.setTagValue("Event", "URS-FL");
+        pgn.setTagValue("Site", "Lvov");
+        pgn.setTagValue("Date", "1987.??.??");
+        pgn.setTagValue("Round", "?");
+        pgn.setTagValue("White", "Novikov, Igor A");
+        pgn.setTagValue("Black", "Dreev, Alexey");
+//        pgn.setTagValue("Result", "1-0");
+        pgn.setTagValue("WhiteElo", "2455");
+        pgn.setTagValue("BlackElo", "2475");
+        pgn.setTagValue("ECO", "E12");
+
+        // According to https://chesstempo.com/pgn-viewer/
+        String[][] moves = {
+            {"c3", "Ne4"},         {"d6", "Qxd5"},      // 1.
+            {"f7", "fxe8=N"/*+*/},
+//            {"b8", "Rxe8"},      // 2.
+//            {"h1", "Kxh2"},        {"d7", "Ne5"},       // 3.
+//            {"e1", "Re2"},         {"d5", "Qd3"},       // 4.
+//            {"f3", "Nfd2"},        {"d3", "Qxe3"},      // 5.
+//            {"e2", "Rxe3"},        {"a8", "Rad8"},      // 6.
+//            {"a4", "axb5"},        {"a6", "axb5"},      // 7.
+//            {"e3", "Ra3"},         {"e8", "Re7"},       // 8.
+//            {"a3", "Ra5"},         {"b5", "b4"},        // 9.
+//            {"f1", "Rc1"},         {"d8", "Rd4"},       // 10.
+//            {"a5", "Rc5"},         {"d4", "Rxd2"/*+*/}, // 11.
+//            {"e4", "Nxd2"},        {"e5", "Nd3"},       // 12.
+//            {"c1", "R1xc4"},       {"d3", "Nxc5"},      // 13.
+//            {"h2", "Kg3"} // 14.
+            // 1-0
+        };
+        Board board = Board.fromFEN("rr2n3/3n1Pkp/p2q2p1/1p1P4/P1p5/2N1QN1P/1P5b/4RR1K w - - 0 1");
+        board.switchToGameMode();
+
+        for (String[] fullMove : moves) {
+            Field from = Field.fromAlgebraicNotation(fullMove[0]);
+            String toStr = fullMove[1];
+            Class<? extends Figure> promoteToFigClass = null;
+            if (toStr.charAt(toStr.length() - 2) == '=') {
+                promoteToFigClass = Figure.getFigureClassByCharacter(toStr.charAt(toStr.length() - 1));
+                toStr = toStr.substring(0, toStr.length() - 2);
+            }
+            Field to = Field.fromAlgebraicNotation(toStr.substring(toStr.length() - 2));
+            Figure fig = board.getFigure(from);
+            board.moveFigure(fig, to);
+            if (promoteToFigClass != null) {
+                ((Pawn) fig).promotion(promoteToFigClass);
+            }
+        }
+
+        StringWriter out = new StringWriter();
+        PrintWriter pw = new PrintWriter(out);
+        pgn.save(pw, board);
+        String actual = out.toString();
+        String expected =
+            new BufferedReader(new InputStreamReader(getPromotionResourceStream(), StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.joining("\n")) + '\n';
         assertEquals(actual, expected);

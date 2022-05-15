@@ -192,6 +192,7 @@ public class Board {
             throw new UnsupportedOperationException("generating FEN for a board in game mode is not supported");
         }
         List<String> fields = new ArrayList<>();
+        String boardField;
         {
             StringBuilder s = new StringBuilder();
             for (Figure[] row : board) {
@@ -219,7 +220,8 @@ public class Board {
                     s.append(numEmpty);
                 }
             }
-            fields.add(s.toString());
+            boardField = s.toString();
+            fields.add(boardField);
         }
         fields.add(((history.size() + (startingColor == MyColor.BLACK ? 1 : 0)) & 1) == 0 ? "w" : "b");
 //        {
@@ -238,7 +240,7 @@ public class Board {
 //            fields.add(s.toString());
 //        }
         // FIXME
-        fields.add("KQkq"); // castling availability
+        fields.add(boardField.equals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") ? "KQkq" : "-"); // castling availability
         fields.add("-"); // en passant target square
         fields.add("0"); // halfmove clock
         fields.add("1"); // fullmove number
@@ -268,6 +270,13 @@ public class Board {
                 column++;
             }
             row++;
+        }
+        // FIXME
+        if (!Objects.equals(fields[0], "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")) {
+            brd.getKing(MyColor.WHITE).setKingSideCastlingNotAvailable();
+            brd.getKing(MyColor.WHITE).setQueenSideCastlingNotAvailable();
+            brd.getKing(MyColor.BLACK).setKingSideCastlingNotAvailable();
+            brd.getKing(MyColor.BLACK).setQueenSideCastlingNotAvailable();
         }
         // FIXME: ignored active color
         return brd;
