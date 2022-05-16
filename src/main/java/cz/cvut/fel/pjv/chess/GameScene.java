@@ -376,6 +376,9 @@ public class GameScene extends GridPane {
         final SimpleDateFormat pgnDateFormatter = new SimpleDateFormat("yyyy.MM.dd");
         save.setOnAction(evt -> {
             File file = fileChooser.showSaveDialog(window);
+            if (file == null) {
+                return;
+            }
             try (
                 PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8)
             ) {
