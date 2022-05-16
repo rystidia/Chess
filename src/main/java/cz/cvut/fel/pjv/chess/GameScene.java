@@ -406,6 +406,9 @@ public class GameScene extends GridPane {
             }
         });
         Button load = style.newButton("Load");
+        if (gameMode == GameMode.ONLINE){
+            load.setDisable(true);
+        }
         Button create;
         if (gameMode != GameMode.ONLINE) {
             create = style.newButton("Create");
@@ -418,8 +421,10 @@ public class GameScene extends GridPane {
             create.setOnAction(evt -> {
                 getRemotePlayer().setWon(true);
                 gc.getOpponent(getRemotePlayer()).setLost(true);
-                updateClock();
-                stopClock();
+                if (!clock.isShutdown()) {
+                    updateClock();
+                    stopClock();
+                }
                 getRemotePlayer().sendSurrender();
             });
         }

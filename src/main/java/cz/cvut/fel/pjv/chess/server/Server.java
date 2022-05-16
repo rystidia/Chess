@@ -91,9 +91,12 @@ public class Server implements Runnable {
     public void removeConnection(Connection connectionToRemove) {
         synchronized(opponents) {
             Connection opponent = opponents.get(connectionToRemove);
+            connectionToRemove.quit();
+            opponent.quit();
             opponents.remove(connectionToRemove);
             opponents.remove(opponent);
         }
+
     }
 
     public void stop() {

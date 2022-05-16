@@ -48,11 +48,10 @@ public class Connection implements Runnable {
                     running = false;
                 }
             }
+            server.removeConnection(this);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Error communicating with client {0}", ex.getMessage());
 
-        } finally {
-            quit();
         }
     }
 
@@ -74,11 +73,9 @@ public class Connection implements Runnable {
             case MOVE, DRAW_OFFER, RESPONSE_TO_OFFER -> sendToOpponent(packet);
             case SURRENDER -> {
                 sendToOpponent(packet);
-                server.removeConnection(this);
                 return false;
             }
             case GAME_END -> {
-                server.removeConnection(this);
                 return false;
             }
         }
@@ -148,9 +145,8 @@ public class Connection implements Runnable {
         sendPacket(gs);
     }
 
-    private void quit() {
+    public void quit() {
         LOGGER.info("Quitting connection.");
-        server.removeConnection(this);
         try {
             if (socket != null) {
                 socket.close();

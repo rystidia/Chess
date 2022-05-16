@@ -88,6 +88,8 @@ public class SceneController {
         startButton.setOnAction((ActionEvent e) -> {
             // 2. as above
             final String userName = nameField.getText().strip();
+            startButton.setDisable(true);
+            nameField.setDisable(true);
             RemotePlayer rp = new RemotePlayer();
             rp.setAlertCallback(this::illegalNameAlert);
             rp.setStartGameCallback(() -> {
