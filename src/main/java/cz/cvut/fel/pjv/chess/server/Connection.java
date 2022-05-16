@@ -3,7 +3,6 @@ package cz.cvut.fel.pjv.chess.server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.pjv.chess.MyColor;
-import cz.cvut.fel.pjv.chess.figures.Figure;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +12,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static cz.cvut.fel.pjv.chess.server.Protocol.*;
+import static cz.cvut.fel.pjv.chess.server.Protocol.GAME_START;
+import static cz.cvut.fel.pjv.chess.server.Protocol.REJECTED;
 
 public class Connection implements Runnable {
 

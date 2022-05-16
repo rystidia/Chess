@@ -62,6 +62,9 @@ import java.util.Set;
     @Override
     public void move(Field toPos) {
         doubleAdvance = getPosition() != null && Math.abs(getPosition().row - toPos.row) > 1;
+        if (doubleAdvance){
+            board.setEnPassantPawn(this);
+        }
         Field capturePos = getCapturedFieldByMove(toPos);
         if (capturePos != null) {
             board.setFigure(capturePos, null);
@@ -74,6 +77,10 @@ import java.util.Set;
      */
     public boolean doubleAdvance() {
         return doubleAdvance;
+    }
+
+    public void clearDoubleAdvance() {
+        this.doubleAdvance = false;
     }
 
     /**

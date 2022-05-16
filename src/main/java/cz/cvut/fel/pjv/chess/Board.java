@@ -27,6 +27,8 @@ public class Board {
 
     private final List<Move> history = new ArrayList<>();
 
+    private Pawn enPassantPawn;
+
     /**
      * Initializes the board
      */
@@ -57,11 +59,19 @@ public class Board {
         board[pos.row][pos.column] = figure;
     }
 
+    public void setEnPassantPawn(Pawn enPassantPawn) {
+        this.enPassantPawn = enPassantPawn;
+    }
+
     public void moveFigure(Figure figure, Field toPos) {
         moveFigure(figure, toPos, true);
     }
 
     public void moveFigure(Figure figure, Field toPos, boolean writeToHistory) {
+        if (enPassantPawn != null && figure.getColor() == enPassantPawn.getColor()){
+            enPassantPawn.clearDoubleAdvance();
+            enPassantPawn = null;
+        }
         if (figure.getPosition() != null) {
             if (getFigure(figure.getPosition()) != figure) {
                 throw new IllegalArgumentException("provided figure was not found where it should be");

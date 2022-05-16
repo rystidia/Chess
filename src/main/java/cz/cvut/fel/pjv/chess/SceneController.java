@@ -73,31 +73,12 @@ public class SceneController {
         TextField nameField;
         Label nameLabel = new Label("Enter your name:");
         nameField = new TextField();
-//        nameField.setOnKeyPressed((event) -> {
-//            if (event.getCode() == KeyCode.ENTER) {
-//                // 2. start server (if not already running) and client
-//                String userName = nameField.getText().strip();
-//                RemotePlayer rp = new RemotePlayer();
-//                rp.sendMMRequest();
-//                rp.setStartGameCallback( switchToGame(event, rp));
-//                //TODO wait until connected and set white and black
-//                // then switch to game
-//            }
-//        });
         Button startButton = new Button("Start");
+        nameField.setOnAction((event) -> {
+            setConnection(event, nameField, startButton);
+        });
         startButton.setOnAction((ActionEvent e) -> {
-            // 2. as above
-            final String userName = nameField.getText().strip();
-            startButton.setDisable(true);
-            nameField.setDisable(true);
-            RemotePlayer rp = new RemotePlayer();
-            rp.setAlertCallback(this::illegalNameAlert);
-            rp.setStartGameCallback(() -> {
-                LocalPlayer lp = new LocalPlayer(MyColor.getOppositeColor(rp.getColor()));
-                lp.setName(userName);
-                switchToOnlineGame(e, lp, rp);
-            });
-            rp.sendMMRequest(userName);
+            setConnection(e, nameField, startButton);
         });
         HBox hbox = new HBox(4, nameLabel, nameField, startButton);
         hbox.setPadding(new Insets(8));
@@ -105,7 +86,21 @@ public class SceneController {
         return hbox;
     }
 
-    public void illegalNameAlert() {
+    private void setConnection(ActionEvent event, TextField nameField, Button startButton){
+        final String userName = nameField.getText().strip();
+        startButton.setDisable(true);
+        nameField.setDisable(true);
+        RemotePlayer rp = new RemotePlayer();
+        rp.setAlertCallback(this::illegalNameAlert);
+        rp.setStartGameCallback(() -> {
+            LocalPlayer lp = new LocalPlayer(MyColor.getOppositeColor(rp.getColor()));
+            lp.setName(userName);
+            switchToOnlineGame(event, lp, rp);
+        });
+        rp.sendMMRequest(userName);
+    }
+
+    private void illegalNameAlert() {
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
             a.setTitle(" ");
