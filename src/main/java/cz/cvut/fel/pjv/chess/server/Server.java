@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,9 +78,9 @@ public class Server implements Runnable {
                 return false;
             }
         }
-//        if (getWaitingConnection() != null && getWaitingConnection() != this){
-//            return !getWaitingConnection().getName().equals(name);
-//        }
+        if (getWaitingConnection() != null){
+            return !getWaitingConnection().getName().equals(name);
+        }
         return true;
     }
 

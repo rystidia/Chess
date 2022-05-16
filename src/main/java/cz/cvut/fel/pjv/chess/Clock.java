@@ -62,12 +62,14 @@ public class Clock implements Runnable {
             long actualTimeStamp = new Date().getTime();
             timeElapsed = actualTimeStamp - startTimeStamp;
 
-            if (this.white.getTimeLeft() <= 0) {
-                this.white.lose();
+            if (white.getTimeLeft() <= 0) {
+                white.setLost(true);
+                black.setWon(true);
                 gameFinished = true;
             }
-            if (this.black.getTimeLeft() <= 0) {
-                this.black.lose();
+            if (black.getTimeLeft() <= 0) {
+                black.setLost(true);
+                black.setWon(true);
                 gameFinished = true;
             }
         }
@@ -79,6 +81,13 @@ public class Clock implements Runnable {
 
     public void redrawClockBox(Player player){
         BorderPane timeBox = player.getColor() == MyColor.WHITE ? timeWhite : timeBlack;
+        if (player.isWon()){
+            timeBox.setStyle("-fx-background-color: #87e199");
+            shutdown();
+        } else if (player.isLost()){
+            timeBox.setStyle("-fx-background-color: #ec8780");
+            shutdown();
+        }
         Label playerTime = new Label(player.getTimeString());
         playerTime.setFont(new Font("Segoe UI", 30));
         timeBox.setCenter(playerTime);

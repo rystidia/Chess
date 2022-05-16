@@ -150,7 +150,7 @@ public class GameScene extends GridPane {
                     if (gameMode != GameMode.CREATE) {
                         white = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.WHITE_GREEN : style.WHITE;
                         brown = validMoves.contains(fieldPos) || Objects.equals(fieldPos, figPos) ? style.BROWN_GREEN : style.BROWN;
-                        if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor())) {
+                        if (fig != null && figureBeingMoved == null && gc.isCurrentColor(fig.getColor()) && gc.getCurPlayer() instanceof LocalPlayer) {
                             white = fig.hasValidMoves() ? style.WHITE_YELLOW : style.WHITE;
                             brown = fig.hasValidMoves() ? style.BROWN_YELLOW : style.BROWN;
                         }
@@ -210,6 +210,9 @@ public class GameScene extends GridPane {
     public void opponentSurrenderAlert() {
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
+            getRemotePlayer().setLost(true);
+            gc.getOpponent(getRemotePlayer()).setWon(true);
+            updateClock();
             a.setTitle(" ");
             a.setHeaderText("You win.");
             a.setContentText("You opponent has surrendered.");
@@ -312,9 +315,10 @@ public class GameScene extends GridPane {
         Button restart;
         if (gameMode == GameMode.CREATE) {
             restart = style.newButton("Start");
-            restart.setStyle("-fx-background-color: #e8b5b5");
+            restart.setStyle("-fx-background-color: #63d678");
             restart.setOnAction(evt -> {
                 stopClock();
+                resetPlayers();
                 sceneController.switchToGame(evt, white, black, board);
             });
         } else if (gameMode == GameMode.ONLINE) {
@@ -326,6 +330,7 @@ public class GameScene extends GridPane {
             restart = style.newButton("Restart");
             restart.setOnAction(evt -> {
                 stopClock();
+                resetPlayers();
                 sceneController.switchToGame(evt, white, black);
             });
         }
@@ -341,6 +346,9 @@ public class GameScene extends GridPane {
         } else {
             create = style.newButton("Surrender");
             create.setOnAction(evt -> {
+                getRemotePlayer().setWon(true);
+                gc.getOpponent(getRemotePlayer()).setLost(true);
+                updateClock();
                 stopClock();
                 getRemotePlayer().sendSurrender();
             });
@@ -349,6 +357,18 @@ public class GameScene extends GridPane {
         options.setPadding(new Insets(25, 0, 25, 0));
         options.getChildren().addAll(menu, restart, save, load, create);
         return options;
+    }
+
+    private void resetPlayers(){
+        white.setWon(false);
+        white.setLost(false);
+        black.setWon(false);
+        black.setLost(false);
+    }
+
+    private void updateClock() {
+        clock.redrawClockBox(white);
+        clock.redrawClockBox(black);
     }
 
     private void stopClock() {

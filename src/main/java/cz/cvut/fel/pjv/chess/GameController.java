@@ -44,6 +44,10 @@ public class GameController {
         if (getCurPlayer() instanceof RemotePlayer){
             getCurPlayer().makeMove(board);
         }
+        if (isCheckMate(board)){
+            getOpponent(getCurPlayer()).setWon(true);
+            getCurPlayer().setLost(true);
+        }
     }
 
     public boolean isCurrentColor(MyColor color) {
