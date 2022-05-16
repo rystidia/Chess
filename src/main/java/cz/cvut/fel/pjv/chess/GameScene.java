@@ -14,7 +14,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class GameScene extends GridPane {
@@ -65,7 +72,7 @@ public class GameScene extends GridPane {
         return p;
     }
 
-    public GridPane createGameScene() {
+    public GridPane createGameScene(Window window) {
         if (board == null) {
             board = new Board();
             board.initialPosition();
@@ -95,7 +102,7 @@ public class GameScene extends GridPane {
 
         // vert menu
         VBox leftVertMenu = new VBox();
-        VBox options = createOptions();
+        VBox options = createOptions(window);
         leftVertMenu.setPadding(new Insets(15));
         BorderPane timeWhite = newClockBox(white);
         BorderPane timeBlack = newClockBox(black);
@@ -326,7 +333,7 @@ public class GameScene extends GridPane {
         a.show();
     }
 
-    private VBox createOptions() {
+    private VBox createOptions(Window window) {
         VBox options = new VBox();
         Button menu = style.newButton("Menu");
         menu.setOnAction(evt->{
@@ -362,7 +369,39 @@ public class GameScene extends GridPane {
                 sceneController.switchToGame(evt, white, black);
             });
         }
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("game.pgn");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Portable Game Notation file", "*.pgn"));
         Button save = style.newButton("Save");
+        final SimpleDateFormat pgnDateFormatter = new SimpleDateFormat("yyyy.MM.dd");
+        save.setOnAction(evt -> {
+            File file = fileChooser.showSaveDialog(window);
+            try (
+                PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8)
+            ) {
+                PGN pgn = new PGN();
+                final String modeName = switch (gameMode) {
+                    case CREATE -> "Create";
+                    case ONLINE -> "Online";
+                    case LOCAL -> "Local";
+                };
+                pgn.setTagValue("Event",
+                    (gameMode == GameMode.CREATE ? "Custom board setup created in " : "Game in ")
+                        + modeName + " mode");
+                pgn.setTagValue("Site", "Chess implementation by rystidia and pucilpet for B0B36PJV");
+                pgn.setTagValue("Date", pgnDateFormatter.format(new Date()));
+                pgn.setTagValue("Round", "-");
+                pgn.setTagValue("White", white.getName() != null ? white.getName() : "?");
+                pgn.setTagValue("Black", black.getName() != null ? black.getName() : "?");
+                // https://github.com/mliebelt/pgn-spec-commented/blob/0c532f7/pgn-spec-supplement.md#6-clock-start-time
+                pgn.setTagValue("WhiteClock", white.getTimeString(true));
+                pgn.setTagValue("BlackClock", black.getTimeString(true));
+                pgn.save(writer, board);
+            } catch (IOException e) {
+                Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
+                a.show();
+            }
+        });
         Button load = style.newButton("Load");
         Button create;
         if (gameMode != GameMode.ONLINE) {

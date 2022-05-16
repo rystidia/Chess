@@ -43,8 +43,8 @@ public class SceneController {
     }
 
     public void goToGameScene(ActionEvent event, GameScene gs){
-        GridPane gameScene = gs.createGameScene();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        GridPane gameScene = gs.createGameScene(stage);
         scene = new Scene(gameScene);
         Platform.runLater(() -> {
             stage.setScene(scene);

@@ -95,16 +95,20 @@ public abstract class Player {
     }
 
     public String getTimeString() {
-        long secondsLeft = timeLeft / 1000;
-        String minutes = String.valueOf(secondsLeft / 60);
-        if (minutes.length() < 2) {
-            minutes = "0" + minutes;
+        return getTimeString(false);
+    }
+
+    public String getTimeString(boolean withHours) {
+        final long secondsLeft = timeLeft / 1000;
+        long minutes = secondsLeft / 60;
+        final long seconds = secondsLeft % 60;
+        if (withHours) {
+            long hours = minutes / 60;
+            minutes %= 60;
+            return String.format("%d:%02d:%02d", hours, minutes, seconds);
+        } else {
+            return String.format("%02d:%02d", minutes, seconds);
         }
-        String seconds = String.valueOf(secondsLeft % 60);
-        if (seconds.length() < 2) {
-            seconds = "0" + seconds;
-        }
-        return minutes + ":" + seconds;
     }
 
     /**

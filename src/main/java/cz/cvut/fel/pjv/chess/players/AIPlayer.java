@@ -50,6 +50,11 @@ public class AIPlayer extends Player {
         }
     }
 
+    @Override
+    public String getName() {
+        return super.getName() != null ? super.getName() : "Computer";
+    }
+
     private List<Figure> getMovableFigures(Board board) {
         List<Figure> figs = new ArrayList<>();
         for (int r = 0; r <= Board.MAX_ROW; r++) {
