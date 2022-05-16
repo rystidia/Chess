@@ -95,7 +95,7 @@ public class SceneController {
                 lp.setName(userName);
                 switchToOnlineGame(e, lp, rp);
             });
-            rp.sendMMRequest();
+            rp.sendMMRequest(userName);
         });
         HBox hbox = new HBox(4, nameLabel, nameField, startButton);
         hbox.setPadding(new Insets(8));

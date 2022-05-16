@@ -199,7 +199,7 @@ public class RemotePlayer extends Player {
         sendToServer(move);
     }
 
-    public void sendMMRequest(){
+    public void sendMMRequest(String name) {
         Packet mmReq = new Packet(MATCHMAKE_REQUEST.name());
         mmReq.setName(name);
         sendToServer(mmReq);
