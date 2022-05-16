@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +24,8 @@ public class Connection implements Runnable {
     private final Socket socket;
     private PrintWriter out;
     private String name;
+    private Date gameStarted;
+    private MyColor playerColor;
 
     public Connection(Server server, Socket socket) {
         this.server = server;
@@ -50,8 +53,8 @@ public class Connection implements Runnable {
             }
             server.removeConnection(this);
         } catch (IOException ex) {
+            server.printGameResults();
             LOGGER.log(Level.SEVERE, "Error communicating with client {0}", ex.getMessage());
-
         }
     }
 
@@ -73,9 +76,16 @@ public class Connection implements Runnable {
             case MOVE, DRAW_OFFER, RESPONSE_TO_OFFER -> sendToOpponent(packet);
             case SURRENDER -> {
                 sendToOpponent(packet);
-                return false;
+                //return false;
             }
             case GAME_END -> {
+                Connection opponent = server.getOpponent(this);
+                if (opponent != null) {
+                    String white = playerColor == MyColor.WHITE ? name : opponent.getName();
+                    String black = playerColor == MyColor.BLACK ? name : opponent.getName();
+                    GameResult gameResult = new GameResult(new Date().getTime() - gameStarted.getTime(), white, black, packet.getWinnerColor());
+                    server.pushGameResult(gameResult);
+                }
                 return false;
             }
         }
@@ -95,6 +105,7 @@ public class Connection implements Runnable {
                         try {
                             wait();
                             sendGameStart(true);
+                            gameStarted = new Date();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -108,6 +119,7 @@ public class Connection implements Runnable {
                     opponent.notify();
                 }
                 sendGameStart(false);
+                gameStarted = new Date();
             }
         }
 
@@ -135,7 +147,7 @@ public class Connection implements Runnable {
     private void sendGameStart(boolean color) {
         Connection opponent = server.getOpponent(this);
         String opponentName = opponent.getName();
-        MyColor playerColor = color ? MyColor.WHITE : MyColor.BLACK;
+        playerColor = color ? MyColor.WHITE : MyColor.BLACK;
         Packet gs = new Packet(GAME_START.name());
         gs.setOpponentName(opponentName);
         gs.setColor(playerColor);

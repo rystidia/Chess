@@ -149,7 +149,7 @@ public class RemotePlayer extends Player {
         out.println(msg);
     }
 
-    private void gameEnd(MyColor winnerColor) {
+    public void gameEnd(MyColor winnerColor) {
         Packet p = new Packet(GAME_END.name());
         p.setWinnerColor(winnerColor);
         sendToServer(p);

@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.chess;
 
 import cz.cvut.fel.pjv.chess.players.Player;
+import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -85,12 +86,18 @@ public class Clock implements Runnable {
     public void redrawClockBox(Player player) {
         BorderPane timeBox = player.getColor() == MyColor.WHITE ? timeWhite : timeBlack;
         if (player.isWon()) {
+            if (player instanceof RemotePlayer){
+                ((RemotePlayer) player).gameEnd(player.getColor());
+            }
             timeBox.setStyle("-fx-background-color: #87e199");
             shutdown();
         } else if (player.isLost()) {
             timeBox.setStyle("-fx-background-color: #ec8780");
             shutdown();
         } else if (player.isDraw()) {
+            if (player instanceof RemotePlayer && player.getColor() == MyColor.WHITE){
+                ((RemotePlayer) player).gameEnd(null);
+            }
             timeBox.setStyle("-fx-background-color: #edb13d");
             shutdown();
         }

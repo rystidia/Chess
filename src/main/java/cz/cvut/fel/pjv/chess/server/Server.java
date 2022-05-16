@@ -3,17 +3,19 @@ package cz.cvut.fel.pjv.chess.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server implements Runnable {
 
-    private final int PORT_NUMBER;
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
-
+    private final int PORT_NUMBER;
     private final Map<Connection, Connection> opponents;
+    private Map<String, List<GameResult>> userResults = new HashMap<>();
 
     private ServerSocket serverSocket;
     private Socket socket;
@@ -50,6 +52,24 @@ public class Server implements Runnable {
         }
     }
 
+    public void pushGameResult(GameResult gameResult) {
+        userResults.computeIfAbsent(gameResult.getWhiteName(), k -> new ArrayList<>());
+        userResults.computeIfAbsent(gameResult.getBlackName(), k -> new ArrayList<>());
+        userResults.get(gameResult.getWhiteName()).add(gameResult);
+        userResults.get(gameResult.getBlackName()).add(gameResult);
+    }
+
+    public void printGameResults() {
+        System.out.println("Printing results");
+        for (Map.Entry<String, List<GameResult>> name : userResults.entrySet()) {
+            List<GameResult> gr = name.getValue();
+            for (GameResult game : gr) {
+                System.out.println(name.getKey() + " : White: " + game.getWhiteName() + " Black: " + game.getBlackName() + " Winner: " + game.getWinner());
+            }
+        }
+        System.out.println();
+    }
+
     public Connection getWaitingConnection() {
         return waitingConnection;
     }
@@ -58,27 +78,27 @@ public class Server implements Runnable {
         this.waitingConnection = waitingConnection;
     }
 
-    public Connection getOpponent(Connection a){
+    public Connection getOpponent(Connection a) {
         return opponents.get(a);
     }
 
     public void addConnection(Connection a, Connection b) {
         // add only connection with name not yet existing
-        synchronized(opponents) {
+        synchronized (opponents) {
             opponents.put(a, b);
             opponents.put(b, a);
             LOGGER.info("Adding connection");
         }
     }
 
-    public boolean isNameUnique(String name){
-        for (Connection connection: opponents.values()) {
+    public boolean isNameUnique(String name) {
+        for (Connection connection : opponents.values()) {
             if (connection.getName().equals(name)) {
                 System.out.println("reject");
                 return false;
             }
         }
-        if (getWaitingConnection() != null){
+        if (getWaitingConnection() != null) {
             return !getWaitingConnection().getName().equals(name);
         }
         return true;
@@ -89,12 +109,14 @@ public class Server implements Runnable {
     }
 
     public void removeConnection(Connection connectionToRemove) {
-        synchronized(opponents) {
+        synchronized (opponents) {
             Connection opponent = opponents.get(connectionToRemove);
-            connectionToRemove.quit();
-            opponent.quit();
-            opponents.remove(connectionToRemove);
-            opponents.remove(opponent);
+            if (opponent != null) {
+                connectionToRemove.quit();
+                opponent.quit();
+                opponents.remove(connectionToRemove);
+                opponents.remove(opponent);
+            }
         }
 
     }

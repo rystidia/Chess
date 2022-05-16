@@ -227,6 +227,7 @@ public class GameScene extends GridPane {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
             getRemotePlayer().setLost(true);
             gc.getOpponent(getRemotePlayer()).setWon(true);
+            //getRemotePlayer().gameEnd(gc.getOpponent(getRemotePlayer()).getColor());
             updateClock();
             a.setTitle(" ");
             a.setHeaderText("You win.");
