@@ -245,6 +245,8 @@ public class GameScene extends GridPane {
         Button button = style.newButton(response);
         button.setOnAction(e -> {
             player.sendDrawResponse(response);
+            white.setDraw(true);
+            black.setDraw(true);
             applyButton.fire();
         });
         return button;
@@ -360,8 +362,10 @@ public class GameScene extends GridPane {
     private void resetPlayers(){
         white.setWon(false);
         white.setLost(false);
+        white.setDraw(false);
         black.setWon(false);
         black.setLost(false);
+        black.setDraw(false);
     }
 
     private void updateClock() {

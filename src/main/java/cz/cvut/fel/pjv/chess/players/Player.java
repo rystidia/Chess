@@ -13,13 +13,13 @@ import cz.cvut.fel.pjv.chess.figures.Figure;
  * @version 1.0
  */
 public abstract class Player {
+    protected String name;
     private MyColor color;
     private long timeLeft;
     private boolean isCurrentPlayer;
     private boolean won = false;
     private boolean lost = false;
-
-    protected String name;
+    private boolean draw = false;
 
     public Player() {
     }
@@ -53,6 +53,14 @@ public abstract class Player {
 
     public void setLost(boolean lost) {
         this.lost = lost;
+    }
+
+    public boolean isDraw() {
+        return draw;
+    }
+
+    public void setDraw(boolean draw) {
+        this.draw = draw;
     }
 
     /**

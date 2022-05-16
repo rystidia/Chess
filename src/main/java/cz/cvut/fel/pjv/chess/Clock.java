@@ -87,6 +87,9 @@ public class Clock implements Runnable {
         } else if (player.isLost()){
             timeBox.setStyle("-fx-background-color: #ec8780");
             shutdown();
+        } else if (player.isDraw()){
+            timeBox.setStyle("-fx-background-color: #edb13d");
+            shutdown();
         }
         Label playerTime = new Label(player.getTimeString());
         playerTime.setFont(new Font("Segoe UI", 30));

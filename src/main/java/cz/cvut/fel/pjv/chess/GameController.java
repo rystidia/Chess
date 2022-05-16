@@ -48,6 +48,10 @@ public class GameController {
             getOpponent(getCurPlayer()).setWon(true);
             getCurPlayer().setLost(true);
         }
+        if (isStaleMate(board)){
+            getOpponent(getCurPlayer()).setDraw(true);
+            getCurPlayer().setDraw(true);
+        }
     }
 
     public boolean isCurrentColor(MyColor color) {
