@@ -16,7 +16,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
         Pawn figure = new Pawn(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(6, 4));
+        board.placeFigure(figure, new Field(6, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -46,7 +46,7 @@ public class PawnTest {
                 return false;
             }
         };
-        board.moveFigure(figure, new Field(5, 4));
+        board.placeFigure(figure, new Field(5, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -70,7 +70,7 @@ public class PawnTest {
         // FIXME: mock Board
         Board board = new Board();
         Pawn figure = new Pawn(MyColor.BLACK, board);
-        board.moveFigure(figure, new Field(1, 4));
+        board.placeFigure(figure, new Field(1, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -105,7 +105,7 @@ public class PawnTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(3, 2));
+        board.placeFigure(blockingOpp1, new Field(3, 2));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -117,7 +117,7 @@ public class PawnTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(3, 4));
+        board.placeFigure(blockingOpp2, new Field(3, 4));
 
         Pawn figure = new Pawn(MyColor.WHITE, board) {
             @Override
@@ -125,7 +125,7 @@ public class PawnTest {
                 return false;
             }
         };
-        board.moveFigure(figure, new Field(4, 3));
+        board.placeFigure(figure, new Field(4, 3));
 
         /*
                 col
@@ -162,7 +162,7 @@ public class PawnTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(4, 1));
+        board.placeFigure(blockingOpp1, new Field(4, 1));
 
         Figure blockingMy1 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -174,7 +174,7 @@ public class PawnTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy1, new Field(4, 0));
+        board.placeFigure(blockingMy1, new Field(4, 0));
 
         Pawn figure = new Pawn(MyColor.BLACK, board) {
             @Override
@@ -182,7 +182,7 @@ public class PawnTest {
                 return false;
             }
         };
-        board.moveFigure(figure, new Field(3, 0));
+        board.placeFigure(figure, new Field(3, 0));
 
         /*
                 col
@@ -217,7 +217,7 @@ public class PawnTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(4, 1));
+        board.placeFigure(blockingOpp1, new Field(4, 1));
 
         Figure blockingOpp2 = new Figure(MyColor.WHITE, board) {
             @Override
@@ -229,7 +229,7 @@ public class PawnTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(4, 0));
+        board.placeFigure(blockingOpp2, new Field(4, 0));
 
         Pawn figure = new Pawn(MyColor.BLACK, board) {
             @Override
@@ -237,7 +237,7 @@ public class PawnTest {
                 return false;
             }
         };
-        board.moveFigure(figure, new Field(3, 0));
+        board.placeFigure(figure, new Field(3, 0));
 
         /*
                 col
@@ -268,7 +268,7 @@ public class PawnTest {
                 return true;
             }
         };
-        board.moveFigure(oppPawn, new Field(4, 1));
+        board.placeFigure(oppPawn, new Field(4, 1));
 
         Pawn figure = new Pawn(MyColor.BLACK, board) {
             @Override
@@ -276,7 +276,7 @@ public class PawnTest {
                 return false;
             }
         };
-        board.moveFigure(figure, new Field(4, 0));
+        board.placeFigure(figure, new Field(4, 0));
 
         /*
                 col
@@ -308,7 +308,7 @@ public class PawnTest {
                 return true;
             }
         };
-        board.moveFigure(oppPawn1, new Field(3, 3));
+        board.placeFigure(oppPawn1, new Field(3, 3));
 
         Pawn oppPawn2 = new Pawn(MyColor.BLACK, board) {
             @Override
@@ -316,7 +316,7 @@ public class PawnTest {
                 return true;
             }
         };
-        board.moveFigure(oppPawn2, new Field(3, 5));
+        board.placeFigure(oppPawn2, new Field(3, 5));
 
         Pawn figure = new Pawn(MyColor.WHITE, board) {
             @Override
@@ -324,7 +324,7 @@ public class PawnTest {
                 return false;
             }
         };
-        board.moveFigure(figure, new Field(3, 4));
+        board.placeFigure(figure, new Field(3, 4));
 
         /*
                 col

@@ -15,7 +15,7 @@ public class KnightTest {
         // FIXME: mock Board
         Board board = new Board();
         Knight figure = new Knight(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(6, 2));
+        board.placeFigure(figure, new Field(6, 2));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -54,7 +54,7 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy1, new Field(0, 2));
+        board.placeFigure(blockingMy1, new Field(0, 2));
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -67,7 +67,7 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(0, 4));
+        board.placeFigure(blockingOpp1, new Field(0, 4));
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
@@ -80,7 +80,7 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy2, new Field(3, 5));
+        board.placeFigure(blockingMy2, new Field(3, 5));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -93,10 +93,10 @@ public class KnightTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(3, 1));
+        board.placeFigure(blockingOpp2, new Field(3, 1));
 
         Knight figure = new Knight(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(2, 3));
+        board.placeFigure(figure, new Field(2, 3));
 
         /*
                 col

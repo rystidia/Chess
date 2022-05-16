@@ -18,6 +18,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -207,7 +208,7 @@ public class GameScene extends GridPane {
             figureBeingMoved = fig;
         } else {
             if (board.getFigure(fieldPos) instanceof King) return;
-            board.moveFigure(figureBeingMoved, fieldPos);
+            board.placeFigure(figureBeingMoved, fieldPos);
             if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
                 promotionDialog((Pawn) figureBeingMoved);
             }
@@ -373,8 +374,11 @@ public class GameScene extends GridPane {
             });
         }
         final FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName("game.pgn");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Portable Game Notation file", "*.pgn"));
+        fileChooser.setInitialFileName(gameMode == GameMode.CREATE ? "board.pgn" : "game.pgn");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Portable Game Notation file", "*.pgn"),
+            new FileChooser.ExtensionFilter("All files", "*.*")
+        );
         Button save = style.newButton("Save");
         final SimpleDateFormat pgnDateFormatter = new SimpleDateFormat("yyyy.MM.dd");
         save.setOnAction(evt -> {
@@ -382,9 +386,7 @@ public class GameScene extends GridPane {
             if (file == null) {
                 return;
             }
-            try (
-                PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8)
-            ) {
+            try (PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8)) {
                 PGN pgn = new PGN();
                 final String modeName = switch (gameMode) {
                     case CREATE -> "Create";
@@ -412,6 +414,26 @@ public class GameScene extends GridPane {
         if (gameMode == GameMode.ONLINE) {
             load.setDisable(true);
         }
+        load.setOnAction(evt -> {
+            File file = fileChooser.showOpenDialog(window);
+            if (file == null) {
+                return;
+            }
+            try (FileReader reader = new FileReader(file)) {
+                PGN pgn = new PGN();
+                Board board1 = pgn.load(reader);
+                white.setName(!Objects.equals(pgn.getTagValue("White"), "?") ? pgn.getTagValue("White") : null);
+                black.setName(!Objects.equals(pgn.getTagValue("Black"), "?") ? pgn.getTagValue("Black") : null);
+                stopClock();
+                resetPlayers();
+                sceneController.switchToGame(evt, white, black, board1);
+                white.setTimeString(pgn.getTagValue("WhiteClock"));
+                black.setTimeString(pgn.getTagValue("BlackClock"));
+            } catch (IOException | PGN.ParseException e) {
+                Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
+                a.show();
+            }
+        });
         Button create;
         if (gameMode != GameMode.ONLINE) {
             create = style.newButton("Create");

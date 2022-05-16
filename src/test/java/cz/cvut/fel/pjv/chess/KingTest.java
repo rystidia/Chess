@@ -14,7 +14,7 @@ public class KingTest {
         // FIXME: mock Board
         Board board = new Board();
         King figure = new King(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(7, 4));
+        board.placeFigure(figure, new Field(7, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -51,7 +51,7 @@ public class KingTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy1, new Field(2, 4));
+        board.placeFigure(blockingMy1, new Field(2, 4));
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -63,7 +63,7 @@ public class KingTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(1, 4));
+        board.placeFigure(blockingOpp1, new Field(1, 4));
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
@@ -75,7 +75,7 @@ public class KingTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy2, new Field(3, 4));
+        board.placeFigure(blockingMy2, new Field(3, 4));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -87,10 +87,10 @@ public class KingTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(3, 2));
+        board.placeFigure(blockingOpp2, new Field(3, 2));
 
         King figure = new King(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(2, 3));
+        board.placeFigure(figure, new Field(2, 3));
 
         /*
                 col
@@ -122,13 +122,13 @@ public class KingTest {
         // FIXME: mock Board
         Board board = new Board();
         Rook myRook1 = new Rook(MyColor.WHITE, board);
-        board.moveFigure(myRook1, new Field(7, 0));
+        board.placeFigure(myRook1, new Field(7, 0));
 
         Rook myRook2 = new Rook(MyColor.WHITE, board);
-        board.moveFigure(myRook2, new Field(7, 7));
+        board.placeFigure(myRook2, new Field(7, 7));
 
         King figure = new King(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(7, 4));
+        board.placeFigure(figure, new Field(7, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -158,10 +158,10 @@ public class KingTest {
         // FIXME: mock Board
         Board board = new Board();
         Rook myRook1 = new Rook(MyColor.BLACK, board);
-        board.moveFigure(myRook1, new Field(0, 0));
+        board.placeFigure(myRook1, new Field(0, 0));
 
         Rook myRook2 = new Rook(MyColor.BLACK, board);
-        board.moveFigure(myRook2, new Field(0, 7));
+        board.placeFigure(myRook2, new Field(0, 7));
 
         Figure myFigure = new Figure(MyColor.BLACK, board) {
             @Override
@@ -173,10 +173,10 @@ public class KingTest {
                 return null;
             }
         };
-        board.moveFigure(myFigure, new Field(0, 1));
+        board.placeFigure(myFigure, new Field(0, 1));
 
         King figure = new King(MyColor.BLACK, board);
-        board.moveFigure(figure, new Field(0, 4));
+        board.placeFigure(figure, new Field(0, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -205,19 +205,19 @@ public class KingTest {
         // FIXME: mock Board
         Board board = new Board();
         Rook oppRook = new Rook(MyColor.BLACK, board);
-        board.moveFigure(oppRook, new Field(1, 4));
+        board.placeFigure(oppRook, new Field(1, 4));
 
         Bishop oppBishop = new Bishop(MyColor.BLACK, board);
-        board.moveFigure(oppBishop, new Field(2, 1));
+        board.placeFigure(oppBishop, new Field(2, 1));
 
         Pawn myPawn = new Pawn(MyColor.WHITE, board);
-        board.moveFigure(myPawn, new Field(4, 4));
+        board.placeFigure(myPawn, new Field(4, 4));
 
         Bishop myBishop = new Bishop(MyColor.WHITE, board);
-        board.moveFigure(myBishop, new Field(3, 2));
+        board.placeFigure(myBishop, new Field(3, 2));
 
         King king = new King(MyColor.WHITE, board);
-        board.moveFigure(king, new Field(5, 4));
+        board.placeFigure(king, new Field(5, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -239,16 +239,16 @@ public class KingTest {
         // FIXME: mock Board
         Board board = new Board();
         Rook oppRook = new Rook(MyColor.BLACK, board);
-        board.moveFigure(oppRook, new Field(1, 4));
+        board.placeFigure(oppRook, new Field(1, 4));
 
         Bishop oppBishop = new Bishop(MyColor.BLACK, board);
-        board.moveFigure(oppBishop, new Field(2, 1));
+        board.placeFigure(oppBishop, new Field(2, 1));
 
         Pawn myPawn = new Pawn(MyColor.WHITE, board);
-        board.moveFigure(myPawn, new Field(4, 4));
+        board.placeFigure(myPawn, new Field(4, 4));
 
         King figure = new King(MyColor.WHITE, board);
-        board.moveFigure(figure, new Field(5, 4));
+        board.placeFigure(figure, new Field(5, 4));
         /*
                 col
           0 1 2 3 4 5 6 7
@@ -269,10 +269,10 @@ public class KingTest {
         // FIXME: mock Board
         Board board = new Board();
         Knight oppKnight = new Knight(MyColor.WHITE, board);
-        board.moveFigure(oppKnight, new Field(2, 2));
+        board.placeFigure(oppKnight, new Field(2, 2));
 
         King figure = new King(MyColor.BLACK, board);
-        board.moveFigure(figure, new Field(1, 4));
+        board.placeFigure(figure, new Field(1, 4));
         /*
                 col
           0 1 2 3 4 5 6 7

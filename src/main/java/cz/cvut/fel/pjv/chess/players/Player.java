@@ -111,6 +111,15 @@ public abstract class Player {
         }
     }
 
+    public void setTimeString(String timeString) {
+        String[] parts = timeString.split(":", 3);
+        try {
+            timeLeft = ((Long.parseLong(parts[0]) * 60 + Long.parseLong(parts[1])) * 60 + Long.parseLong(parts[2])) * 1000;
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {
+            timeLeft = 25 * 60 * 1000;
+        }
+    }
+
     /**
      * @return true if player hasValidMoves, false otherwise
      */

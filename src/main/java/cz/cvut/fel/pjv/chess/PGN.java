@@ -116,7 +116,8 @@ public class PGN {
     }
 
     public void save(PrintWriter writer, Board board) {
-        String fen = board.getInitialBoard().toFEN();
+        Board initialBoard = board.getInitialBoard() != null ? board.getInitialBoard() : board;
+        String fen = initialBoard.toFEN();
         if (Objects.equals(fen, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")) {
             tags.remove("SetUp");
             tags.remove("FEN");
@@ -141,7 +142,7 @@ public class PGN {
         }
         writer.print('\n'); // intentionally use line feed (LF, 0x0a) per the PGN specification
         List<String> tokens = new ArrayList<>();
-        Board simBoard = new Board(board.getInitialBoard());
+        Board simBoard = new Board(initialBoard);
         simBoard.switchToGameMode();
         int halfMoveNum = 0;
         for (Move move : board.getHistory()) {

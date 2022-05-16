@@ -61,7 +61,7 @@ public class CreateMenu extends ContextMenu {
                 newBoard.setFigure(toPos, null);
             } else {
                 Figure clonedFigure = figure.clone(newBoard);
-                newBoard.moveFigure(clonedFigure, toPos);
+                newBoard.placeFigure(clonedFigure, toPos);
             }
 
             if (newBoard.getKing(MyColor.WHITE).isInCheck() || newBoard.getKing(MyColor.BLACK).isInCheck()) {
@@ -73,7 +73,7 @@ public class CreateMenu extends ContextMenu {
         if (figure == null) {
             board.setFigure(toPos, null);
         } else {
-            board.moveFigure(figure, toPos);
+            board.placeFigure(figure, toPos);
         }
         field.setGraphic(style.getImageFigure(figure));
     }

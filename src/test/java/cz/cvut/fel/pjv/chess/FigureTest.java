@@ -23,7 +23,7 @@ public class FigureTest {
                 return getDiagonalDirections();
             }
         };
-        board.moveFigure(figure, new Field(6, 2));
+        board.placeFigure(figure, new Field(6, 2));
 
         /*
                 col
@@ -70,7 +70,7 @@ public class FigureTest {
                 return getVertAndHorDirections();
             }
         };
-        board.moveFigure(figure, new Field(6, 2));
+        board.placeFigure(figure, new Field(6, 2));
 
         /*
                 col
@@ -122,7 +122,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy1, new Field(1, 2));
+        board.placeFigure(blockingMy1, new Field(1, 2));
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -135,7 +135,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(1, 4));
+        board.placeFigure(blockingOpp1, new Field(1, 4));
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
@@ -148,7 +148,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy2, new Field(6, 7));
+        board.placeFigure(blockingMy2, new Field(6, 7));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -161,7 +161,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(4, 1));
+        board.placeFigure(blockingOpp2, new Field(4, 1));
 
         Figure figure = new Figure(MyColor.WHITE, board) {
             @Override
@@ -174,7 +174,7 @@ public class FigureTest {
                 return getDiagonalDirections();
             }
         };
-        board.moveFigure(figure, new Field(2, 3));
+        board.placeFigure(figure, new Field(2, 3));
 
         /*
                 col
@@ -218,7 +218,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy1, new Field(2, 2));
+        board.placeFigure(blockingMy1, new Field(2, 2));
 
         Figure blockingOpp1 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -231,7 +231,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp1, new Field(1, 3));
+        board.placeFigure(blockingOpp1, new Field(1, 3));
 
         Figure blockingMy2 = new Figure(MyColor.WHITE, board) {
             @Override
@@ -244,7 +244,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingMy2, new Field(2, 7));
+        board.placeFigure(blockingMy2, new Field(2, 7));
 
         Figure blockingOpp2 = new Figure(MyColor.BLACK, board) {
             @Override
@@ -257,7 +257,7 @@ public class FigureTest {
                 return null;
             }
         };
-        board.moveFigure(blockingOpp2, new Field(4, 3));
+        board.placeFigure(blockingOpp2, new Field(4, 3));
 
         Figure figure = new Figure(MyColor.WHITE, board) {
             @Override
@@ -270,7 +270,7 @@ public class FigureTest {
                 return getVertAndHorDirections();
             }
         };
-        board.moveFigure(figure, new Field(2, 3));
+        board.placeFigure(figure, new Field(2, 3));
 
         /*
                 col
