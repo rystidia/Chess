@@ -66,7 +66,7 @@ public class RemotePlayer extends Player {
         new Thread(() -> {
         try (
             Socket socket = new Socket(host, port);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
             out = new PrintWriter(socket.getOutputStream(), true);
                 boolean running = true;

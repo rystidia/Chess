@@ -125,13 +125,10 @@ public class Connection implements Runnable {
         out.println(msg);
     }
 
-    public boolean sendToOpponent(Packet packet) {
+    public void sendToOpponent(Packet packet) {
         Connection opponent = server.getOpponent(this);
         if (opponent != null) {
             opponent.sendPacket(packet);
-            return true;
-        } else {
-            return false;
         }
     }
 

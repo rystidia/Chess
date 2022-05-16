@@ -123,7 +123,9 @@ public class GameScene extends GridPane {
         if (gameMode != GameMode.CREATE) {
             timer.start();
         }
-        gc.start();
+        if (gameMode != GameMode.CREATE) {
+            gc.start();
+        }
 
         return root;
     }
@@ -194,7 +196,7 @@ public class GameScene extends GridPane {
         return grid;
     }
 
-    private void createModeMove(Figure fig, Field fieldPos){
+    private void createModeMove(Figure fig, Field fieldPos) {
         if (fig != null && fig == figureBeingMoved) {
             return;
         }
@@ -325,7 +327,7 @@ public class GameScene extends GridPane {
         return clockBox;
     }
 
-    private void cannotStartAlert(){
+    private void cannotStartAlert() {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle(" ");
         a.setHeaderText("Cannot start game.");
@@ -336,8 +338,8 @@ public class GameScene extends GridPane {
     private VBox createOptions(Window window) {
         VBox options = new VBox();
         Button menu = style.newButton("Menu");
-        menu.setOnAction(evt->{
-            if (gameMode == GameMode.ONLINE){
+        menu.setOnAction(evt -> {
+            if (gameMode == GameMode.ONLINE) {
                 getRemotePlayer().sendSurrender();
             }
             sceneController.switchToMenu(evt);
@@ -349,7 +351,7 @@ public class GameScene extends GridPane {
             restart.setOnAction(evt -> {
                 stopClock();
                 resetPlayers();
-                if (board.getKing(MyColor.BLACK).isInCheck()){
+                if (board.getKing(MyColor.BLACK).isInCheck()) {
                     cannotStartAlert();
                 } else {
                     sceneController.switchToGame(evt, white, black, board);
@@ -406,7 +408,7 @@ public class GameScene extends GridPane {
             }
         });
         Button load = style.newButton("Load");
-        if (gameMode == GameMode.ONLINE){
+        if (gameMode == GameMode.ONLINE) {
             load.setDisable(true);
         }
         Button create;
@@ -434,7 +436,7 @@ public class GameScene extends GridPane {
         return options;
     }
 
-    private void gameDraw(){
+    private void gameDraw() {
         white.setDraw(true);
         black.setDraw(true);
         updateClock();

@@ -74,12 +74,8 @@ public class SceneController {
         Label nameLabel = new Label("Enter your name:");
         nameField = new TextField();
         Button startButton = new Button("Start");
-        nameField.setOnAction((event) -> {
-            setConnection(event, nameField, startButton);
-        });
-        startButton.setOnAction((ActionEvent e) -> {
-            setConnection(e, nameField, startButton);
-        });
+        nameField.setOnAction((event) -> setConnection(event, nameField, startButton));
+        startButton.setOnAction((ActionEvent e) -> setConnection(e, nameField, startButton));
         HBox hbox = new HBox(4, nameLabel, nameField, startButton);
         hbox.setPadding(new Insets(8));
         hbox.setAlignment(Pos.CENTER);
