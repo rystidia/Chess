@@ -38,8 +38,6 @@ public class RemotePlayer extends Player {
 
     private static final int port = 5556;
     private static final String host = "localhost";
-    private static String name;
-    private static String opponentName;
 
     private PrintWriter out;
     private Runnable moveCallback;
@@ -64,22 +62,6 @@ public class RemotePlayer extends Player {
     public RemotePlayer(MyColor color) {
         super(color);
         start();
-    }
-
-    public static void setName(String name) {
-        RemotePlayer.name = name;
-    }
-
-    public static void setOpponentName(String opponentName) {
-        RemotePlayer.opponentName = opponentName;
-    }
-
-    public static String getName() {
-        return name;
-    }
-
-    public static String getOpponentName() {
-        return opponentName;
     }
 
     private void start() {
@@ -128,7 +110,7 @@ public class RemotePlayer extends Player {
         switch (Protocol.valueOf(packet.getType())) {
             case GAME_START:
                 setColor(MyColor.getOppositeColor(packet.getColor()));
-                setOpponentName(packet.getOpponentName());
+                setName(packet.getOpponentName());
                 startGameCallback.run();
                 break;
             case MOVE:

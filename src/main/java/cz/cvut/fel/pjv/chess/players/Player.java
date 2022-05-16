@@ -19,6 +19,8 @@ public abstract class Player {
     private boolean won = false;
     private boolean lost = false;
 
+    protected String name;
+
     public Player() {
     }
 
@@ -111,5 +113,16 @@ public abstract class Player {
             }
         }
         return !ret;
+    }
+
+    /**
+     * @return Player name, or null if the name is not available
+     */
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

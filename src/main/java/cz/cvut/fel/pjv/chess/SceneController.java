@@ -13,7 +13,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -36,9 +35,9 @@ public class SceneController {
         goToGameScene(event, gs);
     }
 
-    public void switchToOnlineGame(ActionEvent event, RemotePlayer rp) {
-        Player white = rp.getColor() == MyColor.WHITE ? rp : new LocalPlayer(MyColor.WHITE);
-        Player black = white instanceof LocalPlayer ? rp : new LocalPlayer(MyColor.BLACK);
+    public void switchToOnlineGame(ActionEvent event, LocalPlayer lp, RemotePlayer rp) {
+        Player white = rp.getColor() == MyColor.WHITE ? rp : lp;
+        Player black = rp.getColor() == MyColor.BLACK ? rp : lp;
         final GameScene gs = new GameScene(white, black, GameMode.ONLINE);
         goToGameScene(event, gs);
     }
@@ -88,11 +87,14 @@ public class SceneController {
         Button startButton = new Button("Start");
         startButton.setOnAction((ActionEvent e) -> {
             // 2. as above
-            String userName = nameField.getText().strip();
+            final String userName = nameField.getText().strip();
             RemotePlayer rp = new RemotePlayer();
-            RemotePlayer.setName(userName);
             rp.setAlertCallback(this::illegalNameAlert);
-            rp.setStartGameCallback(() -> switchToOnlineGame(e, rp));
+            rp.setStartGameCallback(() -> {
+                LocalPlayer lp = new LocalPlayer(MyColor.getOppositeColor(rp.getColor()));
+                lp.setName(userName);
+                switchToOnlineGame(e, lp, rp);
+            });
             rp.sendMMRequest();
         });
         HBox hbox = new HBox(4, nameLabel, nameField, startButton);

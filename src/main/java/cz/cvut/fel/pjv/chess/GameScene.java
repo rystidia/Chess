@@ -293,10 +293,8 @@ public class GameScene extends GridPane {
 
     private BorderPane newClockBox(Player player) {
         BorderPane clockBox = new BorderPane();
-        String name;
-        if (gameMode == GameMode.ONLINE) {
-            name = player instanceof RemotePlayer ? RemotePlayer.getOpponentName() : RemotePlayer.getName();
-        } else {
+        String name = player.getName();
+        if (name == null) {
             name = player.getColor() == MyColor.WHITE ? "White" : "Black";
         }
         Label playerName = style.newLabel(name, 20);
