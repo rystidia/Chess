@@ -30,6 +30,11 @@ public class SceneController {
         goToGameScene(event, gs);
     }
 
+    public void switchToGame(ActionEvent event, Player white, Player black, MyColor startingColor, Board board) {
+        final GameScene gs = new GameScene(white, black, GameMode.LOCAL, board);
+        goToGameScene(event, gs, startingColor);
+    }
+
     public void switchToGame(ActionEvent event, Player white, Player black, GameMode gameMode) {
         final GameScene gs = new GameScene(white, black, gameMode);
         goToGameScene(event, gs);
@@ -42,9 +47,13 @@ public class SceneController {
         goToGameScene(event, gs);
     }
 
-    public void goToGameScene(ActionEvent event, GameScene gs){
+    public void goToGameScene(ActionEvent event, GameScene gs) {
+        goToGameScene(event, gs, MyColor.WHITE);
+    }
+
+    public void goToGameScene(ActionEvent event, GameScene gs, MyColor startingColor) {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        GridPane gameScene = gs.createGameScene(stage);
+        GridPane gameScene = gs.createGameScene(stage, startingColor);
         scene = new Scene(gameScene);
         Platform.runLater(() -> {
             stage.setScene(scene);

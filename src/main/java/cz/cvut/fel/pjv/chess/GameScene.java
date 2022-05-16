@@ -74,6 +74,10 @@ public class GameScene extends GridPane {
     }
 
     public GridPane createGameScene(Window window) {
+        return createGameScene(window, MyColor.WHITE);
+    }
+
+    public GridPane createGameScene(Window window, MyColor startingColor) {
         if (board == null) {
             board = new Board();
             board.initialPosition();
@@ -85,8 +89,9 @@ public class GameScene extends GridPane {
         gc = new GameController(white, black, this, board);
         figureBeingMoved = null;
 
-        white.setCurrentPlayer(true);
-        black.setCurrentPlayer(false);
+        boolean whiteStarts = (startingColor == MyColor.WHITE);
+        white.setCurrentPlayer(whiteStarts);
+        black.setCurrentPlayer(!whiteStarts);
         white.setTimeLeft(25 * 60 * 1000);
         black.setTimeLeft(25 * 60 * 1000);
 
@@ -427,7 +432,12 @@ public class GameScene extends GridPane {
                 if (gameMode != GameMode.CREATE) {
                     stopClock();
                     resetPlayers();
-                    sceneController.switchToGame(evt, white, black, board1);
+                    MyColor startingColor = MyColor.WHITE;
+                    if (board1.getHistory().size() > 0) {
+                        startingColor = MyColor.getOppositeColor(
+                            board1.getFigure(board1.getHistory().get(board1.getHistory().size() - 1).getTo()).getColor());
+                    }
+                    sceneController.switchToGame(evt, white, black, startingColor, board1);
                     white.setTimeString(pgn.getTagValue("WhiteClock"));
                     black.setTimeString(pgn.getTagValue("BlackClock"));
                 } else {
