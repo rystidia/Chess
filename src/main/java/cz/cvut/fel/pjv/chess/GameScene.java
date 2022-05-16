@@ -179,27 +179,32 @@ public class GameScene extends GridPane {
                             AIPlayerMove(board);
                         }
                     } else {
-                        if (fig != null && fig == figureBeingMoved) {
-                            return;
-                        }
-                        if (figureBeingMoved == null) {
-                            if (fig == null) {
-                                return;
-                            }
-                            figureBeingMoved = fig;
-                        } else {
-                            board.moveFigure(figureBeingMoved, fieldPos);
-                            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
-                                promotionDialog((Pawn) figureBeingMoved);
-                            }
-                            figureBeingMoved = null;
-                        }
-                        redrawBoard(drawBoard(board));
+                        createModeMove(fig, fieldPos);
                     }
                 });
             }
         }
         return grid;
+    }
+
+    private void createModeMove(Figure fig, Field fieldPos){
+        if (fig != null && fig == figureBeingMoved) {
+            return;
+        }
+        if (figureBeingMoved == null) {
+            if (fig == null) {
+                return;
+            }
+            figureBeingMoved = fig;
+        } else {
+            if (board.getFigure(fieldPos) instanceof King) return;
+            board.moveFigure(figureBeingMoved, fieldPos);
+            if (figureBeingMoved instanceof Pawn && ((Pawn) figureBeingMoved).moveLeadsToPromotion(fieldPos)) {
+                promotionDialog((Pawn) figureBeingMoved);
+            }
+            figureBeingMoved = null;
+        }
+        redrawBoard(drawBoard(board));
     }
 
     public void remotePlayerMoveReceived() {
@@ -313,10 +318,23 @@ public class GameScene extends GridPane {
         return clockBox;
     }
 
+    private void cannotStartAlert(){
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(" ");
+        a.setHeaderText("Cannot start game.");
+        a.setContentText("King must not be in check.");
+        a.show();
+    }
+
     private VBox createOptions() {
         VBox options = new VBox();
         Button menu = style.newButton("Menu");
-        menu.setOnAction(sceneController::switchToMenu);
+        menu.setOnAction(evt->{
+            if (gameMode == GameMode.ONLINE){
+                getRemotePlayer().sendSurrender();
+            }
+            sceneController.switchToMenu(evt);
+        });
         Button restart;
         if (gameMode == GameMode.CREATE) {
             restart = style.newButton("Start");
@@ -324,7 +342,11 @@ public class GameScene extends GridPane {
             restart.setOnAction(evt -> {
                 stopClock();
                 resetPlayers();
-                sceneController.switchToGame(evt, white, black, board);
+                if (board.getKing(MyColor.BLACK).isInCheck()){
+                    cannotStartAlert();
+                } else {
+                    sceneController.switchToGame(evt, white, black, board);
+                }
             });
         } else if (gameMode == GameMode.ONLINE) {
             restart = style.newButton("Draw offer");

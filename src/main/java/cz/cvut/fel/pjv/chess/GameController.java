@@ -63,13 +63,19 @@ public class GameController {
     }
 
     public boolean isStaleMate(Board board){
-        Player curPlayer = getCurPlayer();
-        return curPlayer.hasNoValidMoves(board) && !board.getKing(curPlayer.getColor()).isInCheck();
+        return isStaleMate(board, getCurPlayer());
     }
 
-    public boolean isCheckMate(Board board){
-        Player curPlayer = getCurPlayer();
-        return curPlayer.hasNoValidMoves(board) && board.getKing(curPlayer.getColor()).isInCheck();
+    public boolean isCheckMate(Board board) {
+        return isCheckMate(board, getCurPlayer());
+    }
+
+    public boolean isStaleMate(Board board, Player player){
+        return player.hasNoValidMoves(board) && !board.getKing(player.getColor()).isInCheck();
+    }
+
+    public boolean isCheckMate(Board board, Player player){
+        return player.hasNoValidMoves(board) && board.getKing(player.getColor()).isInCheck();
     }
 }
 
