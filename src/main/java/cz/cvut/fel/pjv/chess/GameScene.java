@@ -52,6 +52,7 @@ public class GameScene extends GridPane {
         p.setMoveCallback(this::remotePlayerMoveReceived);
         p.setOpponentSurrenderCallback(this::opponentSurrenderAlert);
         p.setDrawOfferDialogCallback(this::drawOfferDialog);
+        p.setGameDrawCallback(this::gameDraw);
     }
 
     private RemotePlayer getRemotePlayer() {
@@ -245,8 +246,12 @@ public class GameScene extends GridPane {
         Button button = style.newButton(response);
         button.setOnAction(e -> {
             player.sendDrawResponse(response);
-            white.setDraw(true);
-            black.setDraw(true);
+            if (response.equals("Yes")) {
+                white.setDraw(true);
+                black.setDraw(true);
+                updateClock();
+                stopClock();
+            }
             applyButton.fire();
         });
         return button;
@@ -325,6 +330,7 @@ public class GameScene extends GridPane {
             restart = style.newButton("Draw offer");
             restart.setOnAction(evt -> {
                 getRemotePlayer().sendDrawOffer();
+                updateClock();
             });
         } else {
             restart = style.newButton("Restart");
@@ -359,7 +365,14 @@ public class GameScene extends GridPane {
         return options;
     }
 
-    private void resetPlayers(){
+    private void gameDraw(){
+        white.setDraw(true);
+        black.setDraw(true);
+        updateClock();
+        stopClock();
+    }
+
+    private void resetPlayers() {
         white.setWon(false);
         white.setLost(false);
         white.setDraw(false);
@@ -369,8 +382,10 @@ public class GameScene extends GridPane {
     }
 
     private void updateClock() {
-        clock.redrawClockBox(white);
-        clock.redrawClockBox(black);
+        Platform.runLater(() -> {
+            clock.redrawClockBox(white);
+            clock.redrawClockBox(black);
+        });
     }
 
     private void stopClock() {

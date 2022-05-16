@@ -7,7 +7,6 @@ import cz.cvut.fel.pjv.chess.Field;
 import cz.cvut.fel.pjv.chess.MyColor;
 import cz.cvut.fel.pjv.chess.figures.Figure;
 import cz.cvut.fel.pjv.chess.figures.Pawn;
-import cz.cvut.fel.pjv.chess.figures.Queen;
 import cz.cvut.fel.pjv.chess.server.Packet;
 import cz.cvut.fel.pjv.chess.server.Protocol;
 import cz.cvut.fel.pjv.chess.server.Server;
@@ -16,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -45,9 +43,9 @@ public class RemotePlayer extends Player {
     private Runnable opponentSurrenderCallback;
     private Runnable drawOfferDialogCallback;
     private Runnable startGameCallback;
+    private Runnable gameDrawCallback;
 
     private Board board;
-
 
     public RemotePlayer() {
         start();
@@ -126,6 +124,7 @@ public class RemotePlayer extends Player {
                 break;
             case RESPONSE_TO_OFFER:
                 if (packet.getDrawAccepted().equals("Yes")) {
+                    gameDrawCallback.run();
                     gameEnd(null);
                 }
                 break;
@@ -154,6 +153,10 @@ public class RemotePlayer extends Player {
         Packet p = new Packet(GAME_END.name());
         p.setWinnerColor(winnerColor);
         sendToServer(p);
+    }
+
+    public void setGameDrawCallback(Runnable gameDrawCallback) {
+        this.gameDrawCallback = gameDrawCallback;
     }
 
     public void setMoveCallback(Runnable moveCallback) {
