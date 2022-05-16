@@ -63,6 +63,10 @@ public class Board {
         this.enPassantPawn = enPassantPawn;
     }
 
+    public Pawn getEnPassantPawn() {
+        return enPassantPawn;
+    }
+
     public void moveFigure(Figure figure, Field toPos) {
         moveFigure(figure, toPos, gameMode);
     }
@@ -84,6 +88,7 @@ public class Board {
             throw new IllegalStateException("placing new figure is not allowed with moveFigure()");
         }
         figure.move(toPos);
+
     }
 
     public void placeFigure(Figure figure, Field toPos) {

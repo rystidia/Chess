@@ -63,6 +63,9 @@ import java.util.Set;
     public void move(Field toPos) {
         doubleAdvance = getPosition() != null && Math.abs(getPosition().row - toPos.row) > 1;
         if (doubleAdvance){
+            if (board.getEnPassantPawn() != null){
+                board.getEnPassantPawn().clearDoubleAdvance();
+            }
             board.setEnPassantPawn(this);
         }
         Field capturePos = getCapturedFieldByMove(toPos);
