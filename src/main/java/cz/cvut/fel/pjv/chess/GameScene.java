@@ -424,11 +424,17 @@ public class GameScene extends GridPane {
                 Board board1 = pgn.load(reader);
                 white.setName(!Objects.equals(pgn.getTagValue("White"), "?") ? pgn.getTagValue("White") : null);
                 black.setName(!Objects.equals(pgn.getTagValue("Black"), "?") ? pgn.getTagValue("Black") : null);
-                stopClock();
-                resetPlayers();
-                sceneController.switchToGame(evt, white, black, board1);
-                white.setTimeString(pgn.getTagValue("WhiteClock"));
-                black.setTimeString(pgn.getTagValue("BlackClock"));
+                if (gameMode != GameMode.CREATE) {
+                    stopClock();
+                    resetPlayers();
+                    sceneController.switchToGame(evt, white, black, board1);
+                    white.setTimeString(pgn.getTagValue("WhiteClock"));
+                    black.setTimeString(pgn.getTagValue("BlackClock"));
+                } else {
+                    figureBeingMoved = null;
+                    board = board1;
+                    redrawBoard(drawBoard(board));
+                }
             } catch (IOException | PGN.ParseException e) {
                 Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
                 a.show();
