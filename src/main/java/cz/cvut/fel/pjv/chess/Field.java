@@ -63,10 +63,16 @@ public class Field {
         return "(" + row + ", " + column + ")";
     }
 
+    /**
+     * Converts the field to the algebraic notation.
+     */
     public String toAlgebraicNotation() {
         return (char)('a' + column) + Integer.toString(1 + (Board.MAX_ROW - row));
     }
 
+    /**
+     * Converts the field in algebraic notation to the field.
+     */
     public static Field fromAlgebraicNotation(String algNotation) {
         if (algNotation.length() != 2) {
             throw new IllegalArgumentException("invalid square AN: expected 2 chars, got " + algNotation.length() + " chars");

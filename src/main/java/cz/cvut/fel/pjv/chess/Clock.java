@@ -35,7 +35,7 @@ public class Clock implements Runnable {
     }
 
     /**
-     * Calls runnable object
+     * Starts the timer.
      */
     @Override
     public void run() {
@@ -79,10 +79,16 @@ public class Clock implements Runnable {
         }
     }
 
+    /**
+     * Shutdowns the clock.
+     */
     public void shutdown() {
         shutdown = true;
     }
 
+    /**
+     * Redraws the clock of the given player.
+     */
     public void redrawClockBox(Player player) {
         BorderPane timeBox = player.getColor() == MyColor.WHITE ? timeWhite : timeBlack;
         if (player.isWon()) {

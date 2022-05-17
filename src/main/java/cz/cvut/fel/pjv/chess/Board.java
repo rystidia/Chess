@@ -23,7 +23,7 @@ public class Board {
 
     private Board initialBoard;
 
-    private final MyColor startingColor = MyColor.WHITE; // FIXME: maybe make configurable
+    private final MyColor startingColor = MyColor.WHITE;
 
     private final List<Move> history = new ArrayList<>();
 
@@ -36,6 +36,9 @@ public class Board {
         this.board = new Figure[MAX_ROW + 1][MAX_COL + 1];
     }
 
+    /**
+     * Copy constructor of the board. Copies board and all the figures on it.
+     */
     public Board(Board srcBoard) {
         this();
         gameMode = srcBoard.gameMode;
@@ -71,6 +74,9 @@ public class Board {
         moveFigure(figure, toPos, gameMode);
     }
 
+    /**
+     * Clears en passant, adds move to the history and executes the given move.
+     */
     public void moveFigure(Figure figure, Field toPos, boolean writeToHistory) {
         if (enPassantPawn != null && figure.getColor() == enPassantPawn.getColor()){
             enPassantPawn.clearDoubleAdvance();
@@ -91,6 +97,9 @@ public class Board {
 
     }
 
+    /**
+     * Places the figure to the given field.
+     */
     public void placeFigure(Figure figure, Field toPos) {
         if (figure.getPosition() != null) {
             if (getFigure(figure.getPosition()) != figure) {
@@ -102,6 +111,9 @@ public class Board {
         setFigure(toPos, figure);
     }
 
+    /**
+     * Promotes the given pawn.
+     */
     public void pawnPromotion(Pawn pawn, Figure promotionFig) {
         Move pawnMove = history.get(history.size() - 1);
         history.set(history.size() - 1, new Move(
@@ -114,7 +126,7 @@ public class Board {
     }
 
     /**
-     * Places figures to the fields
+     * Setup figures to initial chess position.
      */
     public void initialPosition() {
         for (MyColor color : Arrays.asList(MyColor.BLACK, MyColor.WHITE)) {
@@ -165,6 +177,9 @@ public class Board {
         return (King) getFiguresByTypeAndColor(King.class, color).iterator().next();
     }
 
+    /**
+     * Creates new simulation board, executes the given move on it and returns the board.
+     */
     public Board simulateMove(Figure figure, Field toPos) {
         Board newBoard = new Board(this);
         Figure newFig = newBoard.getFigure(figure.getPosition());
@@ -172,6 +187,9 @@ public class Board {
         return newBoard;
     }
 
+    /**
+     * Returns the number of figures of the given color on the board.
+     */
     public int getNumOfFigs(MyColor color) {
         int ret = 0;
         for (Figure[] row : board) {
@@ -183,10 +201,16 @@ public class Board {
         return ret;
     }
 
+    /**
+     * Returns the number of figures of the given color and the given figure type on the board.
+     */
     public int getNumOfSameFigs(Class<? extends Figure> figClass, MyColor color) {
         return getFiguresByTypeAndColor(figClass, color).size();
     }
 
+    /**
+     * Returns true if the number of missing pawns is greater than or equal to the number of additional pieces, false otherwise.
+     */
     public boolean canPlaceFigure(Class<? extends Figure> figClass, MyColor color) {
         int extraKnights = Math.max(getNumOfSameFigs(Knight.class, color) + (figClass == Knight.class ? 1 : 0) - 2, 0);
         int extraBishops = Math.max(getNumOfSameFigs(Bishop.class, color) + (figClass == Bishop.class ? 1 : 0) - 2, 0);
@@ -205,6 +229,9 @@ public class Board {
         return initialBoard;
     }
 
+    /**
+     * Saves the current board as initial and switches to game mode.
+     */
     public void switchToGameMode() {
         if (gameMode) {
             return;
@@ -214,6 +241,9 @@ public class Board {
     }
 
     /**
+     * Converts the board to FEN string.
+     *
+     * <p>
      * @see <a href="http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c16.1">http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c16.1</a>
      */
     public String toFEN() {
@@ -253,22 +283,6 @@ public class Board {
             fields.add(boardField);
         }
         fields.add(((history.size() + (startingColor == MyColor.BLACK ? 1 : 0)) & 1) == 0 ? "w" : "b");
-//        {
-//            StringBuilder s = new StringBuilder();
-//            for (MyColor color : Arrays.asList(MyColor.WHITE, MyColor.BLACK)) {
-//                for (boolean queenSide : Arrays.asList(false, true)) {
-//                    if (getKing(color).canCastlingBeAvailable(queenSide)) {
-//                        char ch = Figure.getCharacterByFigureClass(queenSide ? Queen.class : King.class);
-//                        if (color == MyColor.BLACK) {
-//                            ch = Character.toLowerCase(ch);
-//                        }
-//                        s.append(ch);
-//                    }
-//                }
-//            }
-//            fields.add(s.toString());
-//        }
-        // FIXME
         fields.add(boardField.equals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") ? "KQkq" : "-"); // castling availability
         fields.add("-"); // en passant target square
         fields.add("0"); // halfmove clock
@@ -276,6 +290,9 @@ public class Board {
         return String.join(" ", fields);
     }
 
+    /**
+     * Parses the FEN string and returns the board.
+     */
     public static Board fromFEN(String fen) {
         String[] fields = fen.split(" ");
         Board brd = new Board();

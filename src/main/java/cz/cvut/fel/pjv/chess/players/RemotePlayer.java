@@ -5,11 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.pjv.chess.Board;
 import cz.cvut.fel.pjv.chess.Field;
 import cz.cvut.fel.pjv.chess.MyColor;
+import cz.cvut.fel.pjv.chess.SceneController;
 import cz.cvut.fel.pjv.chess.figures.Figure;
 import cz.cvut.fel.pjv.chess.figures.Pawn;
 import cz.cvut.fel.pjv.chess.server.Packet;
 import cz.cvut.fel.pjv.chess.server.Protocol;
 import cz.cvut.fel.pjv.chess.server.Server;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.io.BufferedReader;
 import java.io.IOException;

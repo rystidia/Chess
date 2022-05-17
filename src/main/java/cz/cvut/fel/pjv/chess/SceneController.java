@@ -9,10 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -111,7 +108,15 @@ public class SceneController {
             lp.setName(userName);
             switchToOnlineGame(event, lp, rp);
         });
-        rp.sendMMRequest(userName);
+        try {
+            rp.sendMMRequest(userName);
+        } catch (NullPointerException ignored) {
+            Platform.runLater(() -> {
+                Alert a = new Alert(Alert.AlertType.ERROR, "Server is not running", ButtonType.OK);
+                a.show();
+                switchToMenu(event);
+            });
+        }
     }
 
     private void illegalNameAlert() {
