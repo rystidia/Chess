@@ -25,6 +25,13 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Game scene of the chess game.
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class GameScene extends GridPane {
 
     private final Styles style = new Styles();
@@ -73,10 +80,9 @@ public class GameScene extends GridPane {
         return p;
     }
 
-    public GridPane createGameScene(Window window) {
-        return createGameScene(window, MyColor.WHITE);
-    }
-
+    /**
+     * Creates the game scene and returns it.
+     */
     public GridPane createGameScene(Window window, MyColor startingColor) {
         if (board == null) {
             board = new Board();
@@ -278,6 +284,9 @@ public class GameScene extends GridPane {
         return button;
     }
 
+    /**
+     * Executes the move of the AI player and updates the GUI.
+     */
     public void AIPlayerMove(Board board) {
         new Thread(() -> {
             gc.getCurPlayer().makeMove(board);

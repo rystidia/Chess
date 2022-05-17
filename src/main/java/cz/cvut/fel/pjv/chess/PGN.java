@@ -9,11 +9,21 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.*;
 
+/**
+ * PGN parser and serializer.
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class PGN {
     protected final Map<String, String> tags = new HashMap<>();
 
     private MyColor winnerColor;
 
+    /**
+     * Loads the .pgn file from the given reader, parses it and returns the board.
+     */
     public Board load(Reader reader) throws IOException, ParseException {
         CharReader r = new CharReader(reader);
         tags.clear();
@@ -115,6 +125,9 @@ public class PGN {
         return board;
     }
 
+    /**
+     * Serializes the given board to .pgn file and saves it.
+     */
     public void save(PrintWriter writer, Board board) {
         Board initialBoard = board.getInitialBoard() != null ? board.getInitialBoard() : board;
         String fen = initialBoard.toFEN();

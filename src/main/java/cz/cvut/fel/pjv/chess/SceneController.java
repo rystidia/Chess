@@ -97,7 +97,7 @@ public class SceneController {
         return hbox;
     }
 
-    private void setConnection(ActionEvent event, TextField nameField, Button startButton){
+    private void setConnection(ActionEvent event, TextField nameField, Button startButton) {
         final String userName = nameField.getText().strip();
         startButton.setDisable(true);
         nameField.setDisable(true);

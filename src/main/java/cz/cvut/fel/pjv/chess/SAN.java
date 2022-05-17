@@ -30,7 +30,9 @@ public class SAN {
 
     private Class<? extends Figure> promotionFigure;
 
-
+    /**
+     * Parses the given SAN move.
+     */
     public SAN(String move) throws PGN.ParseException {
         Matcher m = pattern.matcher(move);
         if (!m.matches()) {

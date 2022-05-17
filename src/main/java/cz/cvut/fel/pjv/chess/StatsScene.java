@@ -26,19 +26,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
+/**
+ * Statistics scene.
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class StatsScene {
     private final SceneController sceneController = new SceneController();
-
-    private PrintWriter out;
-
     private final Styles style = new Styles();
-
     private final List<GameResult> allGameResults = new ArrayList<>();
-
     private final ObservableList<GameResult> gameResults = FXCollections.observableArrayList();
+    private PrintWriter out;
 
     public StatsScene() {
     }
+
+    /**
+     * Creates statistics scene.
+     */
     public GridPane createStatsScene() {
         GridPane root = new GridPane();
 
