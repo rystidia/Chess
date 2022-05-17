@@ -61,6 +61,15 @@ public class SceneController {
         });
     }
 
+    public void switchToStats(ActionEvent event) {
+        final StatsScene ss = new StatsScene();
+        GridPane statsScene = ss.createStatsScene();
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(statsScene);
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public void switchToMenu(ActionEvent event) {
         final MenuScene ms = new MenuScene();
         GridPane menuScene = ms.createMenuScene();

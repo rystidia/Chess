@@ -34,8 +34,8 @@ public class RemotePlayer extends Player {
 
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
-    private static final int port = 5556;
-    private static final String host = "localhost";
+    public static final int port = 5556;
+    public static final String host = "localhost";
 
     private PrintWriter out;
     private Runnable moveCallback;

@@ -1,21 +1,27 @@
 package cz.cvut.fel.pjv.chess.server;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import cz.cvut.fel.pjv.chess.MyColor;
 
-public class GameResult {
-    private final long totalTime;
-    private final String whiteName;
-    private final String blackName;
-    private final MyColor winnerColor;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 
-    public GameResult(long totalTime, String whiteName, String blackName, MyColor winnerColor) {
+public class GameResult {
+    private String totalTime;
+    private String whiteName;
+    private String blackName;
+    private String winnerName;
+
+    public GameResult() {
+    }
+
+    public GameResult(String totalTime, String whiteName, String blackName, String winnerName) {
         this.totalTime = totalTime;
         this.whiteName = whiteName;
         this.blackName = blackName;
-        this.winnerColor = winnerColor;
+        this.winnerName = winnerName;
     }
 
-    public long getTotalTime() {
+    public String getTotalTime() {
         return totalTime;
     }
 
@@ -27,7 +33,23 @@ public class GameResult {
         return blackName;
     }
 
-    public MyColor getWinner() {
-        return winnerColor;
+    public String getWinnerName() {
+        return winnerName;
+    }
+
+    public void setTotalTime(String totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public void setWhiteName(String whiteName) {
+        this.whiteName = whiteName;
+    }
+
+    public void setBlackName(String blackName) {
+        this.blackName = blackName;
+    }
+
+    public void setWinnerName(String winnerName) {
+        this.winnerName = winnerName;
     }
 }

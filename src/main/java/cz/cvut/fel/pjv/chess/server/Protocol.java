@@ -10,5 +10,7 @@ public enum Protocol {
     GAME_END,
     DRAW_OFFER,
     RESPONSE_TO_OFFER,
-    SURRENDER
+    SURRENDER,
+
+    STATS_REQUEST
 }

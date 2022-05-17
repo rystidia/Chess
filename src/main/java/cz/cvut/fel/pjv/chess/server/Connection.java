@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.chess.server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.pjv.chess.MyColor;
+import cz.cvut.fel.pjv.chess.players.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +54,6 @@ public class Connection implements Runnable {
             }
             server.removeConnection(this);
         } catch (IOException ex) {
-            server.printGameResults();
             LOGGER.log(Level.SEVERE, "Error communicating with client {0}", ex.getMessage());
         }
     }
@@ -69,6 +69,19 @@ public class Connection implements Runnable {
 
         switch (Protocol.valueOf(packet.getType())) {
             // incoming message arrived, decide what to do
+            case STATS_REQUEST -> {
+                for (GameResult gr : server.getGameResults()) {
+                    String s;
+                    try {
+                        s = objectMapper.writeValueAsString(gr);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    out.println(s);
+                    System.out.println(s);
+                }
+                return false;
+            }
             case MATCHMAKE_REQUEST -> {
                 name = packet.getName();
                 handleMMRequest();
@@ -83,7 +96,11 @@ public class Connection implements Runnable {
                 if (opponent != null) {
                     String white = playerColor == MyColor.WHITE ? name : opponent.getName();
                     String black = playerColor == MyColor.BLACK ? name : opponent.getName();
-                    GameResult gameResult = new GameResult(new Date().getTime() - gameStarted.getTime(), white, black, packet.getWinnerColor());
+                    String winner = packet.getWinnerColor() == null ? null : switch (packet.getWinnerColor()) {
+                        case WHITE -> white;
+                        case BLACK -> black;
+                    };
+                    GameResult gameResult = new GameResult(Player.timeToString(new Date().getTime() - gameStarted.getTime(), false), white, black, winner);
                     server.pushGameResult(gameResult);
                 }
                 return false;
@@ -169,4 +186,3 @@ public class Connection implements Runnable {
         return name;
     }
 }
-

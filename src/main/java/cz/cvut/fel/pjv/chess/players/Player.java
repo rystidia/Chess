@@ -99,7 +99,11 @@ public abstract class Player {
     }
 
     public String getTimeString(boolean withHours) {
-        final long secondsLeft = timeLeft / 1000;
+        return timeToString(timeLeft, withHours);
+    }
+
+    public static String timeToString(long time, boolean withHours) {
+        final long secondsLeft = time / 1000;
         long minutes = secondsLeft / 60;
         final long seconds = secondsLeft % 60;
         if (withHours) {
@@ -112,12 +116,21 @@ public abstract class Player {
     }
 
     public void setTimeString(String timeString) {
-        String[] parts = timeString.split(":", 3);
+        timeLeft = stringToTime(timeString, true);
+    }
+
+    public static long stringToTime(String timeString, boolean withHours) {
+        long time;
+        String[] parts = timeString.split(":", withHours ? 3 : 2);
         try {
-            timeLeft = ((Long.parseLong(parts[0]) * 60 + Long.parseLong(parts[1])) * 60 + Long.parseLong(parts[2])) * 1000;
+            time = (Long.parseLong(parts[parts.length - 2]) * 60 + Long.parseLong(parts[parts.length - 1])) * 1000;
+            if (withHours) {
+                time += (Long.parseLong(parts[0]) * 3600) * 1000;
+            }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {
-            timeLeft = 25 * 60 * 1000;
+            time = 25 * 60 * 1000;
         }
+        return time;
     }
 
     /**

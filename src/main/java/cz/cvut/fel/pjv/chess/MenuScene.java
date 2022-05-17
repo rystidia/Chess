@@ -28,12 +28,15 @@ public class MenuScene {
         ai.setOnAction(this::AImode);
         Button online = style.newButton("Human vs. human online");
         online.setOnAction(sceneController::switchToLoginWindow);
+        Button serverStats = style.newButton("Server statistics");
+        serverStats.setOnAction(sceneController::switchToStats);
         GridPane root = new GridPane();
         root.setAlignment(Pos.BOTTOM_LEFT);
         int row = 0;
         root.add(local, 0, row++, 1, 1);
         root.add(ai, 0, row++, 1, 1);
         root.add(online, 0, row++, 1, 1);
+        root.add(serverStats, 0, row++, 1, 1);
         Button quit = style.newButton("Quit");
         root.add(quit, 0, row, 1, 1);
         quit.setOnAction(this::closeStage);

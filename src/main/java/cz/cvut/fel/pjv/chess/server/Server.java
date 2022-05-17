@@ -15,7 +15,7 @@ public class Server implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
     private final int PORT_NUMBER;
     private final Map<Connection, Connection> opponents;
-    private Map<String, List<GameResult>> userResults = new HashMap<>();
+    private final List<GameResult> gameResults = new ArrayList<>();
 
     private ServerSocket serverSocket;
     private Socket socket;
@@ -53,21 +53,11 @@ public class Server implements Runnable {
     }
 
     public void pushGameResult(GameResult gameResult) {
-        userResults.computeIfAbsent(gameResult.getWhiteName(), k -> new ArrayList<>());
-        userResults.computeIfAbsent(gameResult.getBlackName(), k -> new ArrayList<>());
-        userResults.get(gameResult.getWhiteName()).add(gameResult);
-        userResults.get(gameResult.getBlackName()).add(gameResult);
+        gameResults.add(gameResult);
     }
 
-    public void printGameResults() {
-        System.out.println("Printing results");
-        for (Map.Entry<String, List<GameResult>> name : userResults.entrySet()) {
-            List<GameResult> gr = name.getValue();
-            for (GameResult game : gr) {
-                System.out.println(name.getKey() + " : White: " + game.getWhiteName() + " Black: " + game.getBlackName() + " Winner: " + game.getWinner());
-            }
-        }
-        System.out.println();
+    public List<GameResult> getGameResults() {
+        return gameResults;
     }
 
     public Connection getWaitingConnection() {
@@ -111,8 +101,8 @@ public class Server implements Runnable {
     public void removeConnection(Connection connectionToRemove) {
         synchronized (opponents) {
             Connection opponent = opponents.get(connectionToRemove);
+            connectionToRemove.quit();
             if (opponent != null) {
-                connectionToRemove.quit();
                 opponent.quit();
                 opponents.remove(connectionToRemove);
                 opponents.remove(opponent);
