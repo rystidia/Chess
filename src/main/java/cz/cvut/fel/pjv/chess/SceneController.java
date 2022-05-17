@@ -14,29 +14,51 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+/**
+ * Scene controller.
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class SceneController {
     private Stage stage;
     private Scene scene;
 
+    /**
+     * Switches to the game scene.
+     */
     public void switchToGame(ActionEvent event, Player white, Player black) {
         switchToGame(event, white, black, GameMode.LOCAL);
     }
 
+    /**
+     * Switches to the game scene with the given board.
+     */
     public void switchToGame(ActionEvent event, Player white, Player black, Board board) {
         final GameScene gs = new GameScene(white, black, GameMode.LOCAL, board);
         goToGameScene(event, gs);
     }
 
+    /**
+     * Switches to the game scene with the given board and starting color.
+     */
     public void switchToGame(ActionEvent event, Player white, Player black, MyColor startingColor, Board board) {
         final GameScene gs = new GameScene(white, black, GameMode.LOCAL, board);
         goToGameScene(event, gs, startingColor);
     }
 
+    /**
+     * Switches to the game scene with the given mode.
+     */
     public void switchToGame(ActionEvent event, Player white, Player black, GameMode gameMode) {
         final GameScene gs = new GameScene(white, black, gameMode);
         goToGameScene(event, gs);
     }
 
+    /**
+     * Switches to the game scene with Online mode.
+     */
     public void switchToOnlineGame(ActionEvent event, LocalPlayer lp, RemotePlayer rp) {
         Player white = rp.getColor() == MyColor.WHITE ? rp : lp;
         Player black = rp.getColor() == MyColor.BLACK ? rp : lp;
@@ -44,11 +66,11 @@ public class SceneController {
         goToGameScene(event, gs);
     }
 
-    public void goToGameScene(ActionEvent event, GameScene gs) {
+    private void goToGameScene(ActionEvent event, GameScene gs) {
         goToGameScene(event, gs, MyColor.WHITE);
     }
 
-    public void goToGameScene(ActionEvent event, GameScene gs, MyColor startingColor) {
+    private void goToGameScene(ActionEvent event, GameScene gs, MyColor startingColor) {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         GridPane gameScene = gs.createGameScene(stage, startingColor);
         scene = new Scene(gameScene);
