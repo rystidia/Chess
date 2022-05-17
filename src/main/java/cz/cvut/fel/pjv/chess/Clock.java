@@ -70,11 +70,19 @@ public class Clock implements Runnable {
                 white.setLost(true);
                 black.setWon(true);
                 gameFinished = true;
+                Platform.runLater(() -> {
+                    redrawClockBox(white);
+                    redrawClockBox(black);
+                });
             }
             if (black.getTimeLeft() <= 0) {
                 black.setLost(true);
                 black.setWon(true);
                 gameFinished = true;
+                Platform.runLater(() -> {
+                    redrawClockBox(white);
+                    redrawClockBox(black);
+                });
             }
         }
     }
@@ -112,4 +120,3 @@ public class Clock implements Runnable {
         timeBox.setCenter(playerTime);
     }
 }
-

@@ -406,6 +406,7 @@ public class GameScene extends GridPane {
                 pgn.setTagValue("Round", "-");
                 pgn.setTagValue("White", white.getName() != null ? white.getName() : "?");
                 pgn.setTagValue("Black", black.getName() != null ? black.getName() : "?");
+                pgn.setTagValue("Result", white.isWon() ? "1-0" : black.isWon() ? "0-1" : white.isDraw() ? "1/2-1/2" : "*");
                 // https://github.com/mliebelt/pgn-spec-commented/blob/0c532f7/pgn-spec-supplement.md#6-clock-start-time
                 pgn.setTagValue("WhiteClock", white.getTimeString(true));
                 pgn.setTagValue("BlackClock", black.getTimeString(true));
