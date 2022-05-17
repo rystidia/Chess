@@ -222,13 +222,13 @@ public class GameScene extends GridPane {
         redrawBoard(drawBoard(board));
     }
 
-    public void remotePlayerMoveReceived() {
+    private void remotePlayerMoveReceived() {
         gc.switchCurPlayer();
         GridPane updatedBoard = drawBoard(board);
         redrawBoard(updatedBoard);
     }
 
-    public void opponentSurrenderAlert() {
+    private void opponentSurrenderAlert() {
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
             getRemotePlayer().setLost(true);
@@ -243,7 +243,7 @@ public class GameScene extends GridPane {
         });
     }
 
-    public void drawOfferDialog() {
+    private void drawOfferDialog() {
         Platform.runLater(() -> {
             RemotePlayer player = getRemotePlayer();
             Dialog<String> dialog = new Dialog<>();
@@ -514,7 +514,7 @@ public class GameScene extends GridPane {
         });
     }
 
-    public Class<? extends Figure> promotionDialog(Pawn pawn) {
+    private Class<? extends Figure> promotionDialog(Pawn pawn) {
         Dialog<Class<? extends Figure>> dialog = new Dialog<>();
         dialog.setTitle("Promotion");
         dialog.setContentText("Promote the pawn to:");

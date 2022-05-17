@@ -13,6 +13,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Menu scene of the chess game
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class MenuScene {
 
     Player white;
@@ -20,8 +27,10 @@ public class MenuScene {
     private final SceneController sceneController = new SceneController();
     private final Styles style = new Styles();
 
+    /**
+     * Builds the menu scene.
+     */
     public GridPane createMenuScene() {
-
         Button local = style.newButton("Human vs. human local");
         local.setOnAction(evt -> sceneController.switchToGame(evt, new LocalPlayer(MyColor.WHITE), new LocalPlayer(MyColor.BLACK)));
         Button ai = style.newButton("Human vs. AI local");
@@ -46,11 +55,17 @@ public class MenuScene {
         return root;
     }
 
+    /**
+     * Switches to the human vs. AI game mode.
+     */
     public void AImode(ActionEvent event){
         colorChoosingDialog();
         sceneController.switchToGame(event, white, black);
     }
 
+    /**
+     * Closes the application.
+     */
     public void closeStage(ActionEvent event) {
         ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
     }

@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -81,19 +82,21 @@ public class StatsScene {
 
         root.add(tableView, 0, 0);
 
-        Label nameLabel = new Label("Filter by name:");
+        Label nameLabel = style.newLabel("Filter by name:", 15);
         TextField nameField = new TextField();
         nameField.setOnAction(evt -> filterByName(nameField.getText().strip()));
-        Button searchNameBtn = new Button("Search");
+        Button searchNameBtn = style.newButtonSmall("Search");
         searchNameBtn.setOnAction(evt -> filterByName(nameField.getText().strip()));
-        Button longest10Btn = new Button("TOP 10 games");
+        Button longest10Btn = style.newButtonSmall("TOP 10 games");
         longest10Btn.setOnAction(evt -> filterLongest10());
 
-        HBox hbox = new HBox(4, nameLabel, nameField, searchNameBtn, longest10Btn);
-        hbox.setPadding(new Insets(8));
+        nameField.setMinWidth(200);
+        HBox hbox = new HBox(2, nameField, searchNameBtn);
         hbox.setAlignment(Pos.CENTER);
-
-        root.add(hbox, 1, 0);
+        VBox vBox = new VBox(3, nameLabel, hbox, longest10Btn);
+        vBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.setPadding(new Insets(20));
+        root.add(vBox, 1, 0);
 
         Button menu = style.newButton("Menu");
         menu.setOnAction(sceneController::switchToMenu);

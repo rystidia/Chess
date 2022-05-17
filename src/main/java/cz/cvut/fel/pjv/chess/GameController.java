@@ -4,6 +4,13 @@ import cz.cvut.fel.pjv.chess.players.AIPlayer;
 import cz.cvut.fel.pjv.chess.players.Player;
 import cz.cvut.fel.pjv.chess.players.RemotePlayer;
 
+/**
+ * Game controller of the chess game
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class GameController {
 
     private final Player white;
@@ -12,7 +19,6 @@ public class GameController {
     private final Board board;
     private final GameScene game;
 
-
     public GameController(Player white, Player black, GameScene game, Board board) {
         this.white = white;
         this.black = black;
@@ -20,11 +26,11 @@ public class GameController {
         this.board = board;
     }
 
-    public void start(){
-        if (getCurPlayer() instanceof AIPlayer){
+    public void start() {
+        if (getCurPlayer() instanceof AIPlayer) {
             game.AIPlayerMove(board);
         }
-        if (getCurPlayer() instanceof RemotePlayer){
+        if (getCurPlayer() instanceof RemotePlayer) {
             getCurPlayer().makeMove(board);
         }
     }
@@ -33,6 +39,10 @@ public class GameController {
         return white.isCurrentPlayer() ? white : black;
     }
 
+
+    /**
+     * Switches the current player.
+     */
     public void switchCurPlayer() {
         if (white.isCurrentPlayer()) {
             white.setCurrentPlayer(false);
@@ -41,14 +51,14 @@ public class GameController {
             black.setCurrentPlayer(false);
             white.setCurrentPlayer(true);
         }
-        if (getCurPlayer() instanceof RemotePlayer){
+        if (getCurPlayer() instanceof RemotePlayer) {
             getCurPlayer().makeMove(board);
         }
-        if (isCheckMate(board)){
+        if (isCheckMate(board)) {
             getOpponent(getCurPlayer()).setWon(true);
             getCurPlayer().setLost(true);
         }
-        if (isStaleMate(board)){
+        if (isStaleMate(board)) {
             getOpponent(getCurPlayer()).setDraw(true);
             getCurPlayer().setDraw(true);
         }
@@ -58,23 +68,38 @@ public class GameController {
         return white.isCurrentPlayer() ? color == MyColor.WHITE : color == MyColor.BLACK;
     }
 
-    public Player getOpponent(Player player){
+    /**
+     * Returns the opponent of the given player.
+     */
+    public Player getOpponent(Player player) {
         return player.getColor() == MyColor.WHITE ? black : white;
     }
 
-    public boolean isStaleMate(Board board){
+    /**
+     * Returns true king of the current player is in stalemate on the given board.
+     */
+    public boolean isStaleMate(Board board) {
         return isStaleMate(board, getCurPlayer());
     }
 
+    /**
+     * Returns true king of the current player is in checkmate on the given board.
+     */
     public boolean isCheckMate(Board board) {
         return isCheckMate(board, getCurPlayer());
     }
 
-    public boolean isStaleMate(Board board, Player player){
+    /**
+     * Returns true king of the given player is in stalemate on the given board.
+     */
+    public boolean isStaleMate(Board board, Player player) {
         return player.hasNoValidMoves(board) && !board.getKing(player.getColor()).isInCheck();
     }
 
-    public boolean isCheckMate(Board board, Player player){
+    /**
+     * Returns true king of the given player is in checkmate on the given board.
+     */
+    public boolean isCheckMate(Board board, Player player) {
         return player.hasNoValidMoves(board) && board.getKing(player.getColor()).isInCheck();
     }
 }

@@ -8,11 +8,20 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 
-
+/**
+ * Context menu for the creation mode of the chess game
+ *
+ * @author pucilpet@fel.cvut.cz
+ * @author rystidia@fel.cvut.cz
+ * @version 1.0
+ */
 public class CreateMenu extends ContextMenu {
     private final Styles style = new Styles();
     private final Board board;
 
+    /**
+     * Creates context menu for the creation mode.
+     */
     public CreateMenu(Board board, Field toPos, Label field) {
         this.board = board;
         getItems().add(new CreateMenuOption("Remove Figure", e -> setFigure(null, toPos, field)));
