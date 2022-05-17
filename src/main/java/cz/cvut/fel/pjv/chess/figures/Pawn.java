@@ -82,6 +82,9 @@ import java.util.Set;
         return doubleAdvance;
     }
 
+    /**
+     * removes the possibility of en passant
+     */
     public void clearDoubleAdvance() {
         this.doubleAdvance = false;
     }
@@ -111,7 +114,7 @@ import java.util.Set;
         }
     }
 
-    public Field getCapturedFieldByMove(Field dest) {
+    private Field getCapturedFieldByMove(Field dest) {
         if (getPosition() == null) {
             return null;
         }
@@ -128,6 +131,9 @@ import java.util.Set;
         return null;
     }
 
+    /**
+     * @return true if move leads to promotion or if the pawn is on the rank and must be promoted, false otherwise
+     */
     public boolean moveLeadsToPromotion(Field dest) {
         return (getColor() == MyColor.WHITE && (dest.row == 0 || getPosition().row == 0)) || (getColor() == MyColor.BLACK && (dest.row == 7 || getPosition().row == 7));
     }

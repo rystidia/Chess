@@ -37,6 +37,13 @@ public class AIPlayer extends Player {
         this.rand = new Random();
     }
 
+    /**
+     * Finds the optimal move using alpha-beta algorithm. Then makes the found move on the given board.
+     * // Originally from https://www.chessprogramming.org/Alpha-Beta, adapted
+     * <p>
+     *
+     * @param board a board on which the move will be done
+     */
     @Override
     public void makeMove(Board board) {
         Pair<Figure, Field> decision = decision(board);
@@ -86,7 +93,7 @@ public class AIPlayer extends Player {
         return moves;
     }
 
-    public Board simulateAllMoves(List<Pair<Figure, Field>> moves, Board board) {
+    private Board simulateAllMoves(List<Pair<Figure, Field>> moves, Board board) {
         Board newBoard = new Board(board);
         for (Pair<Figure, Field> move: moves) {
             Figure newFig = newBoard.getFigure(move.getKey().getPosition());
@@ -95,14 +102,13 @@ public class AIPlayer extends Player {
         return newBoard;
     }
 
-
     private float maxValue(Board b, ArrayList<Pair<Figure, Field>> state, float alpha, float beta, int depth) {
         if(depth > maxDepth)
             return eval1(b, state, getColor());
 
         Board newBoard = simulateAllMoves(state, b);
         List<Pair<Figure, Field>> moves = getAllMoves(newBoard, getColor());
-        if(moves.size() == 0) // TODO add draw
+        if(moves.size() == 0)
             return Float.NEGATIVE_INFINITY;
 
         for (Pair<Figure, Field> move : moves) {
@@ -126,7 +132,7 @@ public class AIPlayer extends Player {
         Board newBoard = simulateAllMoves(state, b);
         List<Pair<Figure, Field>> moves = getAllMoves(newBoard, MyColor.getOppositeColor(getColor()));
 
-        if(moves.size() == 0) // TODO add draw
+        if(moves.size() == 0)
             return Float.POSITIVE_INFINITY;
 
         for (Pair<Figure, Field> move : moves) {
@@ -143,8 +149,8 @@ public class AIPlayer extends Player {
         return beta;
     }
 
-    public Pair<Figure, Field> decision(final Board b) {
-        // get maximum move
+    private Pair<Figure, Field> decision(final Board b) {
+        // return optimal move
 
         final List<Pair<Figure, Field>> moves = getAllMoves(b, getColor());
         if(moves.size() == 0)
@@ -168,7 +174,7 @@ public class AIPlayer extends Player {
             exec.shutdown();
         }
 
-        // max
+        // find move that has the maximum cost
         int maxi = -1;
         float max = Float.NEGATIVE_INFINITY;
         for(int i = 0; i < moves.size(); i++) {
@@ -183,7 +189,7 @@ public class AIPlayer extends Player {
                 continue;
             }
             if(cost >= max) {
-                if(Math.abs(cost-max) < 0.1) // add a little random element
+                if(Math.abs(cost-max) < 0.1) // sometimes will act randomly
                     if(rand.nextBoolean())
                         continue;
 
@@ -191,7 +197,6 @@ public class AIPlayer extends Player {
                 maxi = i;
             }
         }
-
         return moves.get(maxi);
     }
 
@@ -202,7 +207,7 @@ public class AIPlayer extends Player {
             if(newBoard.getKing(currentColor).isInCheck())
                 return (currentColor == getColor()) ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
             else
-                return Float.NEGATIVE_INFINITY; // we don't like draws
+                return Float.NEGATIVE_INFINITY; // don't look for a draw
         }
 
         int whiteScore = 0;
@@ -227,7 +232,7 @@ public class AIPlayer extends Player {
 
     private int getValueOfFig(Figure fig){
         String name = fig.getClass().getSimpleName();
-        return switch (name) {
+        return switch (name) { // costs of each figure
             case "Pawn" -> 10;
             case "Knight", "Bishop" -> 30;
             case "Rook" -> 50;

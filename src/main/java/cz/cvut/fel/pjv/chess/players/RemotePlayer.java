@@ -47,21 +47,20 @@ public class RemotePlayer extends Player {
 
     private Board board;
 
+    /**
+     * Initializes the remote player
+     * <p>
+     */
     public RemotePlayer() {
         start();
     }
 
     /**
-     * Initializes the player and sets the given color to him
+     * Starts communication with the specific server.
+     * Receives/sends packets using {@link Protocol} in JSON format from/to the server.
+     * Processes received messages.
      * <p>
-     *
-     * @param color a color
      */
-    public RemotePlayer(MyColor color) {
-        super(color);
-        start();
-    }
-
     private void start() {
         new Thread(() -> {
         try (
@@ -92,6 +91,7 @@ public class RemotePlayer extends Player {
         }).start();
     }
 
+    @Override
     public void makeMove(Board board) {
         this.board = board;
     }
@@ -137,6 +137,10 @@ public class RemotePlayer extends Player {
         }
     }
 
+    /**
+     * Sends the given packet to the server.
+     * <p>
+     */
     public void sendToServer(Packet packet) {
         ObjectMapper objectMapper = new ObjectMapper();
         String msg;
@@ -149,6 +153,12 @@ public class RemotePlayer extends Player {
         out.println(msg);
     }
 
+    /**
+     * Creates a game ending packet and sends it to the server.
+     * <p>
+     *
+     * @param winnerColor determines who is the winner of the game.
+     */
     public void gameEnd(MyColor winnerColor) {
         Packet p = new Packet(GAME_END.name());
         p.setWinnerColor(winnerColor);
@@ -179,17 +189,33 @@ public class RemotePlayer extends Player {
         this.startGameCallback = startGameCallback;
     }
 
+    /**
+     * Sends the given response to draw offer to the server.
+     * <p>
+     */
     public void sendDrawResponse(String drawResponse) {
         Packet response = new Packet(RESPONSE_TO_OFFER.name());
         response.setDrawAccepted(drawResponse);
         sendToServer(response);
     }
 
+    /**
+     * Sends a draw offer to the server.
+     * <p>
+     */
     public void sendDrawOffer(){
         Packet drawOffer = new Packet(DRAW_OFFER.name());
         sendToServer(drawOffer);
     }
 
+    /**
+     * Sends the given move to the server.
+     * <p>
+     *
+     * @param from field on which the figure to be moved stands
+     * @param toPos field to which figure will be moved
+     * @param promClass Class to which pawn will be promoted. Null if promotion has not been done in move
+     */
     public void sendMove(Field from, Field toPos, Class<? extends Figure> promClass) {
         Packet move = new Packet(MOVE.name());
         move.setFrom(from.toAlgebraicNotation());
@@ -202,12 +228,22 @@ public class RemotePlayer extends Player {
         sendToServer(move);
     }
 
+    /**
+     * Sends a matchmaking request to the server.
+     * <p>
+     *
+     * @param name name of the Player
+     */
     public void sendMMRequest(String name) {
         Packet mmReq = new Packet(MATCHMAKE_REQUEST.name());
         mmReq.setName(name);
         sendToServer(mmReq);
     }
 
+    /**
+     * Sends a surrender packet to the server.
+     * <p>
+     */
     public void sendSurrender(){
         Packet surrender = new Packet(SURRENDER.name());
         sendToServer(surrender);

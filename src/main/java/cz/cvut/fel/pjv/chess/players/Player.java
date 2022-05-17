@@ -14,7 +14,7 @@ import cz.cvut.fel.pjv.chess.figures.Figure;
  */
 public abstract class Player {
     private MyColor color;
-    private long timeLeft;
+    private long timeLeft; // time left in milliseconds
     private boolean isCurrentPlayer;
     private boolean won = false;
     private boolean lost = false;
@@ -36,7 +36,7 @@ public abstract class Player {
     }
 
     /**
-     * Executes the given move
+     * Finds the optimal move on the given board and executes it on the given board
      */
     public abstract void makeMove(Board board);
 
@@ -64,11 +64,6 @@ public abstract class Player {
         this.draw = draw;
     }
 
-    /**
-     * @return true if player lost the game, false otherwise
-     */
-
-
     public MyColor getColor() {
         return color;
     }
@@ -94,14 +89,23 @@ public abstract class Player {
         this.isCurrentPlayer = isCurrentPlayer;
     }
 
+    /**
+     * @return the remaining time in mm:ss format
+     */
     public String getTimeString() {
         return getTimeString(false);
     }
 
+    /**
+     * @return the remaining time in [hh:]mm:ss of mm:ss format
+     */
     public String getTimeString(boolean withHours) {
         return timeToString(timeLeft, withHours);
     }
 
+    /**
+     * Converts the given time in milliseconds to [hh:]mm:ss format.
+     */
     public static String timeToString(long time, boolean withHours) {
         final long secondsLeft = time / 1000;
         long minutes = secondsLeft / 60;
@@ -115,6 +119,9 @@ public abstract class Player {
         }
     }
 
+    /**
+     * Sets the remaining time to converted time from the hh:mm:ss format
+     */
     public void setTimeString(String timeString) {
         timeLeft = stringToTime(timeString, true);
     }

@@ -14,11 +14,6 @@ import java.util.*;
  * @version 1.0
  */
 public abstract class Figure {
-    private final MyColor color;
-    protected final Board board;
-    private Field position;
-    protected boolean isFirstMove = true;
-
     private static final Map<Character, Class<? extends Figure>> charToFigClass = new HashMap<>() {{
         put('P', Pawn.class);
         put('N', Knight.class);
@@ -27,12 +22,15 @@ public abstract class Figure {
         put('Q', Queen.class);
         put('K', King.class);
     }};
-
     private static final Map<Class<? extends Figure>, Character> figClassToChar = new HashMap<>() {{
         for (Entry<Character, Class<? extends Figure>> entry : charToFigClass.entrySet()) {
             put(entry.getValue(), entry.getKey());
         }
     }};
+    protected final Board board;
+    private final MyColor color;
+    protected boolean isFirstMove = true;
+    private Field position;
 
     /**
      * Initializes the Figure
@@ -46,10 +44,25 @@ public abstract class Figure {
         this.board = board;
     }
 
+    /**
+     * @return name of figure in PGN figure naming notation
+     */
+    public static char getCharacterByFigureClass(Class<? extends Figure> figClass) {
+        return figClassToChar.get(figClass);
+    }
+
+    /**
+     * @param ch name of figure in PGN figure naming notation
+     * @return class of the figure given by name
+     */
+    public static Class<? extends Figure> getFigureClassByCharacter(char ch) {
+        return charToFigClass.get(ch);
+    }
+
     public abstract Figure clone(Board dstBoard);
 
     /**
-     * Captures the piece
+     * Moves the piece to the given field
      */
     public void move(Field toPos) {
         isFirstMove = getPosition() == null;
@@ -57,15 +70,15 @@ public abstract class Figure {
         setPosition(toPos);
     }
 
-    public void setPosition(Field position) {
-        this.position = position;
-    }
-
     /**
      * @return the Field on which the piece stands
      */
     public Field getPosition() {
         return position;
+    }
+
+    public void setPosition(Field position) {
+        this.position = position;
     }
 
     /**
@@ -159,9 +172,12 @@ public abstract class Figure {
         return isFirstMove;
     }
 
-    protected void addValidMove(Set<Field> validMoves, int row, int column){
+    /**
+     * Adds a field given by row and column to given set, if field is empty or is occupied by opponent's piece
+     */
+    protected void addValidMove(Set<Field> validMoves, int row, int column) {
         Field pos = getPosition().plus(row, column);
-        if (pos == null){
+        if (pos == null) {
             return;
         }
         Figure blockingFig = board.getFigure(pos);
@@ -170,15 +186,10 @@ public abstract class Figure {
         }
     }
 
-    public boolean hasValidMoves(){
+    /**
+     * @return true if figure has valid moves, false otherwise
+     */
+    public boolean hasValidMoves() {
         return !board.getValidMoves(this).isEmpty();
-    }
-
-    public static char getCharacterByFigureClass(Class<? extends Figure> figClass) {
-        return figClassToChar.get(figClass);
-    }
-
-    public static Class<? extends Figure> getFigureClassByCharacter(char ch) {
-        return charToFigClass.get(ch);
     }
 }
