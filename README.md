@@ -10,17 +10,17 @@ Program Chess umožňuje hru proti člověku (u stejného počítače nebo po s�
 
 Po spuštění hry se uživatel ocitne ve hlavním menu, kde má na výběr několik možností (viz obrázek). Tlačítko „Human vs. human local“ zvolí hru proti člověku a objeví se okno s šachovnicí pro hru. Stisknutím tlačítka „Human vs. AI local“ vybere hru proti počítači - hráč si nejdříve v dialogovém okně vybere svojí barvu, se kterou chce hrát. Stisknutím tlačítka „Human vs. human online“ vybere hru proti člověku po síti prostřednictvím šachového serveru. Po jeho stisknutí se objeví se dialogové okno, ve kterém hráč vyplní své uživatelské jméno. Volba „Server statistics“ zobrazí historii her, které udržuje šachový server. Zmáčknutím tlačítka „Quit“ se zavře program.
 
-![image](uploads/ada8a6dd2f676d1fd4aeaa514677a8aa/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853457-51fe2d91-1241-49ac-9e30-9177309d2fdf.png)
 
 ## Hra
 
 Na začátku hry se kameny postaví do výchozího (základního) postavení. Stisknutí tlačítek „Menu”, „Restart”, „Save”, „Load” a „Create” slouží k návratu do hlavního menu, restartování hry, uložení a načtení rozehrané partie a manuálnímu rozestavění figur (tato funkce je popsána dále v této dokumentaci). Tlačítka „Save” a „Load” vyvolají dialog pro výběr umístění souboru PGN, který chce uživatel uložit nebo načíst.
 
-![local](uploads/ee2b7bfdda2c8ab97795f514ca6a71d8/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853498-6e1eea50-06a8-407a-9718-6043b0e8c3d5.png)
 
 Hráči na tahu se všechny figury, kterými lze táhnout, zvýrazní žlutou barvou. Z těchto figur si hráč kliknutím myši vybere figuru, kterou chce táhnout. Tím se všechna pole, na které lze táhnout danou figurou, zvýrazní zelenou barvou. Kliknutím na zvolené zelené pole hráč provede tah vybranou figurou na toto pole.
 
-![white on move](uploads/b56ff491b3309701d21eb62ef8c5484a/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853524-815573c6-774a-428b-86dc-f01798ec15fa.png)
 
 Ve hře platí pravidlo „dotknuto-hráno“. To znamená, že pokud se hráč na tahu záměrně dotkne kamene na šachovnici, se kterým lze podle pravidel táhnout, pak s ním musí táhnout.
 
@@ -28,19 +28,19 @@ Ve hře platí pravidlo „dotknuto-hráno“. To znamená, že pokud se hráč 
 
 Když hráč zvítězí/prohraje, jeho hodiny se rozsvítí zelenou/červenou barvou. Pokud hráči vyprší čas, prohrává. V případě remízy se hodiny obou hráčů rozsvítí žlutou barvou.
 
-![black won](uploads/6ac6cdbdc111f53005a81a35f22f1f24/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853553-29d0286b-af1b-46ad-971e-fbcd7a3a8b07.png)
 
 ### Síťová hra
 
 V síťové hře není možné restartovat hru, načíst rozehranou partii z PGN ani manuálně rozestavět figury před zahájením partie. Místo nich přibyly tlačítka „Draw offer” a „Surrender”. Tlačítko „Draw offer” odešle nabídku remízy soupeři, ten ji může přijmout, nebo odmítnout. Pokud ji přijme, partie končí remízou; pokud odmítne, pokračuje se v partii. Tlačítkem „Surrender” hráč kapituluje a tím okamžitě ukončí hru uznáním své prohry.
 
-![online](uploads/4e724a928f322367abb46e69735b0ff4/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853587-b54a9146-78b7-4ca7-ba68-f4a14b9f1e98.png)
 
 ## Manuální rozestavění figur
 
 Režimy „Human vs. human local“ a „Human vs. AI local“ umožňují před začátkem hry manuálně rozložit figury stiskutím tlačítka „Create”. Tím se šachovnice uvede do standardního rozložení. Stisknutím pravého tlačítka myši na libovolném poli šachovnice se zobrazí kontextová nabídka. Obsahuje volbu „Remove Figure“, která slouží k odstranení figury na zvoleném poli. Dále obsahuje volby pro přidání (Add) bílé (White) nebo černé (Black) dámy (Queen), střelce (Bishop), jezdce (Knight), věže (Rook) nebo pěšce (Pawn). Krále nelze přidávat ani odebírat, pouze přesouvat. Výběr figury se provede kliknutím levým tlačítkem myši; dalším kliknutím se tato figura přesune na vybrané pole šachovnice.
 
-![create](uploads/edbdeb7cc86814caf3c530ecd748aec0/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853617-c67d5523-6f2c-47ae-a001-d7405489ea24.png)
 
 Je možné si aktuální rozestavění uložit do PGN formátu pomocí tlačítka „Save” nebo načíst rozložení z existujícího PGN souboru pomocí „Load”.
 
@@ -50,7 +50,7 @@ Hra se z tohoto rozložení zahájí tlačítkem „Start“.
 
 Historie her odehraných na serveru lze zobrazit zvolením „Server statistics“ v hlavní nabídce.
 
-![image](uploads/15a7de58a37e54b5f4a69eb718551e98/image.png)
+![image](https://user-images.githubusercontent.com/107563420/173853653-581eacd2-37a5-4403-80b7-33fcc1d88e5d.png)
 
 Zobrazení seznamu her pro konkrétního uživatele se provádí vyplněním textového pole „Filter by name“ a stiknutím tlačítka „Search“, případně stiskem klávesy <kbd>Enter</kbd> při kurzoru umístěném v textovém poli. Vymazání a potvrzení filtru na jméno vede ke zrušení filtru - tím se v tabulce opět objeví všechny hry. Tlačítko „TOP 10 games“ zobrazí pouze nejdelších 10 her. Tlačítkem „Menu“ uživatel přejde do hlavního menu.
 
